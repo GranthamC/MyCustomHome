@@ -1,5 +1,5 @@
 import Vapor
-import FluentSQLite
+import FluentPostgreSQL
 
 final class MyCustomHome: Codable
 {
@@ -14,7 +14,7 @@ final class MyCustomHome: Codable
     }
 }
 
-extension MyCustomHome: SQLiteModel {}
+extension MyCustomHome: PostgreSQLModel {}
 
 extension MyCustomHome: Migration {}
 
