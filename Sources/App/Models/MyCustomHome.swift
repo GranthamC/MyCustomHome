@@ -22,3 +22,4 @@ extension MyCustomHome: Content
 {
 }
 
+extension MyCustomHome: Parameter {}
