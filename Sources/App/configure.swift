@@ -46,7 +46,12 @@ public func configure(
     services.register(databases)
 	
     var migrations = MigrationConfig()
+	
+	migrations.add(model: HomeBuilder.self, database: .psql)
+	
+	migrations.add(model: ProductLine.self, database: .psql)
 
     migrations.add(model: MyCustomHome.self, database: .psql)
+	
     services.register(migrations)
 }

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>baseURL</key>
-	<string>http://localhost:8080/api/MyCustomHome/1</string>
+	<string>http://localhost:8080/api/builders</string>
 	<key>followRedirect</key>
 	<true/>
 	<key>handleJSONPCallbacks</key>
@@ -15,9 +15,34 @@
 	<key>jsonpScript</key>
 	<string></string>
 	<key>paramBodyUIChoice</key>
-	<integer>1</integer>
+	<integer>0</integer>
 	<key>parameters</key>
-	<array/>
+	<array>
+		<dict>
+			<key>inUse</key>
+			<false/>
+			<key>parameter</key>
+			<string>name</string>
+			<key>value</key>
+			<string>Appalachia Homes</string>
+		</dict>
+		<dict>
+			<key>inUse</key>
+			<false/>
+			<key>parameter</key>
+			<string>username</string>
+			<key>value</key>
+			<string>GranthamC</string>
+		</dict>
+		<dict>
+			<key>inUse</key>
+			<false/>
+			<key>parameter</key>
+			<string>logoURL</string>
+			<key>value</key>
+			<string>https://panomodel.com/media-assets/Appalachia_Green_Chevron_Logo.png</string>
+		</dict>
+	</array>
 	<key>parametersType</key>
 	<integer>1</integer>
 	<key>presentBeforeChallenge</key>

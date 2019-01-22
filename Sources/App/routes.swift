@@ -105,4 +105,18 @@ public func routes(_ router: Router) throws {
 		return MyCustomHome.query(on: req) .sort(\.short, .ascending) .all()
 	}
 
+	// Register the Builder controller
+	//
+	let homebuilderController = HomeBuilderController()
+
+	try router.register(collection: homebuilderController)
+	
+	let productLineController = ProductLineController()
+	
+	try router.register(collection: productLineController)
+	
+	
+	let builderController = BuilderController()
+
+	try router.register(collection: builderController)
 }

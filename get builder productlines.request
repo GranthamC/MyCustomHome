@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>baseURL</key>
-	<string>http://localhost:8080/api/MyCustomHome/1</string>
+	<string>http://localhost:8080/api/builders/2DCDF851-AEAE-4D2A-8310-C8164C342F20/lines</string>
 	<key>followRedirect</key>
 	<true/>
 	<key>handleJSONPCallbacks</key>
@@ -15,11 +15,11 @@
 	<key>jsonpScript</key>
 	<string></string>
 	<key>paramBodyUIChoice</key>
-	<integer>1</integer>
+	<integer>0</integer>
 	<key>parameters</key>
 	<array/>
 	<key>parametersType</key>
-	<integer>1</integer>
+	<integer>0</integer>
 	<key>presentBeforeChallenge</key>
 	<false/>
 	<key>stringEncoding</key>
