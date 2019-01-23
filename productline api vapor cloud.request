@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>baseURL</key>
+	<string>https://sc-mch.vapor.cloud/api/lines</string>
+	<key>followRedirect</key>
+	<true/>
+	<key>handleJSONPCallbacks</key>
+	<false/>
+	<key>headers</key>
+	<array/>
+	<key>httpMethod</key>
+	<string>POST</string>
+	<key>jsonpScript</key>
+	<string></string>
+	<key>paramBodyUIChoice</key>
+	<integer>0</integer>
+	<key>parameters</key>
+	<array>
+		<dict>
+			<key>inUse</key>
+			<true/>
+			<key>parameter</key>
+			<string>name</string>
+			<key>value</key>
+			<string>Premier Series</string>
+		</dict>
+		<dict>
+			<key>inUse</key>
+			<true/>
+			<key>parameter</key>
+			<string>builderID</string>
+			<key>value</key>
+			<string>F16E2AD0-E729-4B20-BA3A-F37AD8F03050</string>
+		</dict>
+		<dict>
+			<key>inUse</key>
+			<true/>
+			<key>parameter</key>
+			<string>logoURL</string>
+			<key>value</key>
+			<string>https://panomodel.com/media-assets/premier-series-logo.png</string>
+		</dict>
+	</array>
+	<key>parametersType</key>
+	<integer>1</integer>
+	<key>presentBeforeChallenge</key>
+	<false/>
+	<key>stringEncoding</key>
+	<integer>4</integer>
+	<key>usingHTTPBody</key>
+	<false/>
+</dict>
+</plist>

@@ -6,7 +6,7 @@ public func configure(
     _ env: inout Environment,
     _ services: inout Services
     ) throws {
-    // 2
+
     try services.register(FluentPostgreSQLProvider())
     
     let router = EngineRouter.default()
@@ -17,10 +17,9 @@ public func configure(
     middlewares.use(ErrorMiddleware.self)
     services.register(middlewares)
     
-    // 1
+
     var databases = DatabasesConfig()
-    
-    // 2
+	
     let hostname = Environment.get("DATABASE_HOSTNAME") ?? "localhost"
 	
     let username = Environment.get("DATABASE_USER") ?? "vapor"
@@ -29,29 +28,43 @@ public func configure(
 	
     let password = Environment.get("DATABASE_PASSWORD") ?? "password"
 	
-    // 3
     let databaseConfig = PostgreSQLDatabaseConfig(
         hostname: hostname,
         username: username,
         database: databaseName,
         password: password)
 	
-    // 4
     let database = PostgreSQLDatabase(config: databaseConfig)
 	
-    // 5
     databases.add(database: database, as: .psql)
 	
-    // 6
     services.register(databases)
 	
+	// Create and register our database models
+	//
     var migrations = MigrationConfig()
 	
 	migrations.add(model: HomeBuilder.self, database: .psql)
 	
 	migrations.add(model: ProductLine.self, database: .psql)
-
-    migrations.add(model: MyCustomHome.self, database: .psql)
+	
+	migrations.add(model: DecorOptionCategory.self, database: .psql)
+	
+	migrations.add(model: DecorOptionItem.self, database: .psql)
+	
+	migrations.add(model: HomeOptionCategory.self, database: .psql)
+	
+	migrations.add(model: HomeOptionItem.self, database: .psql)
+	
+	migrations.add(model: HomeModel.self, database: .psql)
+	
+	migrations.add(model: DecorOptionCategoryPivot.self, database: .psql)
+	
+	migrations.add(model: HomeOptionCategoryPivot.self, database: .psql)
+	
+	migrations.add(model: DecorOptionProductLinePivot.self, database: .psql)
+	
+	migrations.add(model: HomeOptionHomeModelPivot.self, database: .psql)
 	
     services.register(migrations)
 }

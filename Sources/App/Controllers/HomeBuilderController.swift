@@ -7,7 +7,7 @@ struct HomeBuilderController: RouteCollection
 
 	func boot(router: Router) throws {
 
-		let buildersRoute = router.grouped("api", "builders")
+		let buildersRoute = router.grouped("api", "builder")
  
 		buildersRoute.post(HomeBuilder.self, use: createHandler)
 		
@@ -18,6 +18,14 @@ struct HomeBuilderController: RouteCollection
 		buildersRoute.put(HomeBuilder.parameter, use: updateHandler)
 		
 		buildersRoute.get(HomeBuilder.parameter, "lines", use: getProductLinesHandler)
+		
+		buildersRoute.get(HomeBuilder.parameter, "decor-categories", use: getDecorCategoriesHandler)
+		
+		buildersRoute.get(HomeBuilder.parameter, "decor-items", use: getDecorOptionItemsHandler)
+		
+		buildersRoute.get(HomeBuilder.parameter, "home-option-categories", use: getHomeOptionCategoriesHandler)
+		
+		buildersRoute.get(HomeBuilder.parameter, "home-option-items", use: getHomeOptionItemsHandler)
 	}
 
 	
@@ -70,5 +78,57 @@ struct HomeBuilderController: RouteCollection
 		}
 	}
 	
+	
+	// Get the builder's decor categories
+	//
+	func getDecorCategoriesHandler(_ req: Request) throws -> Future<[DecorOptionCategory]> {
+		
+		return try req
+			.parameters.next(HomeBuilder.self)
+			.flatMap(to: [DecorOptionCategory].self) { builder in
+				
+				try builder.decorCategories.query(on: req).all()
+		}
+	}
+	
+	
+	// Get the builder's decor options
+	//
+	func getDecorOptionItemsHandler(_ req: Request) throws -> Future<[DecorOptionItem]> {
+		
+		return try req
+			.parameters.next(HomeBuilder.self)
+			.flatMap(to: [DecorOptionItem].self) { builder in
+				
+				try builder.decorOptions.query(on: req).all()
+		}
+	}
+	
+	
+	// Get the builder's home option categories
+	//
+	func getHomeOptionCategoriesHandler(_ req: Request) throws -> Future<[HomeOptionCategory]> {
+		
+		return try req
+			.parameters.next(HomeBuilder.self)
+			.flatMap(to: [HomeOptionCategory].self) { builder in
+				
+				try builder.homeOptionCategories.query(on: req).all()
+		}
+	}
+
+	
+	// Get the builder's home options
+	//
+	func getHomeOptionItemsHandler(_ req: Request) throws -> Future<[HomeOptionItem]> {
+		
+		return try req
+			.parameters.next(HomeBuilder.self)
+			.flatMap(to: [HomeOptionItem].self) { builder in
+				
+				try builder.homeOptions.query(on: req).all()
+		}
+	}
+
 }
 

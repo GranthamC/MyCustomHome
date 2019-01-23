@@ -8,7 +8,7 @@ struct ProductLineController: RouteCollection
 	
 	func boot(router: Router) throws {
 		
-		let productLinesRoute = router.grouped("api", "lines")
+		let productLinesRoute = router.grouped("api", "line")
 		
 		productLinesRoute.post(ProductLine.self, use: createHandler)
 		
@@ -20,6 +20,10 @@ struct ProductLineController: RouteCollection
 		
 		productLinesRoute.get(ProductLine.parameter, "builder", use: getBuilderHandler)
 		
+		productLinesRoute.get(ProductLine.parameter, "homes", use: getHomeModelsHandler)
+		
+		productLinesRoute.get(ProductLine.parameter, "decor-items", use: getDecorItemsHandler)
+
 	}
 	
 	
@@ -72,6 +76,29 @@ struct ProductLineController: RouteCollection
 		}
 	}
 	
+	
+	// Get the line's home models
+	//
+	func getHomeModelsHandler(_ req: Request) throws -> Future<[HomeModel]> {
+		
+		return try req
+			.parameters.next(ProductLine.self)
+			.flatMap(to: [HomeModel].self) { line in
+				
+				try line.homeModels.query(on: req).all()
+		}
+	}
+	
+	
+	func getDecorItemsHandler(_ req: Request) throws -> Future<[DecorOptionItem]> {
+		
+		return try req.parameters.next(ProductLine.self)
+			.flatMap(to: [DecorOptionItem].self) { line in
+				
+				try line.decorOptions.query(on: req).all()
+		}
+	}
+
 	
 }
 

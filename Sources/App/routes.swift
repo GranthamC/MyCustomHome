@@ -4,6 +4,8 @@ import Fluent
 
 /// Register your application's routes here.
 public func routes(_ router: Router) throws {
+	
+/*
     // Basic "It works" example
     router.get { req in
         return "It works!"
@@ -104,19 +106,42 @@ public func routes(_ router: Router) throws {
  
 		return MyCustomHome.query(on: req) .sort(\.short, .ascending) .all()
 	}
-
-	// Register the Builder controller
+*/
+	
+	// Register the model route controllers
 	//
 	let homebuilderController = HomeBuilderController()
 
 	try router.register(collection: homebuilderController)
+
 	
 	let productLineController = ProductLineController()
 	
 	try router.register(collection: productLineController)
-	
-	
-	let builderController = BuilderController()
 
-	try router.register(collection: builderController)
+	
+	let decorCategoryController = DecorCategoryController()
+	
+	try router.register(collection: decorCategoryController)
+
+	
+	let decorItemController = DecorOptionItemController()
+	
+	try router.register(collection: decorItemController)
+
+	
+	let homeOptionCategoryController = HomeOptionCategoryController()
+	
+	try router.register(collection: homeOptionCategoryController)
+	
+	
+	let homeOptionItemController = HomeOptionItemController()
+	
+	try router.register(collection: homeOptionItemController)
+	
+	
+	let homeModelController = HomeModelController()
+	
+	try router.register(collection: homeModelController)
+
 }

@@ -39,6 +39,16 @@ extension ProductLine: Parameter {}
 
 extension ProductLine
 {
+	var homeModels: Children<ProductLine, HomeModel> {
+		
+		return children(\.productLineID)
+	}
+	
+	var decorOptions: Siblings<ProductLine, DecorOptionItem, DecorOptionProductLinePivot> {
+		
+		return siblings()
+	}
+
 	var builder: Parent<ProductLine, HomeBuilder> {
 
 		return parent(\.builderID)
