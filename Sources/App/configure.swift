@@ -75,4 +75,12 @@ public func configure(
 	migrations.add(model: ImageAssetHomeOptionPivot.self, database: .psql)
 
     services.register(migrations)
+	
+	// Add command line configuration service
+	//
+	var commandConfig = CommandConfig.default()
+
+	commandConfig.useFluentCommands()
+
+	services.register(commandConfig)
 }
