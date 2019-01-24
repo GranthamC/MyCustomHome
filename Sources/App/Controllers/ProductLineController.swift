@@ -17,7 +17,9 @@ struct ProductLineController: RouteCollection
 		productLinesRoute.get(ProductLine.parameter, use: getHandler)
 
 		productLinesRoute.put(ProductLine.parameter, use: updateHandler)
-		
+
+		productLinesRoute.delete(ProductLine.parameter, use: deleteHandler)
+
 		productLinesRoute.get(ProductLine.parameter, "builder", use: getBuilderHandler)
 		
 		productLinesRoute.get(ProductLine.parameter, "homes", use: getHomeModelsHandler)
@@ -66,6 +68,15 @@ struct ProductLineController: RouteCollection
 		}
 	}
 	
+	
+	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try req.parameters.next(ProductLine.self)
+			.delete(on: req)
+			.transform(to: HTTPStatus.noContent)
+	}
+	
+
 	// Get the Builder record for this product line
 	//
 	func getBuilderHandler(_ req: Request) throws -> Future<HomeBuilder> {

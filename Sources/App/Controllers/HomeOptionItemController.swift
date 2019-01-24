@@ -17,6 +17,8 @@ struct HomeOptionItemController: RouteCollection
 		homeOptionItemsRoute.get(HomeOptionItem.parameter, use: getHandler)
 		
 		homeOptionItemsRoute.put(HomeOptionItem.parameter, use: updateHandler)
+
+		homeOptionItemsRoute.delete(HomeOptionItem.parameter, use: deleteHandler)
 		
 		homeOptionItemsRoute.get(HomeOptionItem.parameter, "builder", use: getBuilderHandler)
 		
@@ -80,6 +82,15 @@ struct HomeOptionItemController: RouteCollection
 			return homeOptionItem.save(on: req)
 		}
 	}
+	
+	
+	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try req.parameters.next(HomeOptionItem.self)
+			.delete(on: req)
+			.transform(to: HTTPStatus.noContent)
+	}
+
 	
 	// Get the Builder record for this home option Item
 	//

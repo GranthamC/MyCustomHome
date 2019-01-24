@@ -17,7 +17,9 @@ struct ImageAssetController: RouteCollection
 		imageAssetsRoute.get(ImageAsset.parameter, use: getHandler)
 		
 		imageAssetsRoute.put(ImageAsset.parameter, use: updateHandler)
-		
+
+		imageAssetsRoute.delete(ImageAsset.parameter, use: deleteHandler)
+
 		imageAssetsRoute.get(ImageAsset.parameter, "builder", use: getBuilderHandler)
 		
 		imageAssetsRoute.post(ImageAsset.parameter, "home-models", HomeModel.parameter, use: addHomesHandler)
@@ -83,6 +85,15 @@ struct ImageAssetController: RouteCollection
 		}
 	}
 	
+	
+	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try req.parameters.next(ImageAsset.self)
+			.delete(on: req)
+			.transform(to: HTTPStatus.noContent)
+	}
+	
+
 	// Get the Builder record for this home option Item
 	//
 	func getBuilderHandler(_ req: Request) throws -> Future<HomeBuilder> {

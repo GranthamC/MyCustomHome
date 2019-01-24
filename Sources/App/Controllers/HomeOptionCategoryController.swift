@@ -16,7 +16,9 @@ struct HomeOptionCategoryController: RouteCollection
 		homeOptionsCategoriesRoute.get(HomeOptionCategory.parameter, use: getHandler)
 		
 		homeOptionsCategoriesRoute.put(HomeOptionCategory.parameter, use: updateHandler)
-		
+
+		homeOptionsCategoriesRoute.delete(HomeOptionCategory.parameter, use: deleteHandler)
+
 		homeOptionsCategoriesRoute.get(HomeOptionCategory.parameter, "builder", use: getBuilderHandler)
 		
 		homeOptionsCategoriesRoute.get(DecorOptionCategory.parameter, "home-option-items", use: getHomeOptionItemsHandler)
@@ -59,6 +61,15 @@ struct HomeOptionCategoryController: RouteCollection
 			return category.save(on: req)
 		}
 	}
+	
+	
+	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try req.parameters.next(HomeOptionCategory.self)
+			.delete(on: req)
+			.transform(to: HTTPStatus.noContent)
+	}
+
 	
 	// Get the Builder record for this category
 	//
