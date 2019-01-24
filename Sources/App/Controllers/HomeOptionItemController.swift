@@ -63,11 +63,20 @@ struct HomeOptionItemController: RouteCollection
 			to: HomeOptionItem.self,
 			req.parameters.next(HomeOptionItem.self),
 			req.content.decode(HomeOptionItem.self)
-		) { homeOptionItem, updatedLine in
-			homeOptionItem.id = updatedLine.id
-			homeOptionItem.name = updatedLine.name
-			homeOptionItem.logoURL = updatedLine.logoURL
-			homeOptionItem.builderID = updatedLine.builderID
+		) { homeOptionItem, updatedItem in
+			
+			homeOptionItem.name = updatedItem.name
+			homeOptionItem.builderID = updatedItem.builderID
+			homeOptionItem.optionType = updatedItem.optionType
+
+			homeOptionItem.optionImageURL = updatedItem.name
+			homeOptionItem.optionModelURL = updatedItem.optionModelURL
+			homeOptionItem.decorOptionColor = updatedItem.decorOptionColor
+			homeOptionItem.imageScale = updatedItem.imageScale
+			homeOptionItem.imageScale = updatedItem.imageScale
+			homeOptionItem.physicalWidth = updatedItem.physicalWidth
+			homeOptionItem.physicalHeight = updatedItem.physicalHeight
+			
 			return homeOptionItem.save(on: req)
 		}
 	}

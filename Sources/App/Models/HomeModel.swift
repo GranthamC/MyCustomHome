@@ -6,12 +6,36 @@ final class HomeModel: Codable
 {
 	var id: UUID?
 	var name: String
+	var modelNumber: String
 	var productLineID: ProductLine.ID
-	var logoURL: String?
 	
-	init(name: String, productLineID: ProductLine.ID) {
+	var heroImageURL: String?
+	var matterportTourURL: String?
+	var panoModelTourURL: String?
+	
+	var sqft: Int16?
+	var baths: Float?
+	var beds: Int16?
+	var features: String?
+	var priceBase: Double?
+	var priceUpper: Double?
+	
+	var isEnabled: Bool
+	var isSingleSection: Bool
+	
+	var hasBasement: Bool?
+	var sqftBasement: Int16?
+	var sqftMain: Int16?
+	var sqftUpper: Int16?
+	
+	
+	init(name: String, modelNumber: String, productLineID: ProductLine.ID) {
 		self.name = name
+		self.modelNumber = modelNumber
 		self.productLineID = productLineID
+		
+		self.isEnabled = true
+		self.isSingleSection = false
 	}
 }
 

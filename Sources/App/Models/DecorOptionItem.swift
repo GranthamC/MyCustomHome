@@ -7,7 +7,17 @@ final class DecorOptionItem: Codable
 	var id: UUID?
 	var name: String
 	var builderID: HomeBuilder.ID
-	var logoURL: String?
+	
+	var optionImageURL: String?
+	
+	var optionModelURL: String?
+	
+	var decorOptionColor: UInt32?
+	var imageScale: Float?
+	var isUpgrade: Bool?
+	var optionType: Int64?
+	var physicalHeight: Float?
+	var physicalWidth: Float?
 	
 	init(name: String, builderID: HomeBuilder.ID) {
 		self.name = name

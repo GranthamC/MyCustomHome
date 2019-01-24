@@ -120,6 +120,11 @@ public func routes(_ router: Router) throws {
 	try router.register(collection: productLineController)
 
 	
+	let imageAssetController = ImageAssetController()
+	
+	try router.register(collection: imageAssetController)
+
+	
 	let decorCategoryController = DecorCategoryController()
 	
 	try router.register(collection: decorCategoryController)

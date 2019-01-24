@@ -56,10 +56,12 @@ struct ProductLineController: RouteCollection
 			req.parameters.next(ProductLine.self),
 			req.content.decode(ProductLine.self)
 		) { line, updatedLine in
-			line.id = updatedLine.id
+			
 			line.name = updatedLine.name
-			line.logoURL = updatedLine.logoURL
 			line.builderID = updatedLine.builderID
+			line.logoURL = updatedLine.logoURL
+			line.websiteURL = updatedLine.websiteURL
+
 			return line.save(on: req)
 		}
 	}
@@ -98,7 +100,6 @@ struct ProductLineController: RouteCollection
 				try line.decorOptions.query(on: req).all()
 		}
 	}
-
 	
 }
 

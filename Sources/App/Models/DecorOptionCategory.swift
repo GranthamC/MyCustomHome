@@ -7,8 +7,8 @@ final class DecorOptionCategory: Codable
 	var id: UUID?
 	var name: String
 	var builderID: HomeBuilder.ID
-	var logoURL: String?
-	
+	var optionType: Int64?
+
 	init(name: String, builderID: HomeBuilder.ID) {
 		self.name = name
 		self.builderID = builderID

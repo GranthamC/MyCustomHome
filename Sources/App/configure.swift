@@ -48,6 +48,8 @@ public func configure(
 	
 	migrations.add(model: ProductLine.self, database: .psql)
 	
+	migrations.add(model: ImageAsset.self, database: .psql)
+
 	migrations.add(model: DecorOptionCategory.self, database: .psql)
 	
 	migrations.add(model: DecorOptionItem.self, database: .psql)
@@ -66,5 +68,11 @@ public func configure(
 	
 	migrations.add(model: HomeOptionHomeModelPivot.self, database: .psql)
 	
+	migrations.add(model: ImageAssetDecorOptionPivot.self, database: .psql)
+	
+	migrations.add(model: ImageAssetHomeModelPivot.self, database: .psql)
+	
+	migrations.add(model: ImageAssetHomeOptionPivot.self, database: .psql)
+
     services.register(migrations)
 }

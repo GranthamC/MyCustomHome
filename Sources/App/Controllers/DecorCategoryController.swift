@@ -17,7 +17,9 @@ struct DecorCategoryController: RouteCollection
 		decorCategoriesRoute.get(DecorOptionCategory.parameter, use: getHandler)
 		
 		decorCategoriesRoute.put(DecorOptionCategory.parameter, use: updateHandler)
-		
+
+		decorCategoriesRoute.delete(DecorOptionCategory.parameter, use: deleteHandler)
+
 		decorCategoriesRoute.get(DecorOptionCategory.parameter, "builder", use: getBuilderHandler)
 	
 		decorCategoriesRoute.get(DecorOptionCategory.parameter, "decor-items", use: getDecorItemsHandler)
@@ -53,14 +55,22 @@ struct DecorCategoryController: RouteCollection
 			to: DecorOptionCategory.self,
 			req.parameters.next(DecorOptionCategory.self),
 			req.content.decode(DecorOptionCategory.self)
-		) { category, updatedLine in
-			category.id = updatedLine.id
-			category.name = updatedLine.name
-			category.logoURL = updatedLine.logoURL
-			category.builderID = updatedLine.builderID
+		) { category, updatedCategory in
+			category.name = updatedCategory.name
+			category.builderID = updatedCategory.builderID
+			category.optionType = updatedCategory.optionType
 			return category.save(on: req)
 		}
 	}
+	
+	
+	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try req.parameters.next(DecorOptionCategory.self)
+			.delete(on: req)
+			.transform(to: HTTPStatus.noContent)
+	}
+
 	
 	// Get the Builder record for this product category
 	//

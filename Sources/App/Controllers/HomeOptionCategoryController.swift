@@ -52,11 +52,10 @@ struct HomeOptionCategoryController: RouteCollection
 			to: HomeOptionCategory.self,
 			req.parameters.next(HomeOptionCategory.self),
 			req.content.decode(HomeOptionCategory.self)
-		) { category, updatedLine in
-			category.id = updatedLine.id
-			category.name = updatedLine.name
-			category.logoURL = updatedLine.logoURL
-			category.builderID = updatedLine.builderID
+		) { category, updatedCategory in
+			category.name = updatedCategory.name
+			category.builderID = updatedCategory.builderID
+			category.optionType = updatedCategory.optionType
 			return category.save(on: req)
 		}
 	}

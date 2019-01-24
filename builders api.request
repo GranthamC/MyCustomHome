@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>baseURL</key>
-	<string>http://localhost:8080/api/builders</string>
+	<string>http://localhost:8080/api/builder/search?param=Appalachia+Homes</string>
 	<key>followRedirect</key>
 	<true/>
 	<key>handleJSONPCallbacks</key>
@@ -41,6 +41,14 @@
 			<string>logoURL</string>
 			<key>value</key>
 			<string>https://panomodel.com/media-assets/Appalachia_Green_Chevron_Logo.png</string>
+		</dict>
+		<dict>
+			<key>inUse</key>
+			<false/>
+			<key>parameter</key>
+			<string>websiteURL</string>
+			<key>value</key>
+			<string>https://myappalachiahome.com</string>
 		</dict>
 	</array>
 	<key>parametersType</key>

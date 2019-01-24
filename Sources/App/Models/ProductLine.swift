@@ -9,6 +9,8 @@ final class ProductLine: Codable
 	var builderID: HomeBuilder.ID
 	var logoURL: String?
 	
+	var websiteURL: String?
+	
 	init(name: String, builderID: HomeBuilder.ID) {
 		self.name = name
 		self.builderID = builderID

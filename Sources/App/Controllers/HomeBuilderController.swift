@@ -1,5 +1,5 @@
 import Vapor
-
+import Fluent
 
 
 struct HomeBuilderController: RouteCollection
@@ -16,6 +16,14 @@ struct HomeBuilderController: RouteCollection
 		buildersRoute.get(HomeBuilder.parameter, use: getHandler)
 
 		buildersRoute.put(HomeBuilder.parameter, use: updateHandler)
+
+		buildersRoute.delete(HomeBuilder.parameter, use: deleteHandler)
+		
+		buildersRoute.get("search", use: searchHandler)
+
+		buildersRoute.get("first", use: getFirstHandler)
+
+		buildersRoute.get("sorted", use: sortedHandler)
 		
 		buildersRoute.get(HomeBuilder.parameter, "lines", use: getProductLinesHandler)
 		
@@ -26,6 +34,8 @@ struct HomeBuilderController: RouteCollection
 		buildersRoute.get(HomeBuilder.parameter, "home-option-categories", use: getHomeOptionCategoriesHandler)
 		
 		buildersRoute.get(HomeBuilder.parameter, "home-option-items", use: getHomeOptionItemsHandler)
+		
+		buildersRoute.get(HomeBuilder.parameter, "image-assets", use: getImageAssetsHandler)
 	}
 
 	
@@ -57,12 +67,54 @@ struct HomeBuilderController: RouteCollection
 			req.parameters.next(HomeBuilder.self),
 			req.content.decode(HomeBuilder.self)
 		) { builder, updatedBuilder in
-			builder.id = updatedBuilder.id
 			builder.name = updatedBuilder.name
 			builder.logoURL = updatedBuilder.logoURL
 			builder.websiteURL = updatedBuilder.websiteURL
+			builder.username = updatedBuilder.username
 			return builder.save(on: req)
 		}
+	}
+	
+	
+	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try req.parameters.next(HomeBuilder.self)
+			.delete(on: req)
+			.transform(to: HTTPStatus.noContent)
+	}
+
+	
+	func searchHandler(_ req: Request) throws -> Future<[HomeBuilder]>
+	{
+		guard let searchTerm = req.query[String.self, at: "param"] else {
+			throw Abort(.badRequest)
+		}
+		
+		return HomeBuilder.query(on: req).group(.or) { or in
+			or.filter(\.name == searchTerm)
+			or.filter(\.username == searchTerm)
+			}.all()
+	}
+
+	
+	func getFirstHandler(_ req: Request) throws -> Future<HomeBuilder>
+	{
+		return HomeBuilder.query(on: req)
+			.first()
+			
+			.map(to: HomeBuilder.self) { homebuilder in
+				guard let homebuilder = homebuilder else {
+					throw Abort(.notFound)
+				}
+				
+				return homebuilder
+		}
+	}
+	
+	
+	func sortedHandler(_ req: Request) throws -> Future<[HomeBuilder]>
+	{
+		return HomeBuilder.query(on: req).sort(\.name, .ascending).all()
 	}
 	
 	
@@ -127,6 +179,19 @@ struct HomeBuilderController: RouteCollection
 			.flatMap(to: [HomeOptionItem].self) { builder in
 				
 				try builder.homeOptions.query(on: req).all()
+		}
+	}
+
+	
+	// Get the builder's image assets
+	//
+	func getImageAssetsHandler(_ req: Request) throws -> Future<[ImageAsset]> {
+		
+		return try req
+			.parameters.next(HomeBuilder.self)
+			.flatMap(to: [ImageAsset].self) { builder in
+				
+				try builder.imageAssets.query(on: req).all()
 		}
 	}
 

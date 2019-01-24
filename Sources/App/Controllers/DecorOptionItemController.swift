@@ -1,6 +1,6 @@
 
 import Vapor
-
+import Fluent
 
 
 struct DecorOptionItemController: RouteCollection
@@ -17,7 +17,15 @@ struct DecorOptionItemController: RouteCollection
 		decorItemsRoute.get(DecorOptionItem.parameter, use: getHandler)
 		
 		decorItemsRoute.put(DecorOptionItem.parameter, use: updateHandler)
+
+		decorItemsRoute.delete(HomeBuilder.parameter, use: deleteHandler)
 		
+		decorItemsRoute.get("search", use: searchHandler)
+		
+		decorItemsRoute.get("first", use: getFirstHandler)
+		
+		decorItemsRoute.get("sorted", use: sortedHandler)
+
 		decorItemsRoute.get(DecorOptionItem.parameter, "builder", use: getBuilderHandler)
 		
 		decorItemsRoute.post(DecorOptionItem.parameter, "lines", ProductLine.parameter, use: addLinesHandler)
@@ -63,15 +71,64 @@ struct DecorOptionItemController: RouteCollection
 			to: DecorOptionItem.self,
 			req.parameters.next(DecorOptionItem.self),
 			req.content.decode(DecorOptionItem.self)
-		) { decorItem, updatedLine in
-			decorItem.id = updatedLine.id
-			decorItem.name = updatedLine.name
-			decorItem.logoURL = updatedLine.logoURL
-			decorItem.builderID = updatedLine.builderID
+		) { decorItem, updatedItem in
+			decorItem.name = updatedItem.name
+			decorItem.builderID = updatedItem.builderID
+			decorItem.optionType = updatedItem.optionType
+
+			decorItem.optionImageURL = updatedItem.name
+			decorItem.optionModelURL = updatedItem.optionModelURL
+			decorItem.decorOptionColor = updatedItem.decorOptionColor
+			decorItem.imageScale = updatedItem.imageScale
+			decorItem.imageScale = updatedItem.imageScale
+			decorItem.physicalWidth = updatedItem.physicalWidth
+			decorItem.physicalHeight = updatedItem.physicalHeight
+
 			return decorItem.save(on: req)
 		}
 	}
 	
+	
+	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try req.parameters.next(DecorOptionItem.self)
+			.delete(on: req)
+			.transform(to: HTTPStatus.noContent)
+	}
+	
+	
+	func searchHandler(_ req: Request) throws -> Future<[DecorOptionItem]>
+	{
+		guard let searchTerm = req.query[String.self, at: "param"] else {
+			throw Abort(.badRequest)
+		}
+		
+		return DecorOptionItem.query(on: req).group(.or) { or in
+			or.filter(\.name == searchTerm)
+			}.all()
+	}
+	
+	
+	func getFirstHandler(_ req: Request) throws -> Future<DecorOptionItem>
+	{
+		return DecorOptionItem.query(on: req)
+			.first()
+			
+			.map(to: DecorOptionItem.self) { optionItem in
+				guard let item = optionItem else {
+					throw Abort(.notFound)
+				}
+				
+				return item
+		}
+	}
+	
+	
+	func sortedHandler(_ req: Request) throws -> Future<[HomeBuilder]>
+	{
+		return HomeBuilder.query(on: req).sort(\.name, .ascending).all()
+	}
+
 	// Get the Builder record for this decor Item
 	//
 	func getBuilderHandler(_ req: Request) throws -> Future<HomeBuilder> {

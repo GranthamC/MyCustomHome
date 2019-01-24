@@ -50,5 +50,10 @@ extension HomeBuilder
 		
 		return children(\.builderID)
 	}
+	
+	var imageAssets: Children<HomeBuilder, ImageAsset> {
+		
+		return children(\.builderID)
+	}
 
 }
