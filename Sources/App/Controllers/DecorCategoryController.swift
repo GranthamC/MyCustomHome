@@ -1,5 +1,7 @@
 
 import Vapor
+import Fluent
+import Authentication
 
 
 
@@ -10,19 +12,35 @@ struct DecorCategoryController: RouteCollection
 		
 		let decorCategoriesRoute = router.grouped("api", "decor-category")
 		
-		decorCategoriesRoute.post(DecorOptionCategory.self, use: createHandler)
+//		decorCategoriesRoute.post(DecorOptionCategory.self, use: createHandler)
 		
 		decorCategoriesRoute.get(use: getAllHandler)
 		
 		decorCategoriesRoute.get(DecorOptionCategory.parameter, use: getHandler)
 		
-		decorCategoriesRoute.put(DecorOptionCategory.parameter, use: updateHandler)
+//		decorCategoriesRoute.put(DecorOptionCategory.parameter, use: updateHandler)
 
-		decorCategoriesRoute.delete(DecorOptionCategory.parameter, use: deleteHandler)
+//		decorCategoriesRoute.delete(DecorOptionCategory.parameter, use: deleteHandler)
 
 		decorCategoriesRoute.get(DecorOptionCategory.parameter, "builder", use: getBuilderHandler)
 	
 		decorCategoriesRoute.get(DecorOptionCategory.parameter, "decor-items", use: getDecorItemsHandler)
+		
+		
+		// Add-in authentication for creating and updating
+		//
+		let tokenAuthMiddleware = User.tokenAuthMiddleware()
+		let guardAuthMiddleware = User.guardAuthMiddleware()
+		
+		let tokenAuthGroup = decorCategoriesRoute.grouped(
+			tokenAuthMiddleware,
+			guardAuthMiddleware)
+		
+		tokenAuthGroup.post(DecorOptionCategory.self, use: createHandler)
+		
+		tokenAuthGroup.delete(DecorOptionCategory.parameter, use: deleteHandler)
+		
+		tokenAuthGroup.put(DecorOptionCategory.parameter, use: updateHandler)
 
 	}
 	

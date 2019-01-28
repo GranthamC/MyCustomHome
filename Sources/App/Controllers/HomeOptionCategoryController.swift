@@ -1,5 +1,6 @@
 import Vapor
-
+import Fluent
+import Authentication
 
 
 struct HomeOptionCategoryController: RouteCollection
@@ -9,19 +10,35 @@ struct HomeOptionCategoryController: RouteCollection
 		
 		let homeOptionsCategoriesRoute = router.grouped("api", "home-option-category")
 		
-		homeOptionsCategoriesRoute.post(HomeOptionCategory.self, use: createHandler)
+//		homeOptionsCategoriesRoute.post(HomeOptionCategory.self, use: createHandler)
 		
 		homeOptionsCategoriesRoute.get(use: getAllHandler)
 		
 		homeOptionsCategoriesRoute.get(HomeOptionCategory.parameter, use: getHandler)
 		
-		homeOptionsCategoriesRoute.put(HomeOptionCategory.parameter, use: updateHandler)
+//		homeOptionsCategoriesRoute.put(HomeOptionCategory.parameter, use: updateHandler)
 
-		homeOptionsCategoriesRoute.delete(HomeOptionCategory.parameter, use: deleteHandler)
+//		homeOptionsCategoriesRoute.delete(HomeOptionCategory.parameter, use: deleteHandler)
 
 		homeOptionsCategoriesRoute.get(HomeOptionCategory.parameter, "builder", use: getBuilderHandler)
 		
 		homeOptionsCategoriesRoute.get(DecorOptionCategory.parameter, "home-option-items", use: getHomeOptionItemsHandler)
+		
+		
+		// Add-in authentication for creating and updating
+		//
+		let tokenAuthMiddleware = User.tokenAuthMiddleware()
+		let guardAuthMiddleware = User.guardAuthMiddleware()
+		
+		let tokenAuthGroup = homeOptionsCategoriesRoute.grouped(
+			tokenAuthMiddleware,
+			guardAuthMiddleware)
+		
+		tokenAuthGroup.post(HomeOptionCategory.self, use: createHandler)
+		
+		tokenAuthGroup.delete(HomeOptionCategory.parameter, use: deleteHandler)
+		
+		tokenAuthGroup.put(HomeOptionCategory.parameter, use: updateHandler)
 
 	}
 	

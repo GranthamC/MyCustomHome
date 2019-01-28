@@ -1,5 +1,11 @@
 import FluentPostgreSQL
 import Vapor
+import Leaf
+import Authentication
+
+var adminName: String?
+var adminPassword: String?
+
 
 public func configure(
     _ config: inout Config,
@@ -8,6 +14,10 @@ public func configure(
     ) throws {
 
     try services.register(FluentPostgreSQLProvider())
+
+	try services.register(LeafProvider())
+	
+	try services.register(AuthenticationProvider())
     
     let router = EngineRouter.default()
     try routes(router)
@@ -28,6 +38,11 @@ public func configure(
 	
     let password = Environment.get("DATABASE_PASSWORD") ?? "password"
 	
+	adminName = Environment.get("MCH_ADMIN_USER")
+	
+	adminPassword = Environment.get("MCH_ADMIN_PASSWORD")
+	
+
     let databaseConfig = PostgreSQLDatabaseConfig(
         hostname: hostname,
         username: username,
@@ -43,6 +58,8 @@ public func configure(
 	// Create and register our database models
 	//
     var migrations = MigrationConfig()
+	
+	migrations.add(model: User.self, database: .psql)
 	
 	migrations.add(model: HomeBuilder.self, database: .psql)
 	
@@ -73,6 +90,10 @@ public func configure(
 	migrations.add(model: ImageAssetHomeModelPivot.self, database: .psql)
 	
 	migrations.add(model: ImageAssetHomeOptionPivot.self, database: .psql)
+	
+	migrations.add(model: Token.self, database: .psql)
+	
+	migrations.add(migration: AdminUser.self, database: .psql)
 
     services.register(migrations)
 	

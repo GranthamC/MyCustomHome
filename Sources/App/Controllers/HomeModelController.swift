@@ -1,6 +1,7 @@
 
 import Vapor
 import Fluent
+import Authentication
 
 
 struct HomeModelController: RouteCollection
@@ -10,15 +11,15 @@ struct HomeModelController: RouteCollection
 		
 		let homeModelsRoute = router.grouped("api", "home-model")
 		
-		homeModelsRoute.post(HomeModel.self, use: createHandler)
+//		homeModelsRoute.post(HomeModel.self, use: createHandler)
 		
 		homeModelsRoute.get(use: getAllHandler)
 		
 		homeModelsRoute.get(HomeModel.parameter, use: getHandler)
 		
-		homeModelsRoute.put(HomeModel.parameter, use: updateHandler)
+//		homeModelsRoute.put(HomeModel.parameter, use: updateHandler)
 
-		homeModelsRoute.delete(HomeBuilder.parameter, use: deleteHandler)
+//		homeModelsRoute.delete(HomeBuilder.parameter, use: deleteHandler)
 		
 		homeModelsRoute.get("search", use: searchHandler)
 		
@@ -29,6 +30,22 @@ struct HomeModelController: RouteCollection
 		homeModelsRoute.get(HomeModel.parameter, "line", use: getProductLineHandler)
 		
 		homeModelsRoute.get(HomeModel.parameter, "home-option-items", use: getHomeOptionItemsHandler)
+		
+		
+		// Add-in authentication for creating and updating
+		//
+		let tokenAuthMiddleware = User.tokenAuthMiddleware()
+		let guardAuthMiddleware = User.guardAuthMiddleware()
+		
+		let tokenAuthGroup = homeModelsRoute.grouped(
+			tokenAuthMiddleware,
+			guardAuthMiddleware)
+		
+		tokenAuthGroup.post(HomeModel.self, use: createHandler)
+		
+		tokenAuthGroup.delete(HomeModel.parameter, use: deleteHandler)
+		
+		tokenAuthGroup.put(HomeModel.parameter, use: updateHandler)
 
 	}
 	

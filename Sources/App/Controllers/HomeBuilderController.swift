@@ -1,5 +1,13 @@
 import Vapor
 import Fluent
+import Authentication
+
+
+struct HomeBuilderCreateData: Content
+{
+	let name: String
+	let logoURL: String
+}
 
 
 struct HomeBuilderController: RouteCollection
@@ -8,16 +16,10 @@ struct HomeBuilderController: RouteCollection
 	func boot(router: Router) throws {
 
 		let buildersRoute = router.grouped("api", "builder")
- 
-		buildersRoute.post(HomeBuilder.self, use: createHandler)
 		
 		buildersRoute.get(use: getAllHandler)
 
 		buildersRoute.get(HomeBuilder.parameter, use: getHandler)
-
-		buildersRoute.put(HomeBuilder.parameter, use: updateHandler)
-
-		buildersRoute.delete(HomeBuilder.parameter, use: deleteHandler)
 		
 		buildersRoute.get("search", use: searchHandler)
 
@@ -36,13 +38,33 @@ struct HomeBuilderController: RouteCollection
 		buildersRoute.get(HomeBuilder.parameter, "home-option-items", use: getHomeOptionItemsHandler)
 		
 		buildersRoute.get(HomeBuilder.parameter, "image-assets", use: getImageAssetsHandler)
+		
+
+		// Add-in authentication for creating and updating
+		//
+		let tokenAuthMiddleware = User.tokenAuthMiddleware()
+		let guardAuthMiddleware = User.guardAuthMiddleware()
+
+		let tokenAuthGroup = buildersRoute.grouped(
+			tokenAuthMiddleware,
+			guardAuthMiddleware)
+
+		tokenAuthGroup.post(HomeBuilderCreateData.self, use: createHandler)
+		
+		tokenAuthGroup.delete(HomeBuilder.parameter, use: deleteHandler)
+		
+		tokenAuthGroup.put(HomeBuilder.parameter, use: updateHandler)
+
 	}
 
 	
-	func createHandler(
-		_ req: Request,
-		builder: HomeBuilder
-		) throws -> Future<HomeBuilder> {
+	func createHandler(_ req: Request, data: HomeBuilderCreateData) throws -> Future<HomeBuilder>
+	{
+		let user = try req.requireAuthenticated(User.self)
+		
+		let username = user.username
+
+		let builder = try HomeBuilder(name: data.name, username: username, userID: user.requireID())
 
 		return builder.save(on: req)
 	}
@@ -71,6 +93,13 @@ struct HomeBuilderController: RouteCollection
 			builder.logoURL = updatedBuilder.logoURL
 			builder.websiteURL = updatedBuilder.websiteURL
 			builder.username = updatedBuilder.username
+			
+			// Get the authenticated user who is making this change
+			//
+			let user = try req.requireAuthenticated(User.self)
+			
+			builder.userUpdateID = try user.requireID()
+
 			return builder.save(on: req)
 		}
 	}

@@ -5,14 +5,19 @@ import FluentPostgreSQL
 final class HomeBuilder: Codable
 {
 	var id: UUID?
+	
 	var name: String
 	var username: String
+	var userUpdateID: UUID
+	
 	var logoURL: String?
 	var websiteURL: String?
 
-	init(name: String, username: String) {
+	init(name: String, username: String, userID: UUID)
+	{
 		self.name = name
 		self.username = username
+		self.userUpdateID = userID
 	}
 }
 

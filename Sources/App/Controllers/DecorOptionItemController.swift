@@ -1,6 +1,7 @@
 
 import Vapor
 import Fluent
+import Authentication
 
 
 struct DecorOptionItemController: RouteCollection
@@ -10,15 +11,15 @@ struct DecorOptionItemController: RouteCollection
 		
 		let decorItemsRoute = router.grouped("api", "decor-item")
 		
-		decorItemsRoute.post(DecorOptionItem.self, use: createHandler)
+//		decorItemsRoute.post(DecorOptionItem.self, use: createHandler)
 		
 		decorItemsRoute.get(use: getAllHandler)
 		
 		decorItemsRoute.get(DecorOptionItem.parameter, use: getHandler)
 		
-		decorItemsRoute.put(DecorOptionItem.parameter, use: updateHandler)
+//		decorItemsRoute.put(DecorOptionItem.parameter, use: updateHandler)
 
-		decorItemsRoute.delete(HomeBuilder.parameter, use: deleteHandler)
+//		decorItemsRoute.delete(HomeBuilder.parameter, use: deleteHandler)
 		
 		decorItemsRoute.get("search", use: searchHandler)
 		
@@ -28,17 +29,41 @@ struct DecorOptionItemController: RouteCollection
 
 		decorItemsRoute.get(DecorOptionItem.parameter, "builder", use: getBuilderHandler)
 		
-		decorItemsRoute.post(DecorOptionItem.parameter, "lines", ProductLine.parameter, use: addLinesHandler)
+//		decorItemsRoute.post(DecorOptionItem.parameter, "lines", ProductLine.parameter, use: addLinesHandler)
 		
 		decorItemsRoute.get(DecorOptionItem.parameter, "lines", use: getLinesHandler)
 		
-		decorItemsRoute.delete(DecorOptionItem.parameter, "lines", ProductLine.parameter, 	use: removeLinesHandler)
+//		decorItemsRoute.delete(DecorOptionItem.parameter, "lines", ProductLine.parameter, 	use: removeLinesHandler)
 
-		decorItemsRoute.post(DecorOptionItem.parameter, "categories", DecorOptionCategory.parameter, use: addCategoriesHandler)
+//		decorItemsRoute.post(DecorOptionItem.parameter, "categories", DecorOptionCategory.parameter, use: addCategoriesHandler)
 		
 		decorItemsRoute.get(DecorOptionItem.parameter, "categories", use: getCategoriesHandler)
 		
-		decorItemsRoute.delete(DecorOptionItem.parameter, "categories", DecorOptionCategory.parameter, 	use: removeCategoriesHandler)
+//		decorItemsRoute.delete(DecorOptionItem.parameter, "categories", DecorOptionCategory.parameter, 	use: removeCategoriesHandler)
+		
+		
+		// Add-in authentication for creating and updating
+		//
+		let tokenAuthMiddleware = User.tokenAuthMiddleware()
+		let guardAuthMiddleware = User.guardAuthMiddleware()
+		
+		let tokenAuthGroup = decorItemsRoute.grouped(
+			tokenAuthMiddleware,
+			guardAuthMiddleware)
+		
+		tokenAuthGroup.post(DecorOptionItem.self, use: createHandler)
+		
+		tokenAuthGroup.delete(DecorOptionItem.parameter, use: deleteHandler)
+		
+		tokenAuthGroup.put(DecorOptionItem.parameter, use: updateHandler)
+		
+		tokenAuthGroup.post(DecorOptionItem.parameter, "lines", ProductLine.parameter, use: addLinesHandler)
+		
+		tokenAuthGroup.delete(DecorOptionItem.parameter, "lines", ProductLine.parameter, 	use: removeLinesHandler)
+		
+		tokenAuthGroup.post(DecorOptionItem.parameter, "categories", DecorOptionCategory.parameter, use: addCategoriesHandler)
+
+		tokenAuthGroup.delete(DecorOptionItem.parameter, "categories", DecorOptionCategory.parameter, 	use: removeCategoriesHandler)
 
 	}
 	

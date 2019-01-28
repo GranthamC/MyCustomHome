@@ -11,9 +11,13 @@ final class ProductLine: Codable
 	
 	var websiteURL: String?
 	
-	init(name: String, builderID: HomeBuilder.ID) {
+	var lastUpdateBy: UUID?
+	
+	init(name: String, builderID: HomeBuilder.ID, userID: UUID?) {
+		
 		self.name = name
 		self.builderID = builderID
+		self.lastUpdateBy = userID
 	}
 }
 

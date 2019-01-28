@@ -1,6 +1,14 @@
 
 import Vapor
+import Fluent
+import Authentication
 
+
+struct ProductLineCreateData: Content
+{
+	let name: String
+	let builderID: UUID
+}
 
 
 struct ProductLineController: RouteCollection
@@ -10,32 +18,42 @@ struct ProductLineController: RouteCollection
 		
 		let productLinesRoute = router.grouped("api", "line")
 		
-		productLinesRoute.post(ProductLine.self, use: createHandler)
-		
 		productLinesRoute.get(use: getAllHandler)
 		
 		productLinesRoute.get(ProductLine.parameter, use: getHandler)
-
-		productLinesRoute.put(ProductLine.parameter, use: updateHandler)
-
-		productLinesRoute.delete(ProductLine.parameter, use: deleteHandler)
 
 		productLinesRoute.get(ProductLine.parameter, "builder", use: getBuilderHandler)
 		
 		productLinesRoute.get(ProductLine.parameter, "homes", use: getHomeModelsHandler)
 		
 		productLinesRoute.get(ProductLine.parameter, "decor-items", use: getDecorItemsHandler)
+		
+		
+		// Add-in authentication for creating and updating
+		//
+		let tokenAuthMiddleware = User.tokenAuthMiddleware()
+		let guardAuthMiddleware = User.guardAuthMiddleware()
+		
+		let tokenAuthGroup = productLinesRoute.grouped(tokenAuthMiddleware, guardAuthMiddleware)
+		
+		tokenAuthGroup.post(ProductLineCreateData.self, use: createHandler)
+		
+		tokenAuthGroup.delete(ProductLine.parameter, use: deleteHandler)
+		
+		tokenAuthGroup.put(ProductLine.parameter, use: updateHandler)
 
 	}
 	
 	
-	func createHandler(
-		_ req: Request,
-		line: ProductLine
-		) throws -> Future<ProductLine> {
+	func createHandler(_ req: Request,  data: ProductLineCreateData ) throws -> Future<ProductLine> {
+		
+		let user = try req.requireAuthenticated(User.self)
+		
+		let line = try ProductLine(name: data.name, builderID: data.builderID, userID: user.requireID())
 		
 		return line.save(on: req)
 	}
+	
 	
 	func getAllHandler(_ req: Request) throws -> Future<[ProductLine]>
 	{
@@ -63,6 +81,12 @@ struct ProductLineController: RouteCollection
 			line.builderID = updatedLine.builderID
 			line.logoURL = updatedLine.logoURL
 			line.websiteURL = updatedLine.websiteURL
+
+			// Get the authenticated user who is making this change
+			//
+			let user = try req.requireAuthenticated(User.self)
+			
+			line.lastUpdateBy = try user.requireID()
 
 			return line.save(on: req)
 		}

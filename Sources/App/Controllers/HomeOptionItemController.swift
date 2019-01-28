@@ -1,5 +1,7 @@
 
 import Vapor
+import Fluent
+import Authentication
 
 
 
@@ -10,29 +12,45 @@ struct HomeOptionItemController: RouteCollection
 		
 		let homeOptionItemsRoute = router.grouped("api", "home-option-item")
 		
-		homeOptionItemsRoute.post(HomeOptionItem.self, use: createHandler)
+//		homeOptionItemsRoute.post(HomeOptionItem.self, use: createHandler)
 		
 		homeOptionItemsRoute.get(use: getAllHandler)
 		
 		homeOptionItemsRoute.get(HomeOptionItem.parameter, use: getHandler)
 		
-		homeOptionItemsRoute.put(HomeOptionItem.parameter, use: updateHandler)
+//		homeOptionItemsRoute.put(HomeOptionItem.parameter, use: updateHandler)
 
-		homeOptionItemsRoute.delete(HomeOptionItem.parameter, use: deleteHandler)
+//		homeOptionItemsRoute.delete(HomeOptionItem.parameter, use: deleteHandler)
 		
 		homeOptionItemsRoute.get(HomeOptionItem.parameter, "builder", use: getBuilderHandler)
 		
-		homeOptionItemsRoute.post(HomeOptionItem.parameter, "home-models", HomeModel.parameter, use: addHomesHandler)
-		
 		homeOptionItemsRoute.get(HomeOptionItem.parameter, "home-models", use: getHomesHandler)
-		
-		homeOptionItemsRoute.delete(HomeOptionItem.parameter, "home-models", HomeModel.parameter, 	use: removeHomesHandler)
-		
-		homeOptionItemsRoute.post(HomeOptionItem.parameter, "categories", HomeOptionCategory.parameter, use: addCategoriesHandler)
 		
 		homeOptionItemsRoute.get(HomeOptionItem.parameter, "categories", use: getCategoriesHandler)
 		
-		homeOptionItemsRoute.delete(HomeOptionItem.parameter, "categories", HomeOptionCategory.parameter, 	use: removeCategoriesHandler)
+		
+		// Add-in authentication for creating and updating
+		//
+		let tokenAuthMiddleware = User.tokenAuthMiddleware()
+		let guardAuthMiddleware = User.guardAuthMiddleware()
+		
+		let tokenAuthGroup = homeOptionItemsRoute.grouped(
+			tokenAuthMiddleware,
+			guardAuthMiddleware)
+		
+		tokenAuthGroup.post(HomeOptionItem.self, use: createHandler)
+		
+		tokenAuthGroup.delete(HomeOptionItem.parameter, use: deleteHandler)
+		
+		tokenAuthGroup.put(HomeOptionItem.parameter, use: updateHandler)
+		
+		tokenAuthGroup.post(HomeOptionItem.parameter, "home-models", HomeModel.parameter, use: addHomesHandler)
+		
+		tokenAuthGroup.delete(HomeOptionItem.parameter, "home-models", HomeModel.parameter, 	use: removeHomesHandler)
+		
+		tokenAuthGroup.post(HomeOptionItem.parameter, "categories", HomeOptionCategory.parameter, use: addCategoriesHandler)
+		
+		tokenAuthGroup.delete(HomeOptionItem.parameter, "categories", HomeOptionCategory.parameter, 	use: removeCategoriesHandler)
 
 	}
 	

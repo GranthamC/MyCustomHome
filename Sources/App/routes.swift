@@ -110,6 +110,11 @@ public func routes(_ router: Router) throws {
 	
 	// Register the model route controllers
 	//
+	let userController = UserController()
+	
+	try router.register(collection: userController)
+	
+	
 	let homebuilderController = HomeBuilderController()
 
 	try router.register(collection: homebuilderController)

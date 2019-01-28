@@ -1,6 +1,7 @@
 
 import Vapor
-
+import Fluent
+import Authentication
 
 
 struct ImageAssetController: RouteCollection
@@ -10,35 +11,51 @@ struct ImageAssetController: RouteCollection
 		
 		let imageAssetsRoute = router.grouped("api", "image-asset")
 		
-		imageAssetsRoute.post(ImageAsset.self, use: createHandler)
+//		imageAssetsRoute.post(ImageAsset.self, use: createHandler)
 		
 		imageAssetsRoute.get(use: getAllHandler)
 		
 		imageAssetsRoute.get(ImageAsset.parameter, use: getHandler)
 		
-		imageAssetsRoute.put(ImageAsset.parameter, use: updateHandler)
+//		imageAssetsRoute.put(ImageAsset.parameter, use: updateHandler)
 
-		imageAssetsRoute.delete(ImageAsset.parameter, use: deleteHandler)
+//		imageAssetsRoute.delete(ImageAsset.parameter, use: deleteHandler)
 
 		imageAssetsRoute.get(ImageAsset.parameter, "builder", use: getBuilderHandler)
 		
-		imageAssetsRoute.post(ImageAsset.parameter, "home-models", HomeModel.parameter, use: addHomesHandler)
-		
 		imageAssetsRoute.get(ImageAsset.parameter, "home-models", use: getHomesHandler)
-		
-		imageAssetsRoute.delete(ImageAsset.parameter, "home-models", HomeModel.parameter, 	use: removeHomesHandler)
-		
-		imageAssetsRoute.post(ImageAsset.parameter, "decor-items", DecorOptionItem.parameter, use: addDecorOptionsHandler)
 		
 		imageAssetsRoute.get(ImageAsset.parameter, "decor-items", use: getDecorOptonsHandler)
 		
-		imageAssetsRoute.delete(ImageAsset.parameter, "decor-items", DecorOptionItem.parameter, 	use: removeDecorOptionsHandler)
-		
-		imageAssetsRoute.post(ImageAsset.parameter, "home-option-items", HomeOptionItem.parameter, use: addHomeOptionsHandler)
-		
 		imageAssetsRoute.get(ImageAsset.parameter, "home-option-items", use: getHomeOptonsHandler)
 		
-		imageAssetsRoute.delete(ImageAsset.parameter, "home-option-items", HomeOptionItem.parameter, 	use: removeHomeOptionsHandler)
+		
+		// Add-in authentication for creating and updating
+		//
+		let tokenAuthMiddleware = User.tokenAuthMiddleware()
+		let guardAuthMiddleware = User.guardAuthMiddleware()
+		
+		let tokenAuthGroup = imageAssetsRoute.grouped(
+			tokenAuthMiddleware,
+			guardAuthMiddleware)
+		
+		tokenAuthGroup.post(ImageAsset.self, use: createHandler)
+		
+		tokenAuthGroup.delete(ImageAsset.parameter, use: deleteHandler)
+		
+		tokenAuthGroup.put(ImageAsset.parameter, use: updateHandler)
+
+		tokenAuthGroup.post(ImageAsset.parameter, "home-models", HomeModel.parameter, use: addHomesHandler)
+		
+		tokenAuthGroup.delete(ImageAsset.parameter, "home-models", HomeModel.parameter, 	use: removeHomesHandler)
+		
+		tokenAuthGroup.post(ImageAsset.parameter, "decor-items", DecorOptionItem.parameter, use: addDecorOptionsHandler)
+		
+		tokenAuthGroup.delete(ImageAsset.parameter, "decor-items", DecorOptionItem.parameter, 	use: removeDecorOptionsHandler)
+		
+		tokenAuthGroup.post(ImageAsset.parameter, "home-option-items", HomeOptionItem.parameter, use: addHomeOptionsHandler)
+		
+		tokenAuthGroup.delete(ImageAsset.parameter, "home-option-items", HomeOptionItem.parameter, 	use: removeHomeOptionsHandler)
 
 	}
 	
