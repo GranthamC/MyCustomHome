@@ -4,12 +4,6 @@ import Fluent
 import Authentication
 
 
-struct ProductLineCreateData: Content
-{
-	let name: String
-	let builderID: UUID
-}
-
 
 struct ProductLineController: RouteCollection
 {
@@ -34,7 +28,7 @@ struct ProductLineController: RouteCollection
 		
 		let tokenAuthGroup = productLinesRoute.grouped(tokenAuthMiddleware, guardAuthMiddleware)
 		
-		tokenAuthGroup.post(ProductLineCreateData.self, use: createHandler)
+		tokenAuthGroup.post(ProductLine.self, use: createHandler)
 		
 		tokenAuthGroup.delete(ProductLine.parameter, use: deleteHandler)
 		
@@ -42,10 +36,7 @@ struct ProductLineController: RouteCollection
 
 	}
 	
-	
-	func createHandler(_ req: Request,  data: ProductLineCreateData ) throws -> Future<ProductLine> {
-		
-		let line = ProductLine(name: data.name, builderID: data.builderID)
+	func createHandler(_ req: Request, line: ProductLine) throws -> Future<ProductLine> {
 		
 		return line.save(on: req)
 	}

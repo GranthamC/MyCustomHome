@@ -7,6 +7,7 @@ final class ProductLine: Codable
 	var id: UUID?
 	var name: String
 	var builderID: HomeBuilder.ID
+	
 	var logoURL: String?
 	
 	var websiteURL: String?
