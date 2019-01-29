@@ -45,9 +45,7 @@ struct ProductLineController: RouteCollection
 	
 	func createHandler(_ req: Request,  data: ProductLineCreateData ) throws -> Future<ProductLine> {
 		
-		let user = try req.requireAuthenticated(User.self)
-		
-		let line = try ProductLine(name: data.name, builderID: data.builderID, userID: user.requireID())
+		let line = ProductLine(name: data.name, builderID: data.builderID)
 		
 		return line.save(on: req)
 	}
@@ -79,12 +77,6 @@ struct ProductLineController: RouteCollection
 			line.builderID = updatedLine.builderID
 			line.logoURL = updatedLine.logoURL
 			line.websiteURL = updatedLine.websiteURL
-
-			// Get the authenticated user who is making this change
-			//
-			let user = try req.requireAuthenticated(User.self)
-			
-			line.lastUpdateBy = try user.requireID()
 
 			return line.save(on: req)
 		}
