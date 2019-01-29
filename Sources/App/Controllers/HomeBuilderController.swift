@@ -3,12 +3,6 @@ import Fluent
 import Authentication
 
 
-struct HomeBuilderCreateData: Content
-{
-	let name: String
-	let logoURL: String
-}
-
 
 struct HomeBuilderController: RouteCollection
 {
@@ -49,7 +43,7 @@ struct HomeBuilderController: RouteCollection
 			tokenAuthMiddleware,
 			guardAuthMiddleware)
 
-		tokenAuthGroup.post(HomeBuilderCreateData.self, use: createHandler)
+		tokenAuthGroup.post(HomeBuilder.self, use: createHandler)
 		
 		tokenAuthGroup.delete(HomeBuilder.parameter, use: deleteHandler)
 		
@@ -58,16 +52,11 @@ struct HomeBuilderController: RouteCollection
 	}
 
 	
-	func createHandler(_ req: Request, data: HomeBuilderCreateData) throws -> Future<HomeBuilder>
-	{
-//		let user = try req.requireAuthenticated(User.self)
-//
-//		let username = user.username
-
-		let builder = HomeBuilder(name: data.name, logoURL: data.logoURL)
-
+	func createHandler(_ req: Request, builder: HomeBuilder) throws -> Future<HomeBuilder> {
+		
 		return builder.save(on: req)
 	}
+
 	
 	func getAllHandler(_ req: Request) throws -> Future<[HomeBuilder]>
 	{
