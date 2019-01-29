@@ -7,17 +7,15 @@ final class HomeBuilder: Codable
 	var id: UUID?
 	
 	var name: String
-	var username: String
-	var userUpdateID: UUID
+	var username: String?
 	
-	var logoURL: String?
+	var logoURL: String
 	var websiteURL: String?
 
-	init(name: String, username: String, userID: UUID)
+	init(name: String, logoURL: String)
 	{
 		self.name = name
-		self.username = username
-		self.userUpdateID = userID
+		self.logoURL = logoURL
 	}
 }
 

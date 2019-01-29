@@ -28,8 +28,7 @@ struct HomeModelController: RouteCollection
 		homeModelsRoute.get("sorted", use: sortedHandler)
 
 		homeModelsRoute.get(HomeModel.parameter, "line", use: getProductLineHandler)
-		
-		homeModelsRoute.get(HomeModel.parameter, "home-option-items", use: getHomeOptionItemsHandler)
+
 		
 		
 		// Add-in authentication for creating and updating
@@ -165,14 +164,14 @@ struct HomeModelController: RouteCollection
 	}
 	
 	
-	func getHomeOptionItemsHandler(_ req: Request) throws -> Future<[HomeOptionItem]> {
-		
-		return try req.parameters.next(HomeModel.self)
-			.flatMap(to: [HomeOptionItem].self) { model in
-				
-				try model.homeOptions.query(on: req).all()
-		}
-	}
+//	func getHomeOptionItemsHandler(_ req: Request) throws -> Future<[HomeOptionItem]> {
+//		
+//		return try req.parameters.next(HomeModel.self)
+//			.flatMap(to: [HomeOptionItem].self) { model in
+//				
+//				try model.homeOptions.query(on: req).all()
+//		}
+//	}
 
 	
 }

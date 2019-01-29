@@ -27,21 +27,10 @@ struct DecorOptionItemController: RouteCollection
 		
 		decorItemsRoute.get("sorted", use: sortedHandler)
 
-		decorItemsRoute.get(DecorOptionItem.parameter, "builder", use: getBuilderHandler)
-		
-//		decorItemsRoute.post(DecorOptionItem.parameter, "lines", ProductLine.parameter, use: addLinesHandler)
-		
-		decorItemsRoute.get(DecorOptionItem.parameter, "lines", use: getLinesHandler)
-		
-//		decorItemsRoute.delete(DecorOptionItem.parameter, "lines", ProductLine.parameter, 	use: removeLinesHandler)
+		decorItemsRoute.get(DecorOptionItem.parameter, "builder", use: getBuilderHandler)		
 
-//		decorItemsRoute.post(DecorOptionItem.parameter, "categories", DecorOptionCategory.parameter, use: addCategoriesHandler)
-		
-		decorItemsRoute.get(DecorOptionItem.parameter, "categories", use: getCategoriesHandler)
-		
-//		decorItemsRoute.delete(DecorOptionItem.parameter, "categories", DecorOptionCategory.parameter, 	use: removeCategoriesHandler)
-		
-		
+		decorItemsRoute.get(DecorOptionItem.parameter, "decor-category", use: getCategoryHandler)
+
 		// Add-in authentication for creating and updating
 		//
 		let tokenAuthMiddleware = User.tokenAuthMiddleware()
@@ -56,15 +45,6 @@ struct DecorOptionItemController: RouteCollection
 		tokenAuthGroup.delete(DecorOptionItem.parameter, use: deleteHandler)
 		
 		tokenAuthGroup.put(DecorOptionItem.parameter, use: updateHandler)
-		
-		tokenAuthGroup.post(DecorOptionItem.parameter, "lines", ProductLine.parameter, use: addLinesHandler)
-		
-		tokenAuthGroup.delete(DecorOptionItem.parameter, "lines", ProductLine.parameter, 	use: removeLinesHandler)
-		
-		tokenAuthGroup.post(DecorOptionItem.parameter, "categories", DecorOptionCategory.parameter, use: addCategoriesHandler)
-
-		tokenAuthGroup.delete(DecorOptionItem.parameter, "categories", DecorOptionCategory.parameter, 	use: removeCategoriesHandler)
-
 	}
 	
 	
@@ -165,74 +145,14 @@ struct DecorOptionItemController: RouteCollection
 				decorItem.builder.get(on: req)
 		}
 	}
-	
-	
-	func addLinesHandler(_ req: Request) throws -> Future<HTTPStatus> {
+
+	// Get the category record for this decor Item
+	//
+	func getCategoryHandler(_ req: Request) throws -> Future<DecorOptionCategory> {
 		
-		return try flatMap(
-			to: HTTPStatus.self,
-			req.parameters.next(DecorOptionItem.self),
-			req.parameters.next(ProductLine.self)) { decorOption, line in
-				
-				return decorOption.lines .attach(line, on: req) .transform(to: .created)
-		}
-	}
-	
-	
-	func getLinesHandler(_ req: Request ) throws -> Future<[ProductLine]> {
-		
-		return try req.parameters.next(DecorOptionItem.self)
-			.flatMap(to: [ProductLine].self) { decorOption in
-				
-				try decorOption.lines.query(on: req).all()
-		}
-	}
-	
-	
-	func removeLinesHandler(_ req: Request) throws -> Future<HTTPStatus> {
-		
-		return try flatMap(
-			to: HTTPStatus.self,
-			req.parameters.next(DecorOptionItem.self),
-			req.parameters.next(ProductLine.self)
-		) { optionItem, line in
+		return try req.parameters.next(DecorOptionItem.self).flatMap(to: DecorOptionCategory.self) { decorItem in
 			
-			return optionItem.lines .detach(line, on: req) .transform(to: .noContent)
-		}
-	}
-
-	
-	func addCategoriesHandler(_ req: Request) throws -> Future<HTTPStatus> {
-		
-		return try flatMap(
-			to: HTTPStatus.self,
-			req.parameters.next(DecorOptionItem.self),
-			req.parameters.next(DecorOptionCategory.self)) { decorOption, category in
-				
-				return decorOption.categories .attach(category, on: req) .transform(to: .created)
-		}
-	}
-	
-	
-	func getCategoriesHandler(_ req: Request ) throws -> Future<[DecorOptionCategory]> {
-
-		return try req.parameters.next(DecorOptionItem.self)
-			.flatMap(to: [DecorOptionCategory].self) { decorOption in
-
-				try decorOption.categories.query(on: req).all()
-		}
-	}
-	
-	
-	func removeCategoriesHandler(_ req: Request) throws -> Future<HTTPStatus> {
-
-		return try flatMap(
-			to: HTTPStatus.self,
-			req.parameters.next(DecorOptionItem.self),
-			req.parameters.next(DecorOptionCategory.self)
-		) { optionItem, category in
-
-			return optionItem.categories .detach(category, on: req) .transform(to: .noContent)
+			decorItem.category.get(on: req)
 		}
 	}
 

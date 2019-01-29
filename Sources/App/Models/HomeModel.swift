@@ -68,10 +68,5 @@ extension HomeModel
 		return parent(\.productLineID)
 	}
 	
-	var homeOptions: Siblings<HomeModel, HomeOptionItem, HomeOptionHomeModelPivot> {
-		
-		return siblings()
-	}
-
 }
 

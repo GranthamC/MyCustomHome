@@ -26,8 +26,6 @@ struct ProductLineController: RouteCollection
 		
 		productLinesRoute.get(ProductLine.parameter, "homes", use: getHomeModelsHandler)
 		
-		productLinesRoute.get(ProductLine.parameter, "decor-items", use: getDecorItemsHandler)
-		
 		
 		// Add-in authentication for creating and updating
 		//
@@ -123,16 +121,6 @@ struct ProductLineController: RouteCollection
 			.flatMap(to: [HomeModel].self) { line in
 				
 				try line.homeModels.query(on: req).all()
-		}
-	}
-	
-	
-	func getDecorItemsHandler(_ req: Request) throws -> Future<[DecorOptionItem]> {
-		
-		return try req.parameters.next(ProductLine.self)
-			.flatMap(to: [DecorOptionItem].self) { line in
-				
-				try line.decorOptions.query(on: req).all()
 		}
 	}
 	

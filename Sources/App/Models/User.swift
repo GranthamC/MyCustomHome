@@ -12,7 +12,6 @@ final class User: Codable
 	var username: String
 	var password: String
 	
-	var userUpdateID: UUID?
 	var superUser: Bool?
 	var adminUser: Bool?
 

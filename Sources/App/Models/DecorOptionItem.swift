@@ -7,6 +7,7 @@ final class DecorOptionItem: Codable
 	var id: UUID?
 	var name: String
 	var builderID: HomeBuilder.ID
+	var categoryID: DecorOptionCategory.ID
 	
 	var optionImageURL: String?
 	
@@ -19,9 +20,10 @@ final class DecorOptionItem: Codable
 	var physicalHeight: Float?
 	var physicalWidth: Float?
 	
-	init(name: String, builderID: HomeBuilder.ID) {
+	init(name: String, builderID: HomeBuilder.ID, categoryID: DecorOptionCategory.ID) {
 		self.name = name
 		self.builderID = builderID
+		self.categoryID = categoryID
 	}
 }
 
@@ -33,11 +35,13 @@ extension DecorOptionItem: Migration
 		on connection: PostgreSQLConnection
 		) -> Future<Void> {
 		
-		return Database.create(self, on: connection) { builder in
+		return Database.create(self, on: connection) { optionItem in
 			
-			try addProperties(to: builder)
+			try addProperties(to: optionItem)
 			
-			builder.reference(from: \.builderID, to: \HomeBuilder.id)
+			optionItem.reference(from: \.builderID, to: \HomeBuilder.id)
+			
+			optionItem.reference(from: \.categoryID, to: \DecorOptionCategory.id)
 		}
 	}
 	
@@ -54,20 +58,11 @@ extension DecorOptionItem
 		return parent(\.builderID)
 	}
 	
-	var categories: Siblings<DecorOptionItem,
-		DecorOptionCategory,
-		DecorOptionCategoryPivot> {
-
-		return siblings()
+	var category: Parent<DecorOptionItem, DecorOptionCategory> {
+		
+		return parent(\.categoryID)
 	}
 	
-	var lines: Siblings<DecorOptionItem,
-		ProductLine,
-		DecorOptionProductLinePivot> {
-		
-		return siblings()
-	}
-
 }
 
 

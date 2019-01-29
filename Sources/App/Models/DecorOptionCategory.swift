@@ -43,10 +43,11 @@ extension DecorOptionCategory
 		
 		return parent(\.builderID)
 	}
-	
-	var decorOptions: Siblings<DecorOptionCategory, DecorOptionItem, DecorOptionCategoryPivot> {
 
-		return siblings()
+	
+	var decorOptions: Children<DecorOptionCategory, DecorOptionItem> {
+		
+		return children(\.categoryID)
 	}
 
 }

@@ -54,19 +54,6 @@ extension HomeOptionItem
 		return parent(\.builderID)
 	}
 	
-	var categories: Siblings<HomeOptionItem,
-		HomeOptionCategory,
-		HomeOptionCategoryPivot> {
-		
-		return siblings()
-	}
-	
-	var homeModels: Siblings<HomeOptionItem,
-		HomeModel,
-		HomeOptionHomeModelPivot> {
-		
-		return siblings()
-	}
 
 }
 

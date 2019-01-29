@@ -45,10 +45,6 @@ extension HomeOptionCategory
 		return parent(\.builderID)
 	}
 	
-	var homeOptions: Siblings<HomeOptionCategory, HomeOptionItem, HomeOptionCategoryPivot> {
-		
-		return siblings()
-	}
 	
 }
 

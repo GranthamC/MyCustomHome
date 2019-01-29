@@ -60,11 +60,11 @@ struct HomeBuilderController: RouteCollection
 	
 	func createHandler(_ req: Request, data: HomeBuilderCreateData) throws -> Future<HomeBuilder>
 	{
-		let user = try req.requireAuthenticated(User.self)
-		
-		let username = user.username
+//		let user = try req.requireAuthenticated(User.self)
+//
+//		let username = user.username
 
-		let builder = try HomeBuilder(name: data.name, username: username, userID: user.requireID())
+		let builder = HomeBuilder(name: data.name, logoURL: data.logoURL)
 
 		return builder.save(on: req)
 	}
@@ -96,9 +96,9 @@ struct HomeBuilderController: RouteCollection
 			
 			// Get the authenticated user who is making this change
 			//
-			let user = try req.requireAuthenticated(User.self)
+//			let user = try req.requireAuthenticated(User.self)
 			
-			builder.userUpdateID = try user.requireID()
+//			builder.userUpdateID = try user.requireID()
 
 			return builder.save(on: req)
 		}

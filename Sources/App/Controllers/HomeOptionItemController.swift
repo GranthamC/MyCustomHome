@@ -24,10 +24,6 @@ struct HomeOptionItemController: RouteCollection
 		
 		homeOptionItemsRoute.get(HomeOptionItem.parameter, "builder", use: getBuilderHandler)
 		
-		homeOptionItemsRoute.get(HomeOptionItem.parameter, "home-models", use: getHomesHandler)
-		
-		homeOptionItemsRoute.get(HomeOptionItem.parameter, "categories", use: getCategoriesHandler)
-		
 		
 		// Add-in authentication for creating and updating
 		//
@@ -43,14 +39,6 @@ struct HomeOptionItemController: RouteCollection
 		tokenAuthGroup.delete(HomeOptionItem.parameter, use: deleteHandler)
 		
 		tokenAuthGroup.put(HomeOptionItem.parameter, use: updateHandler)
-		
-		tokenAuthGroup.post(HomeOptionItem.parameter, "home-models", HomeModel.parameter, use: addHomesHandler)
-		
-		tokenAuthGroup.delete(HomeOptionItem.parameter, "home-models", HomeModel.parameter, 	use: removeHomesHandler)
-		
-		tokenAuthGroup.post(HomeOptionItem.parameter, "categories", HomeOptionCategory.parameter, use: addCategoriesHandler)
-		
-		tokenAuthGroup.delete(HomeOptionItem.parameter, "categories", HomeOptionCategory.parameter, 	use: removeCategoriesHandler)
 
 	}
 	
@@ -122,76 +110,6 @@ struct HomeOptionItemController: RouteCollection
 		}
 	}
 	
-	
-	func addHomesHandler(_ req: Request) throws -> Future<HTTPStatus> {
-		
-		return try flatMap(
-			to: HTTPStatus.self,
-			req.parameters.next(HomeOptionItem.self),
-			req.parameters.next(HomeModel.self)) { homeOption, model in
-				
-				return homeOption.homeModels .attach(model, on: req) .transform(to: .created)
-		}
-	}
-	
-	
-	func getHomesHandler(_ req: Request ) throws -> Future<[HomeModel]> {
-		
-		return try req.parameters.next(HomeOptionItem.self)
-			.flatMap(to: [HomeModel].self) { homeOption in
-				
-				try homeOption.homeModels.query(on: req).all()
-		}
-	}
-	
-	
-	func removeHomesHandler(_ req: Request) throws -> Future<HTTPStatus> {
-		
-		return try flatMap(
-			to: HTTPStatus.self,
-			req.parameters.next(HomeOptionItem.self),
-			req.parameters.next(HomeModel.self)
-		) { optionItem, model in
-			
-			return optionItem.homeModels .detach(model, on: req) .transform(to: .noContent)
-		}
-	}
-
-	
-	func addCategoriesHandler(_ req: Request) throws -> Future<HTTPStatus> {
-		
-		return try flatMap(
-			to: HTTPStatus.self,
-			req.parameters.next(HomeOptionItem.self),
-			req.parameters.next(HomeOptionCategory.self)) { homeOption, category in
-				
-				return homeOption.categories .attach(category, on: req) .transform(to: .created)
-		}
-	}
-	
-	
-	func getCategoriesHandler(_ req: Request ) throws -> Future<[HomeOptionCategory]> {
-		
-		return try req.parameters.next(HomeOptionItem.self)
-			.flatMap(to: [HomeOptionCategory].self) { homeOption in
-				
-				try homeOption.categories.query(on: req).all()
-		}
-	}
-	
-	
-	func removeCategoriesHandler(_ req: Request) throws -> Future<HTTPStatus> {
-		
-		return try flatMap(
-			to: HTTPStatus.self,
-			req.parameters.next(HomeOptionItem.self),
-			req.parameters.next(HomeOptionCategory.self)
-		) { optionItem, category in
-			
-			return optionItem.categories .detach(category, on: req) .transform(to: .noContent)
-		}
-	}
-
 	
 }
 

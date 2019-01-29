@@ -140,6 +140,16 @@ public func routes(_ router: Router) throws {
 	try router.register(collection: decorItemController)
 
 	
+	let lineDecorCategoryController = LineDecorCategoryController()
+	
+	try router.register(collection: lineDecorCategoryController)
+	
+	
+	let lineDecorItemController = LineDecorOptionController()
+	
+	try router.register(collection: lineDecorItemController)
+
+	
 	let homeOptionCategoryController = HomeOptionCategoryController()
 	
 	try router.register(collection: homeOptionCategoryController)

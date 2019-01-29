@@ -49,12 +49,12 @@ extension ProductLine
 		
 		return children(\.productLineID)
 	}
-	
-	var decorOptions: Siblings<ProductLine, DecorOptionItem, DecorOptionProductLinePivot> {
-		
-		return siblings()
-	}
 
+	var decorCategories: Children<ProductLine, LineDecorCategory> {
+		
+		return children(\.lineID)
+	}
+	
 	var builder: Parent<ProductLine, HomeBuilder> {
 
 		return parent(\.builderID)

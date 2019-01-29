@@ -22,7 +22,7 @@ struct HomeOptionCategoryController: RouteCollection
 
 		homeOptionsCategoriesRoute.get(HomeOptionCategory.parameter, "builder", use: getBuilderHandler)
 		
-		homeOptionsCategoriesRoute.get(DecorOptionCategory.parameter, "home-option-items", use: getHomeOptionItemsHandler)
+//		homeOptionsCategoriesRoute.get(DecorOptionCategory.parameter, "home-option-items", use: getHomeOptionItemsHandler)
 		
 		
 		// Add-in authentication for creating and updating
@@ -101,14 +101,14 @@ struct HomeOptionCategoryController: RouteCollection
 	}
 	
 	
-	func getHomeOptionItemsHandler(_ req: Request) throws -> Future<[HomeOptionItem]> {
-		
-		return try req.parameters.next(HomeOptionCategory.self)
-			.flatMap(to: [HomeOptionItem].self) { category in
-				
-				try category.homeOptions.query(on: req).all()
-		}
-	}
+//	func getHomeOptionItemsHandler(_ req: Request) throws -> Future<[HomeOptionItem]> {
+//
+//		return try req.parameters.next(HomeOptionCategory.self)
+//			.flatMap(to: [HomeOptionItem].self) { category in
+//
+//				try category.homeOptions.query(on: req).all()
+//		}
+//	}
 
 	
 }
