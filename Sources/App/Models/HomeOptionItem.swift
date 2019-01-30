@@ -7,7 +7,8 @@ final class HomeOptionItem: Codable
 	var id: UUID?
 	var name: String
 	var builderID: HomeBuilder.ID
-	
+	var categoryID: HomeOptionCategory.ID
+
 	var optionImageURL: String?
 	
 	var optionModelURL: String?
@@ -19,9 +20,10 @@ final class HomeOptionItem: Codable
 	var physicalHeight: Float?
 	var physicalWidth: Float?
 
-	init(name: String, builderID: HomeBuilder.ID) {
+	init(name: String, builderID: HomeBuilder.ID, categoryID: HomeOptionCategory.ID) {
 		self.name = name
 		self.builderID = builderID
+		self.categoryID = categoryID
 	}
 }
 
@@ -33,11 +35,13 @@ extension HomeOptionItem: Migration
 		on connection: PostgreSQLConnection
 		) -> Future<Void> {
 		
-		return Database.create(self, on: connection) { builder in
+		return Database.create(self, on: connection) { homeOption in
 			
-			try addProperties(to: builder)
+			try addProperties(to: homeOption)
 			
-			builder.reference(from: \.builderID, to: \HomeBuilder.id)
+			homeOption.reference(from: \.builderID, to: \HomeBuilder.id)
+			
+			homeOption.reference(from: \.categoryID, to: \HomeOptionCategory.id)
 		}
 	}
 	
@@ -52,6 +56,11 @@ extension HomeOptionItem
 	var builder: Parent<HomeOptionItem, HomeBuilder> {
 		
 		return parent(\.builderID)
+	}
+	
+	var optionCategory: Parent<HomeOptionItem, HomeOptionCategory> {
+		
+		return parent(\.categoryID)
 	}
 	
 

@@ -44,7 +44,12 @@ extension HomeOptionCategory
 		
 		return parent(\.builderID)
 	}
-	
+
+	var homeOptions: Children<HomeOptionCategory, HomeOptionItem> {
+		
+		return children(\.categoryID)
+	}
+
 	
 }
 

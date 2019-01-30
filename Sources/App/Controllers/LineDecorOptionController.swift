@@ -115,9 +115,9 @@ struct LineDecorOptionController: RouteCollection
 	}
 	
 	
-	func sortedHandler(_ req: Request) throws -> Future<[HomeBuilder]>
+	func sortedHandler(_ req: Request) throws -> Future<[LineDecorOptionItem]>
 	{
-		return HomeBuilder.query(on: req).sort(\.name, .ascending).all()
+		return LineDecorOptionItem.query(on: req).sort(\.name, .ascending).all()
 	}
 	
 	// Get the Category record for this decor Item

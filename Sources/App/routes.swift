@@ -161,6 +161,17 @@ public func routes(_ router: Router) throws {
 	
 	
 	let homeModelController = HomeModelController()
+
+	
+	let homeModelOptionCategoryController = HomeModelOptionCategoryController()
+	
+	try router.register(collection: homeModelOptionCategoryController)
+	
+	
+	let homeModelOptionItemController = HomeModelOptionItemController()
+	
+	try router.register(collection: homeModelOptionItemController)
+
 	
 	try router.register(collection: homeModelController)
 

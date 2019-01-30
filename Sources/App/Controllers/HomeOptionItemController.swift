@@ -23,7 +23,8 @@ struct HomeOptionItemController: RouteCollection
 //		homeOptionItemsRoute.delete(HomeOptionItem.parameter, use: deleteHandler)
 		
 		homeOptionItemsRoute.get(HomeOptionItem.parameter, "builder", use: getBuilderHandler)
-		
+
+		homeOptionItemsRoute.get(DecorOptionItem.parameter, "decor-category", use: getCategoryHandler)
 		
 		// Add-in authentication for creating and updating
 		//
@@ -43,13 +44,11 @@ struct HomeOptionItemController: RouteCollection
 	}
 	
 	
-	func createHandler(
-		_ req: Request,
-		homeOptionItem: HomeOptionItem
-		) throws -> Future<HomeOptionItem> {
+	func createHandler(_ req: Request, homeOptionItem: HomeOptionItem) throws -> Future<HomeOptionItem> {
 		
 		return homeOptionItem.save(on: req)
 	}
+	
 	
 	func getAllHandler(_ req: Request) throws -> Future<[HomeOptionItem]>
 	{
@@ -75,6 +74,7 @@ struct HomeOptionItemController: RouteCollection
 			
 			homeOptionItem.name = updatedItem.name
 			homeOptionItem.builderID = updatedItem.builderID
+			homeOptionItem.categoryID = updatedItem.categoryID
 			homeOptionItem.optionType = updatedItem.optionType
 
 			homeOptionItem.optionImageURL = updatedItem.name
@@ -92,9 +92,7 @@ struct HomeOptionItemController: RouteCollection
 	
 	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try req.parameters.next(HomeOptionItem.self)
-			.delete(on: req)
-			.transform(to: HTTPStatus.noContent)
+		return try req.parameters.next(HomeOptionItem.self).delete(on: req).transform(to: HTTPStatus.noContent)
 	}
 
 	
@@ -102,13 +100,23 @@ struct HomeOptionItemController: RouteCollection
 	//
 	func getBuilderHandler(_ req: Request) throws -> Future<HomeBuilder> {
 		
-		return try req
-			.parameters.next(HomeOptionItem.self)
-			.flatMap(to: HomeBuilder.self) { homeOptionItem in
-				
-				homeOptionItem.builder.get(on: req)
+		return try req.parameters.next(HomeOptionItem.self).flatMap(to: HomeBuilder.self) { homeOptionItem in
+			
+			homeOptionItem.builder.get(on: req)
 		}
 	}
+
+	
+	// Get the category record for this decor Item
+	//
+	func getCategoryHandler(_ req: Request) throws -> Future<HomeOptionCategory> {
+		
+		return try req.parameters.next(HomeOptionItem.self).flatMap(to: HomeOptionCategory.self) { optionItem in
+			
+			optionItem.optionCategory.get(on: req)
+		}
+	}
+
 	
 	
 }

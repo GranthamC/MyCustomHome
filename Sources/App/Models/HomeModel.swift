@@ -47,11 +47,11 @@ extension HomeModel: Migration
 		on connection: PostgreSQLConnection
 		) -> Future<Void> {
 		
-		return Database.create(self, on: connection) { builder in
+		return Database.create(self, on: connection) { homeModel in
 			
-			try addProperties(to: builder)
+			try addProperties(to: homeModel)
 			
-			builder.reference(from: \.productLineID, to: \HomeBuilder.id)
+			homeModel.reference(from: \.productLineID, to: \ProductLine.id)
 		}
 	}
 	
@@ -68,5 +68,10 @@ extension HomeModel
 		return parent(\.productLineID)
 	}
 	
+	var modelOptionCategories: Children<HomeModel, HomeModelOptionCategory> {
+		
+		return children(\.homeModelID)
+	}
+
 }
 

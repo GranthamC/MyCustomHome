@@ -11,15 +11,9 @@ struct HomeModelController: RouteCollection
 		
 		let homeModelsRoute = router.grouped("api", "home-model")
 		
-//		homeModelsRoute.post(HomeModel.self, use: createHandler)
-		
 		homeModelsRoute.get(use: getAllHandler)
 		
 		homeModelsRoute.get(HomeModel.parameter, use: getHandler)
-		
-//		homeModelsRoute.put(HomeModel.parameter, use: updateHandler)
-
-//		homeModelsRoute.delete(HomeBuilder.parameter, use: deleteHandler)
 		
 		homeModelsRoute.get("search", use: searchHandler)
 		
@@ -29,7 +23,8 @@ struct HomeModelController: RouteCollection
 
 		homeModelsRoute.get(HomeModel.parameter, "line", use: getProductLineHandler)
 
-		
+		homeModelsRoute.get(HomeModel.parameter, "model-option-categories", use: getModelOptionCategoriesHandler)
+
 		
 		// Add-in authentication for creating and updating
 		//
@@ -49,10 +44,7 @@ struct HomeModelController: RouteCollection
 	}
 	
 	
-	func createHandler(
-		_ req: Request,
-		model: HomeModel
-		) throws -> Future<HomeModel> {
+	func createHandler(_ req: Request, model: HomeModel) throws -> Future<HomeModel> {
 		
 		return model.save(on: req)
 	}
@@ -110,9 +102,7 @@ struct HomeModelController: RouteCollection
 	
 	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try req.parameters.next(HomeModel.self)
-			.delete(on: req)
-			.transform(to: HTTPStatus.noContent)
+		return try req.parameters.next(HomeModel.self).delete(on: req).transform(to: HTTPStatus.noContent)
 	}
 	
 	
@@ -144,9 +134,9 @@ struct HomeModelController: RouteCollection
 	}
 	
 	
-	func sortedHandler(_ req: Request) throws -> Future<[HomeBuilder]>
+	func sortedHandler(_ req: Request) throws -> Future<[HomeModel]>
 	{
-		return HomeBuilder.query(on: req).sort(\.name, .ascending).all()
+		return HomeModel.query(on: req).sort(\.name, .ascending).all()
 	}
 	
 	
@@ -164,14 +154,17 @@ struct HomeModelController: RouteCollection
 	}
 	
 	
-//	func getHomeOptionItemsHandler(_ req: Request) throws -> Future<[HomeOptionItem]> {
-//		
-//		return try req.parameters.next(HomeModel.self)
-//			.flatMap(to: [HomeOptionItem].self) { model in
-//				
-//				try model.homeOptions.query(on: req).all()
-//		}
-//	}
+	// Get the home option categories
+	//
+	func getModelOptionCategoriesHandler(_ req: Request) throws -> Future<[HomeModelOptionCategory]> {
+		
+		return try req
+			.parameters.next(HomeModel.self)
+			.flatMap(to: [HomeModelOptionCategory].self) { model in
+				
+				try model.modelOptionCategories.query(on: req).all()
+		}
+	}
 
 	
 }

@@ -27,11 +27,11 @@ extension ProductLine: Migration
 		on connection: PostgreSQLConnection
 		) -> Future<Void> {
 
-		return Database.create(self, on: connection) { builder in
+		return Database.create(self, on: connection) { line in
 
-			try addProperties(to: builder)
+			try addProperties(to: line)
 
-			builder.reference(from: \.builderID, to: \HomeBuilder.id)
+			line.reference(from: \.builderID, to: \HomeBuilder.id)
 		}
 	}
 	
