@@ -10,7 +10,7 @@ final class ImageAsset: Codable
 	
 	var caption: String?
 	var imageScale: Float?
-	var assetImageType: uint32?
+	var assetImageType: Int64?
 	
 	init(assetImageURL: String, builderID: HomeBuilder.ID) {
 		self.assetImageURL = assetImageURL

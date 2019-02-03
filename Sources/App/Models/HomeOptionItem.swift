@@ -12,10 +12,10 @@ final class HomeOptionItem: Codable
 	
 	var optionModelURL: String?
 	
-	var optionColor: UInt32?
+	var optionColor: Int64?
 	var imageScale: Float?
 	var isUpgrade: Bool?
-	var optionType: UInt32?
+	var optionType: Int64?
 	var physicalHeight: Float?
 	var physicalWidth: Float?
 

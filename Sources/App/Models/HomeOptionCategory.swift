@@ -8,7 +8,7 @@ final class HomeOptionCategory: Codable
 	var name: String
 	var builderID: HomeBuilder.ID
 
-	var optionType: uint32?
+	var optionType: Int64?
 
 	init(name: String, builderID: HomeBuilder.ID) {
 		self.name = name
