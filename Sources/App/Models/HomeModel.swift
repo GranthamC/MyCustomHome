@@ -7,8 +7,8 @@ final class HomeModel: Codable
 	var id: UUID?
 	var name: String
 	var modelNumber: String
-	var productLineID: ProductLine.ID
-	
+	var builderID: HomeBuilder.ID
+
 	var heroImageURL: String?
 	var matterportTourURL: String?
 	var panoModelTourURL: String?
@@ -29,10 +29,10 @@ final class HomeModel: Codable
 	var sqftUpper: Int16?
 	
 	
-	init(name: String, modelNumber: String, productLineID: ProductLine.ID) {
+	init(name: String, modelNumber: String, builderID: HomeBuilder.ID) {
 		self.name = name
 		self.modelNumber = modelNumber
-		self.productLineID = productLineID
+		self.builderID = builderID
 		
 		self.isEnabled = true
 		self.isSingleSection = false
@@ -50,8 +50,8 @@ extension HomeModel: Migration
 		return Database.create(self, on: connection) { homeModel in
 			
 			try addProperties(to: homeModel)
-			
-			homeModel.reference(from: \.productLineID, to: \ProductLine.id)
+
+			homeModel.reference(from: \.builderID, to: \HomeBuilder.id)
 		}
 	}
 	
@@ -63,14 +63,19 @@ extension HomeModel: Parameter {}
 
 extension HomeModel
 {
-	var productLine: Parent<HomeModel, ProductLine> {
+	var productLines: Siblings<HomeModel, ProductLine, ProductLineHomeModelPivot> {
 		
-		return parent(\.productLineID)
+		return siblings()
 	}
 	
 	var modelOptionCategories: Children<HomeModel, HomeModelOptionCategory> {
 		
 		return children(\.homeModelID)
+	}
+	
+	var builder: Parent<HomeModel, HomeBuilder> {
+		
+		return parent(\.builderID)
 	}
 
 }

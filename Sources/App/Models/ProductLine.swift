@@ -43,11 +43,11 @@ extension ProductLine: Parameter {}
 
 extension ProductLine
 {
-	var homeModels: Children<ProductLine, HomeModel> {
+	var homeModels: Siblings<ProductLine, HomeModel, ProductLineHomeModelPivot> {
 		
-		return children(\.productLineID)
+		return siblings()
 	}
-
+	
 	var decorCategories: Children<ProductLine, LineDecorCategory> {
 		
 		return children(\.lineID)

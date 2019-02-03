@@ -91,6 +91,8 @@ public func configure(
 	
 	migrations.add(model: ImageAssetHomeOptionPivot.self, database: .psql)
 	
+	migrations.add(model: ProductLineHomeModelPivot.self, database: .psql)
+	
 	migrations.add(model: Token.self, database: .psql)
 	
 	migrations.add(migration: AdminUser.self, database: .psql)

@@ -74,7 +74,7 @@ struct HomeModelController: RouteCollection
 			
 			model.name = updatedModel.name
 			model.modelNumber = updatedModel.modelNumber
-			model.productLineID = updatedModel.productLineID
+			model.builderID = updatedModel.builderID
 			
 			model.heroImageURL = updatedModel.heroImageURL
 			model.matterportTourURL = updatedModel.matterportTourURL
@@ -143,16 +143,16 @@ struct HomeModelController: RouteCollection
 
 	// Get the Product line record for this home model
 	//
-	func getProductLineHandler(_ req: Request) throws -> Future<ProductLine> {
+	func getProductLineHandler(_ req: Request) throws -> Future<[ProductLine]> {
 		
 		return try req
 			.parameters.next(HomeModel.self)
-			.flatMap(to: ProductLine.self) { home in
+			.flatMap(to: [ProductLine].self) { home in
 				
-				home.productLine.get(on: req)
+				try home.productLines.query(on: req).all()
 		}
 	}
-	
+
 	
 	// Get the home option categories
 	//

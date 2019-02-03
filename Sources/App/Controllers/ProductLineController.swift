@@ -33,7 +33,10 @@ struct ProductLineController: RouteCollection
 		tokenAuthGroup.delete(ProductLine.parameter, use: deleteHandler)
 		
 		tokenAuthGroup.put(ProductLine.parameter, use: updateHandler)
-
+		
+		tokenAuthGroup.post(ProductLine.parameter, "homes", HomeModel.parameter, use: addHomeModelHandler)
+		
+		tokenAuthGroup.delete(ProductLine.parameter, "homes", HomeModel.parameter, use: removeHomeModelHandler)
 	}
 	
 	func createHandler(_ req: Request, line: ProductLine) throws -> Future<ProductLine> {
@@ -95,15 +98,31 @@ struct ProductLineController: RouteCollection
 	}
 	
 	
+	func addHomeModelHandler(_ req: Request) throws -> Future<HTTPStatus>
+	{
+		
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(ProductLine.self), req.parameters.next(HomeModel.self))
+		{ line, model in
+			
+			return line.homeModels.attach(model, on: req).transform(to: .created)
+		}
+	}
+	
 	// Get the line's home models
 	//
 	func getHomeModelsHandler(_ req: Request) throws -> Future<[HomeModel]> {
 		
-		return try req
-			.parameters.next(ProductLine.self)
-			.flatMap(to: [HomeModel].self) { line in
-				
-				try line.homeModels.query(on: req).all()
+		return try req.parameters.next(ProductLine.self).flatMap(to: [HomeModel].self) { line in
+			
+			try line.homeModels.query(on: req).all()
+		}
+	}
+	
+	func removeHomeModelHandler(_ req: Request) throws -> Future<HTTPStatus> {
+
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(ProductLine.self), req.parameters.next(HomeModel.self)) { line, model in
+
+			return line.homeModels.detach(model, on: req).transform(to: .noContent)
 		}
 	}
 	
