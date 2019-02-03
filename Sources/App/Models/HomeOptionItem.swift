@@ -7,23 +7,22 @@ final class HomeOptionItem: Codable
 	var id: UUID?
 	var name: String
 	var builderID: HomeBuilder.ID
-	var categoryID: HomeOptionCategory.ID
 
-	var optionImageURL: String?
+	var optionImageURL: String
 	
 	var optionModelURL: String?
 	
-	var decorOptionColor: UInt32?
+	var optionColor: UInt32?
 	var imageScale: Float?
 	var isUpgrade: Bool?
-	var optionType: Int64?
+	var optionType: UInt32?
 	var physicalHeight: Float?
 	var physicalWidth: Float?
 
-	init(name: String, builderID: HomeBuilder.ID, categoryID: HomeOptionCategory.ID) {
+	init(name: String, builderID: HomeBuilder.ID, imagePath: String) {
 		self.name = name
 		self.builderID = builderID
-		self.categoryID = categoryID
+		self.optionImageURL = imagePath
 	}
 }
 
@@ -40,8 +39,6 @@ extension HomeOptionItem: Migration
 			try addProperties(to: homeOption)
 			
 			homeOption.reference(from: \.builderID, to: \HomeBuilder.id)
-			
-			homeOption.reference(from: \.categoryID, to: \HomeOptionCategory.id)
 		}
 	}
 	
@@ -56,11 +53,6 @@ extension HomeOptionItem
 	var builder: Parent<HomeOptionItem, HomeBuilder> {
 		
 		return parent(\.builderID)
-	}
-	
-	var optionCategory: Parent<HomeOptionItem, HomeOptionCategory> {
-		
-		return parent(\.categoryID)
 	}
 	
 

@@ -48,11 +48,6 @@ extension ProductLine
 		return siblings()
 	}
 	
-	var decorCategories: Children<ProductLine, LineDecorCategory> {
-		
-		return children(\.lineID)
-	}
-	
 	var builder: Parent<ProductLine, HomeBuilder> {
 
 		return parent(\.builderID)

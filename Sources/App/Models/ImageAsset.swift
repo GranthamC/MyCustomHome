@@ -10,7 +10,7 @@ final class ImageAsset: Codable
 	
 	var caption: String?
 	var imageScale: Float?
-	var assetImageType: Int64?
+	var assetImageType: uint32?
 	
 	init(assetImageURL: String, builderID: HomeBuilder.ID) {
 		self.assetImageURL = assetImageURL
@@ -45,13 +45,6 @@ extension ImageAsset
 	var builder: Parent<ImageAsset, HomeBuilder> {
 		
 		return parent(\.builderID)
-	}
-	
-	var decorExampleImages: Siblings<ImageAsset,
-		DecorOptionItem,
-		ImageAssetDecorOptionPivot> {
-		
-		return siblings()
 	}
 	
 	var homeOptionExampleImages: Siblings<ImageAsset,

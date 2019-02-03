@@ -8,7 +8,7 @@ final class HomeOptionCategory: Codable
 	var name: String
 	var builderID: HomeBuilder.ID
 
-	var optionType: Int64?
+	var optionType: uint32?
 
 	init(name: String, builderID: HomeBuilder.ID) {
 		self.name = name
@@ -43,11 +43,6 @@ extension HomeOptionCategory
 	var builder: Parent<HomeOptionCategory, HomeBuilder> {
 		
 		return parent(\.builderID)
-	}
-
-	var homeOptions: Children<HomeOptionCategory, HomeOptionItem> {
-		
-		return children(\.categoryID)
 	}
 
 	

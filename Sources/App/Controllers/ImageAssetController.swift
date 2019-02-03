@@ -25,8 +25,6 @@ struct ImageAssetController: RouteCollection
 		
 		imageAssetsRoute.get(ImageAsset.parameter, "home-models", use: getHomesHandler)
 		
-		imageAssetsRoute.get(ImageAsset.parameter, "decor-items", use: getDecorOptonsHandler)
-		
 		imageAssetsRoute.get(ImageAsset.parameter, "home-option-items", use: getHomeOptonsHandler)
 		
 		
@@ -48,12 +46,6 @@ struct ImageAssetController: RouteCollection
 		tokenAuthGroup.post(ImageAsset.parameter, "home-models", HomeModel.parameter, use: addHomesHandler)
 		
 		tokenAuthGroup.delete(ImageAsset.parameter, "home-models", HomeModel.parameter, 	use: removeHomesHandler)
-		
-		tokenAuthGroup.post(ImageAsset.parameter, "decor-items", DecorOptionItem.parameter, use: addDecorOptionsHandler)
-		
-		tokenAuthGroup.delete(ImageAsset.parameter, "decor-items", DecorOptionItem.parameter, 	use: removeDecorOptionsHandler)
-		
-		tokenAuthGroup.post(ImageAsset.parameter, "home-option-items", HomeOptionItem.parameter, use: addHomeOptionsHandler)
 		
 		tokenAuthGroup.delete(ImageAsset.parameter, "home-option-items", HomeOptionItem.parameter, 	use: removeHomeOptionsHandler)
 
@@ -155,53 +147,6 @@ struct ImageAssetController: RouteCollection
 		) { imageAsset, model in
 			
 			return imageAsset.homeModelImages .detach(model, on: req) .transform(to: .noContent)
-		}
-	}
-	
-	
-	func addDecorOptionsHandler(_ req: Request) throws -> Future<HTTPStatus> {
-		
-		return try flatMap(
-			to: HTTPStatus.self,
-			req.parameters.next(ImageAsset.self),
-			req.parameters.next(DecorOptionItem.self)) { imageAsset, decorOption in
-				
-				return imageAsset.decorExampleImages .attach(decorOption, on: req) .transform(to: .created)
-		}
-	}
-	
-	
-	func getDecorOptonsHandler(_ req: Request ) throws -> Future<[DecorOptionItem]> {
-		
-		return try req.parameters.next(ImageAsset.self)
-			.flatMap(to: [DecorOptionItem].self) { imageAsset in
-				
-				try imageAsset.decorExampleImages.query(on: req).all()
-		}
-	}
-	
-	
-	func removeDecorOptionsHandler(_ req: Request) throws -> Future<HTTPStatus> {
-		
-		return try flatMap(
-			to: HTTPStatus.self,
-			req.parameters.next(ImageAsset.self),
-			req.parameters.next(DecorOptionItem.self)
-		) { imageAsset, decorOption in
-			
-			return imageAsset.decorExampleImages .detach(decorOption, on: req) .transform(to: .noContent)
-		}
-	}
-	
-	
-	func addHomeOptionsHandler(_ req: Request) throws -> Future<HTTPStatus> {
-		
-		return try flatMap(
-			to: HTTPStatus.self,
-			req.parameters.next(ImageAsset.self),
-			req.parameters.next(DecorOptionItem.self)) { imageAsset, homeOption in
-				
-				return imageAsset.decorExampleImages .attach(homeOption, on: req) .transform(to: .created)
 		}
 	}
 	

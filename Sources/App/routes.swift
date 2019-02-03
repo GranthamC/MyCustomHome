@@ -130,25 +130,6 @@ public func routes(_ router: Router) throws {
 	try router.register(collection: imageAssetController)
 
 	
-	let decorCategoryController = DecorCategoryController()
-	
-	try router.register(collection: decorCategoryController)
-
-	
-	let decorItemController = DecorOptionItemController()
-	
-	try router.register(collection: decorItemController)
-
-	
-	let lineDecorCategoryController = LineDecorCategoryController()
-	
-	try router.register(collection: lineDecorCategoryController)
-	
-	
-	let lineDecorItemController = LineDecorOptionController()
-	
-	try router.register(collection: lineDecorItemController)
-
 	
 	let homeOptionCategoryController = HomeOptionCategoryController()
 	
@@ -165,14 +146,4 @@ public func routes(_ router: Router) throws {
 	try router.register(collection: homeModelController)
 
 	
-	let homeModelOptionCategoryController = HomeModelOptionCategoryController()
-	
-	try router.register(collection: homeModelOptionCategoryController)
-	
-	
-	let homeModelOptionItemController = HomeModelOptionItemController()
-	
-	try router.register(collection: homeModelOptionItemController)
-
-
 }

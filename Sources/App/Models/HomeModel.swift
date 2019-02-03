@@ -68,11 +68,6 @@ extension HomeModel
 		return siblings()
 	}
 	
-	var modelOptionCategories: Children<HomeModel, HomeModelOptionCategory> {
-		
-		return children(\.homeModelID)
-	}
-	
 	var builder: Parent<HomeModel, HomeBuilder> {
 		
 		return parent(\.builderID)

@@ -23,8 +23,6 @@ struct HomeModelController: RouteCollection
 
 		homeModelsRoute.get(HomeModel.parameter, "line", use: getProductLineHandler)
 
-		homeModelsRoute.get(HomeModel.parameter, "model-option-categories", use: getModelOptionCategoriesHandler)
-
 		
 		// Add-in authentication for creating and updating
 		//
@@ -150,19 +148,6 @@ struct HomeModelController: RouteCollection
 			.flatMap(to: [ProductLine].self) { home in
 				
 				try home.productLines.query(on: req).all()
-		}
-	}
-
-	
-	// Get the home option categories
-	//
-	func getModelOptionCategoriesHandler(_ req: Request) throws -> Future<[HomeModelOptionCategory]> {
-		
-		return try req
-			.parameters.next(HomeModel.self)
-			.flatMap(to: [HomeModelOptionCategory].self) { model in
-				
-				try model.modelOptionCategories.query(on: req).all()
 		}
 	}
 

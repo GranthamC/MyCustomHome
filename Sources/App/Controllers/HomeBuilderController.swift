@@ -23,10 +23,6 @@ struct HomeBuilderController: RouteCollection
 		
 		buildersRoute.get(HomeBuilder.parameter, "lines", use: getProductLinesHandler)
 		
-		buildersRoute.get(HomeBuilder.parameter, "decor-categories", use: getDecorCategoriesHandler)
-		
-		buildersRoute.get(HomeBuilder.parameter, "decor-items", use: getDecorOptionItemsHandler)
-		
 		buildersRoute.get(HomeBuilder.parameter, "home-option-categories", use: getHomeOptionCategoriesHandler)
 		
 		buildersRoute.get(HomeBuilder.parameter, "home-option-items", use: getHomeOptionItemsHandler)
@@ -143,32 +139,6 @@ struct HomeBuilderController: RouteCollection
 			.flatMap(to: [ProductLine].self) { builder in
 				
 				try builder.productLines.query(on: req).all()
-		}
-	}
-	
-	
-	// Get the builder's decor categories
-	//
-	func getDecorCategoriesHandler(_ req: Request) throws -> Future<[DecorOptionCategory]> {
-		
-		return try req
-			.parameters.next(HomeBuilder.self)
-			.flatMap(to: [DecorOptionCategory].self) { builder in
-				
-				try builder.decorCategories.query(on: req).all()
-		}
-	}
-	
-	
-	// Get the builder's decor options
-	//
-	func getDecorOptionItemsHandler(_ req: Request) throws -> Future<[DecorOptionItem]> {
-		
-		return try req
-			.parameters.next(HomeBuilder.self)
-			.flatMap(to: [DecorOptionItem].self) { builder in
-				
-				try builder.decorOptions.query(on: req).all()
 		}
 	}
 	

@@ -33,16 +33,6 @@ extension HomeBuilder
 		return children(\.builderID)
 	}
 	
-	var decorCategories: Children<HomeBuilder, DecorOptionCategory> {
-		
-		return children(\.builderID)
-	}
-	
-	var decorOptions: Children<HomeBuilder, DecorOptionItem> {
-		
-		return children(\.builderID)
-	}
-	
 	var homeOptionCategories: Children<HomeBuilder, HomeOptionCategory> {
 		
 		return children(\.builderID)

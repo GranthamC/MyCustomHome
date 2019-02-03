@@ -10,21 +10,13 @@ struct HomeOptionItemController: RouteCollection
 	
 	func boot(router: Router) throws {
 		
-		let homeOptionItemsRoute = router.grouped("api", "home-option-item")
-		
-//		homeOptionItemsRoute.post(HomeOptionItem.self, use: createHandler)
+		let homeOptionItemsRoute = router.grouped("api", "option-item")
 		
 		homeOptionItemsRoute.get(use: getAllHandler)
 		
 		homeOptionItemsRoute.get(HomeOptionItem.parameter, use: getHandler)
 		
-//		homeOptionItemsRoute.put(HomeOptionItem.parameter, use: updateHandler)
-
-//		homeOptionItemsRoute.delete(HomeOptionItem.parameter, use: deleteHandler)
-		
 		homeOptionItemsRoute.get(HomeOptionItem.parameter, "builder", use: getBuilderHandler)
-
-		homeOptionItemsRoute.get(DecorOptionItem.parameter, "decor-category", use: getCategoryHandler)
 		
 		// Add-in authentication for creating and updating
 		//
@@ -70,22 +62,20 @@ struct HomeOptionItemController: RouteCollection
 			to: HomeOptionItem.self,
 			req.parameters.next(HomeOptionItem.self),
 			req.content.decode(HomeOptionItem.self)
-		) { homeOptionItem, updatedItem in
+		) { optionItem, updatedItem in
 			
-			homeOptionItem.name = updatedItem.name
-			homeOptionItem.builderID = updatedItem.builderID
-			homeOptionItem.categoryID = updatedItem.categoryID
-			homeOptionItem.optionType = updatedItem.optionType
+			optionItem.name = updatedItem.name
+			optionItem.builderID = updatedItem.builderID
+			optionItem.optionType = updatedItem.optionType
 
-			homeOptionItem.optionImageURL = updatedItem.name
-			homeOptionItem.optionModelURL = updatedItem.optionModelURL
-			homeOptionItem.decorOptionColor = updatedItem.decorOptionColor
-			homeOptionItem.imageScale = updatedItem.imageScale
-			homeOptionItem.imageScale = updatedItem.imageScale
-			homeOptionItem.physicalWidth = updatedItem.physicalWidth
-			homeOptionItem.physicalHeight = updatedItem.physicalHeight
+			optionItem.optionImageURL = updatedItem.optionImageURL
+			optionItem.optionModelURL = updatedItem.optionModelURL
+			optionItem.optionColor = updatedItem.optionColor
+			optionItem.imageScale = updatedItem.imageScale
+			optionItem.physicalWidth = updatedItem.physicalWidth
+			optionItem.physicalHeight = updatedItem.physicalHeight
 			
-			return homeOptionItem.save(on: req)
+			return optionItem.save(on: req)
 		}
 	}
 	
@@ -105,18 +95,6 @@ struct HomeOptionItemController: RouteCollection
 			homeOptionItem.builder.get(on: req)
 		}
 	}
-
-	
-	// Get the category record for this decor Item
-	//
-	func getCategoryHandler(_ req: Request) throws -> Future<HomeOptionCategory> {
-		
-		return try req.parameters.next(HomeOptionItem.self).flatMap(to: HomeOptionCategory.self) { optionItem in
-			
-			optionItem.optionCategory.get(on: req)
-		}
-	}
-
 	
 	
 }

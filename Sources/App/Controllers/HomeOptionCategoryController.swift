@@ -8,21 +8,13 @@ struct HomeOptionCategoryController: RouteCollection
 	
 	func boot(router: Router) throws {
 		
-		let homeOptionsCategoriesRoute = router.grouped("api", "home-option-category")
-		
-//		homeOptionsCategoriesRoute.post(HomeOptionCategory.self, use: createHandler)
+		let homeOptionsCategoriesRoute = router.grouped("api", "option-category")
 		
 		homeOptionsCategoriesRoute.get(use: getAllHandler)
 		
 		homeOptionsCategoriesRoute.get(HomeOptionCategory.parameter, use: getHandler)
-		
-//		homeOptionsCategoriesRoute.put(HomeOptionCategory.parameter, use: updateHandler)
-
-//		homeOptionsCategoriesRoute.delete(HomeOptionCategory.parameter, use: deleteHandler)
 
 		homeOptionsCategoriesRoute.get(HomeOptionCategory.parameter, "builder", use: getBuilderHandler)
-		
-		homeOptionsCategoriesRoute.get(DecorOptionCategory.parameter, "home-option-items", use: getHomeOptionItemsHandler)
 		
 		
 		// Add-in authentication for creating and updating
@@ -95,15 +87,6 @@ struct HomeOptionCategoryController: RouteCollection
 		return try req.parameters.next(HomeOptionCategory.self).flatMap(to: HomeBuilder.self) { category in
 			
 			category.builder.get(on: req)
-		}
-	}
-	
-	
-	func getHomeOptionItemsHandler(_ req: Request) throws -> Future<[HomeOptionItem]> {
-
-		return try req.parameters.next(HomeOptionCategory.self).flatMap(to: [HomeOptionItem].self) { category in
-			
-			try category.homeOptions.query(on: req).all()
 		}
 	}
 

@@ -67,25 +67,11 @@ public func configure(
 	
 	migrations.add(model: ImageAsset.self, database: .psql)
 
-	migrations.add(model: DecorOptionCategory.self, database: .psql)
-	
-	migrations.add(model: DecorOptionItem.self, database: .psql)
-	
 	migrations.add(model: HomeOptionCategory.self, database: .psql)
 	
 	migrations.add(model: HomeOptionItem.self, database: .psql)
 	
 	migrations.add(model: HomeModel.self, database: .psql)
-	
-	migrations.add(model: LineDecorCategory.self, database: .psql)
-	
-	migrations.add(model: LineDecorOptionItem.self, database: .psql)
-	
-	migrations.add(model: HomeModelOptionCategory.self, database: .psql)
-	
-	migrations.add(model: HomeModelOptionItem.self, database: .psql)
-
-	migrations.add(model: ImageAssetDecorOptionPivot.self, database: .psql)
 	
 	migrations.add(model: ImageAssetHomeModelPivot.self, database: .psql)
 	
