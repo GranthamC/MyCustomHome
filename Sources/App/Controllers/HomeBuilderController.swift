@@ -81,7 +81,6 @@ struct HomeBuilderController: RouteCollection
 			builder.name = updatedBuilder.name
 			builder.logoURL = updatedBuilder.logoURL
 			builder.websiteURL = updatedBuilder.websiteURL
-			builder.username = updatedBuilder.username
 			
 			// Get the authenticated user who is making this change
 			//
@@ -110,7 +109,6 @@ struct HomeBuilderController: RouteCollection
 		
 		return HomeBuilder.query(on: req).group(.or) { or in
 			or.filter(\.name == searchTerm)
-			or.filter(\.username == searchTerm)
 			}.all()
 	}
 

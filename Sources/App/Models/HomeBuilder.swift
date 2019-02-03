@@ -7,9 +7,8 @@ final class HomeBuilder: Codable
 	var id: UUID?
 	
 	var name: String
-	var username: String?
-	
 	var logoURL: String
+	
 	var websiteURL: String?
 
 	init(name: String, logoURL: String)
