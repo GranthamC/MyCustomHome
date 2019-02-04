@@ -2,30 +2,30 @@ import FluentPostgreSQL
 import Foundation
 
 
-final class OptionCategoryItemPivot: PostgreSQLUUIDPivot, ModifiablePivot
+final class DecorPackageOptionPivot: PostgreSQLUUIDPivot, ModifiablePivot
 {
 	var id: UUID?
 	
-	var categoryID: HomeOptionCategory.ID
+	var decorPackageID: DecorPackage.ID
 	var optionItemID: HomeOptionItem.ID
-
 	
-	typealias Left = HomeOptionCategory
+	
+	typealias Left = DecorPackage
 	typealias Right = HomeOptionItem
 	
-	static let leftIDKey: LeftIDKey = \.categoryID
+	static let leftIDKey: LeftIDKey = \.decorPackageID
 	static let rightIDKey: RightIDKey = \.optionItemID
 	
 	
-	init(_ category: HomeOptionCategory, _ item: HomeOptionItem) throws {
+	init(_ category: DecorPackage, _ item: HomeOptionItem) throws {
 		
 		self.optionItemID = try item.requireID()
-		self.categoryID = try category.requireID()
+		self.decorPackageID = try category.requireID()
 	}
 }
 
 
-extension OptionCategoryItemPivot: Migration
+extension DecorPackageOptionPivot: Migration
 {
 	static func prepare(on connection: PostgreSQLConnection) -> Future<Void>
 	{
@@ -33,11 +33,12 @@ extension OptionCategoryItemPivot: Migration
 			
 			try addProperties(to: builder)
 			
-			builder.reference(from: \.categoryID, to: \HomeOptionCategory.id, onDelete: .cascade)
+			builder.reference(from: \.decorPackageID, to: \DecorPackage.id, onDelete: .cascade)
 			
 			builder.reference(from: \.optionItemID, to: \HomeOptionItem.id, onDelete: .cascade)
 		}
 	}
 }
+
 
 

@@ -16,6 +16,8 @@ struct HomeOptionCategoryController: RouteCollection
 
 		homeOptionsCategoriesRoute.get(HomeOptionCategory.parameter, "builder", use: getBuilderHandler)
 		
+		homeOptionsCategoriesRoute.get(HomeOptionCategory.parameter, "option-item", use: getOptionItemHandler)
+
 		
 		// Add-in authentication for creating and updating
 		//
@@ -31,6 +33,10 @@ struct HomeOptionCategoryController: RouteCollection
 		tokenAuthGroup.delete(HomeOptionCategory.parameter, use: deleteHandler)
 		
 		tokenAuthGroup.put(HomeOptionCategory.parameter, use: updateHandler)
+		
+		tokenAuthGroup.post(HomeOptionCategory.parameter, "option-item", HomeOptionItem.parameter, use: addOptionItemHandler)
+		
+		tokenAuthGroup.delete(HomeOptionCategory.parameter, "option-item", HomeOptionItem.parameter, use: removeOptionItemHandler)
 
 	}
 	
@@ -90,7 +96,36 @@ struct HomeOptionCategoryController: RouteCollection
 		}
 	}
 
+
 	
+	func addOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus>
+	{
+		
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(HomeOptionCategory.self), req.parameters.next(HomeOptionItem.self))
+		{ category, optionItem in
+			
+			return category.optionItems.attach(optionItem, on: req).transform(to: .created)
+		}
+	}
+	
+	// Get the line's home models
+	//
+	func getOptionItemHandler(_ req: Request) throws -> Future<[HomeOptionItem]> {
+		
+		return try req.parameters.next(HomeOptionCategory.self).flatMap(to: [HomeOptionItem].self) { category in
+			
+			try category.optionItems.query(on: req).all()
+		}
+	}
+	
+	func removeOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeOptionCategory.self), req.parameters.next(HomeOptionItem.self)) { category, optionItem in
+			
+			return category.optionItems.detach(optionItem, on: req).transform(to: .noContent)
+		}
+	}
+
 }
 
 

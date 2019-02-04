@@ -22,6 +22,12 @@ struct HomeModelController: RouteCollection
 		homeModelsRoute.get("sorted", use: sortedHandler)
 
 		homeModelsRoute.get(HomeModel.parameter, "line", use: getProductLineHandler)
+		
+		homeModelsRoute.get(HomeModel.parameter, "option-categories", use: getOptionCategoryHandler)
+		
+		homeModelsRoute.get(HomeModel.parameter, "option-items", use: getOptionItemHandler)
+		
+		homeModelsRoute.get(HomeModel.parameter, "images", use: getImagesHandler)
 
 		
 		// Add-in authentication for creating and updating
@@ -38,6 +44,18 @@ struct HomeModelController: RouteCollection
 		tokenAuthGroup.delete(HomeModel.parameter, use: deleteHandler)
 		
 		tokenAuthGroup.put(HomeModel.parameter, use: updateHandler)
+		
+		tokenAuthGroup.post(HomeModel.parameter, "option-category", HomeOptionCategory.parameter, use: addOptionCategoryHandler)
+		
+		tokenAuthGroup.delete(HomeModel.parameter, "option-category", HomeOptionCategory.parameter, use: removeOptionCategoryHandler)
+		
+		tokenAuthGroup.post(HomeModel.parameter, "option-item", HomeOptionItem.parameter, use: addOptionItemHandler)
+		
+		tokenAuthGroup.delete(HomeModel.parameter, "option-item", HomeOptionItem.parameter, use: removeOptionItemHandler)
+		
+		tokenAuthGroup.post(HomeModel.parameter, "image", ImageAsset.parameter, use: addImageHandler)
+		
+		tokenAuthGroup.delete(HomeModel.parameter, "image", ImageAsset.parameter, use: removeImageHandler)
 
 	}
 	
@@ -152,6 +170,92 @@ struct HomeModelController: RouteCollection
 	}
 
 	
+	
+	
+	func addOptionCategoryHandler(_ req: Request) throws -> Future<HTTPStatus>
+	{
+		
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(HomeModel.self), req.parameters.next(HomeOptionCategory.self))
+		{ model, category in
+			
+			return model.optionCategories.attach(category, on: req).transform(to: .created)
+		}
+	}
+	
+	// Get the line's home models
+	//
+	func getOptionCategoryHandler(_ req: Request) throws -> Future<[HomeOptionCategory]> {
+		
+		return try req.parameters.next(HomeModel.self).flatMap(to: [HomeOptionCategory].self) { model in
+			
+			try model.optionCategories.query(on: req).all()
+		}
+	}
+	
+	func removeOptionCategoryHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeModel.self), req.parameters.next(HomeOptionCategory.self)) { model, category in
+			
+			return model.optionCategories.detach(category, on: req).transform(to: .noContent)
+		}
+	}
+	
+	func addOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus>
+	{
+		
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(HomeModel.self), req.parameters.next(HomeOptionItem.self))
+		{ model, item in
+			
+			return model.optionItems.attach(item, on: req).transform(to: .created)
+		}
+	}
+	
+	// Get the line's home models
+	//
+	func getOptionItemHandler(_ req: Request) throws -> Future<[HomeOptionItem]> {
+		
+		return try req.parameters.next(HomeModel.self).flatMap(to: [HomeOptionItem].self) { model in
+			
+			try model.optionItems.query(on: req).all()
+		}
+	}
+	
+	func removeOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeModel.self), req.parameters.next(HomeOptionItem.self)) { model, item in
+			
+			return model.optionItems.detach(item, on: req).transform(to: .noContent)
+		}
+	}
+
+	
+	func addImageHandler(_ req: Request) throws -> Future<HTTPStatus>
+	{
+		
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(HomeModel.self), req.parameters.next(ImageAsset.self))
+		{ model, image in
+			
+			return model.images.attach(image, on: req).transform(to: .created)
+		}
+	}
+	
+	// Get the line's home models
+	//
+	func getImagesHandler(_ req: Request) throws -> Future<[ImageAsset]> {
+		
+		return try req.parameters.next(HomeModel.self).flatMap(to: [ImageAsset].self) { model in
+			
+			try model.images.query(on: req).all()
+		}
+	}
+	
+	func removeImageHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeModel.self), req.parameters.next(ImageAsset.self)) { model, image in
+			
+			return model.images.detach(image, on: req).transform(to: .noContent)
+		}
+	}
 }
 
 

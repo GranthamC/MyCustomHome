@@ -29,6 +29,8 @@ struct HomeBuilderController: RouteCollection
 		
 		buildersRoute.get(HomeBuilder.parameter, "image-assets", use: getImageAssetsHandler)
 		
+		buildersRoute.get(HomeBuilder.parameter, "decor-packages", use: getDecorPackagesHandler)
+
 
 		// Add-in authentication for creating and updating
 		//
@@ -178,6 +180,19 @@ struct HomeBuilderController: RouteCollection
 			.flatMap(to: [ImageAsset].self) { builder in
 				
 				try builder.imageAssets.query(on: req).all()
+		}
+	}
+
+	
+	// Get the builder's image assets
+	//
+	func getDecorPackagesHandler(_ req: Request) throws -> Future<[DecorPackage]> {
+		
+		return try req
+			.parameters.next(HomeBuilder.self)
+			.flatMap(to: [DecorPackage].self) { builder in
+				
+				try builder.decorPackages.query(on: req).all()
 		}
 	}
 

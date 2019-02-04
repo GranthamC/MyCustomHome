@@ -144,6 +144,11 @@ public func routes(_ router: Router) throws {
 	let homeModelController = HomeModelController()
 	
 	try router.register(collection: homeModelController)
+	
+	
+	let decorPackageController = DecorPackageController()
+	
+	try router.register(collection: decorPackageController)
 
 	
 }

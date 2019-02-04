@@ -12,6 +12,8 @@ final class HomeOptionItem: Codable
 	
 	var optionModelURL: String?
 	
+	var description: String?
+	
 	var optionColor: Int64?
 	var imageScale: Float?
 	var isUpgrade: Bool?
@@ -55,6 +57,11 @@ extension HomeOptionItem
 		return parent(\.builderID)
 	}
 	
+	var images: Siblings<HomeOptionItem, ImageAsset, ImageAssetHomeOptionPivot> {
+		
+		return siblings()
+	}
+
 
 }
 

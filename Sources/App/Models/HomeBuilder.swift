@@ -47,5 +47,10 @@ extension HomeBuilder
 		
 		return children(\.builderID)
 	}
+	
+	var decorPackages: Children<HomeBuilder, DecorPackage> {
+		
+		return children(\.builderID)
+	}
 
 }

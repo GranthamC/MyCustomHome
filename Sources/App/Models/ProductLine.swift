@@ -48,6 +48,21 @@ extension ProductLine
 		return siblings()
 	}
 	
+	var optionCategories: Siblings<ProductLine, HomeOptionCategory, ProductLineCategoryPivot> {
+		
+		return siblings()
+	}
+	
+	var optionItems: Siblings<ProductLine, HomeOptionItem, ProductLineOptionPivot> {
+		
+		return siblings()
+	}
+	
+	var decorPackages: Siblings<ProductLine, DecorPackage, ProductLineDecorPackagePivot> {
+		
+		return siblings()
+	}
+
 	var builder: Parent<ProductLine, HomeBuilder> {
 
 		return parent(\.builderID)

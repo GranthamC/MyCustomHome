@@ -18,8 +18,12 @@ struct ProductLineController: RouteCollection
 
 		productLinesRoute.get(ProductLine.parameter, "builder", use: getBuilderHandler)
 		
-		productLinesRoute.get(ProductLine.parameter, "homes", use: getHomeModelsHandler)
+		productLinesRoute.get(ProductLine.parameter, "home-models", use: getHomeModelsHandler)
 		
+		productLinesRoute.get(ProductLine.parameter, "option-categories", use: getCategoriesHandler)
+		
+		productLinesRoute.get(ProductLine.parameter, "decor-packages", use: getDecorPackagesHandler)
+
 		
 		// Add-in authentication for creating and updating
 		//
@@ -34,9 +38,17 @@ struct ProductLineController: RouteCollection
 		
 		tokenAuthGroup.put(ProductLine.parameter, use: updateHandler)
 		
-		tokenAuthGroup.post(ProductLine.parameter, "homes", HomeModel.parameter, use: addHomeModelHandler)
+		tokenAuthGroup.post(ProductLine.parameter, "home-model", HomeModel.parameter, use: addHomeModelHandler)
 		
-		tokenAuthGroup.delete(ProductLine.parameter, "homes", HomeModel.parameter, use: removeHomeModelHandler)
+		tokenAuthGroup.delete(ProductLine.parameter, "home-model", HomeModel.parameter, use: removeHomeModelHandler)
+		
+		tokenAuthGroup.post(ProductLine.parameter, "option-category", HomeOptionCategory.parameter, use: addCategoryHandler)
+		
+		tokenAuthGroup.delete(ProductLine.parameter, "option-category", HomeOptionCategory.parameter, use: removeCategoryHandler)
+		
+		tokenAuthGroup.post(ProductLine.parameter, "decor-package", DecorPackage.parameter, use: addDecorPackageHandler)
+		
+		tokenAuthGroup.delete(ProductLine.parameter, "decor-package", DecorPackage.parameter, use: removeDecorPackageHandler)
 	}
 	
 	func createHandler(_ req: Request, line: ProductLine) throws -> Future<ProductLine> {
@@ -126,5 +138,92 @@ struct ProductLineController: RouteCollection
 		}
 	}
 	
+	
+	func addCategoryHandler(_ req: Request) throws -> Future<HTTPStatus>
+	{
+		
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(ProductLine.self), req.parameters.next(HomeOptionCategory.self))
+		{ line, category in
+			
+			return line.optionCategories.attach(category, on: req).transform(to: .created)
+		}
+	}
+	
+	// Get the line's home models
+	//
+	func getCategoriesHandler(_ req: Request) throws -> Future<[HomeOptionCategory]> {
+		
+		return try req.parameters.next(ProductLine.self).flatMap(to: [HomeOptionCategory].self) { line in
+			
+			try line.optionCategories.query(on: req).all()
+		}
+	}
+	
+	func removeCategoryHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(ProductLine.self), req.parameters.next(HomeOptionCategory.self)) { line, category in
+			
+			return line.optionCategories.detach(category, on: req).transform(to: .noContent)
+		}
+	}
+	
+	
+	func addOptionHandler(_ req: Request) throws -> Future<HTTPStatus>
+	{
+		
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(ProductLine.self), req.parameters.next(HomeOptionItem.self))
+		{ line, item in
+			
+			return line.optionItems.attach(item, on: req).transform(to: .created)
+		}
+	}
+	
+	// Get the line's home models
+	//
+	func getOptionsHandler(_ req: Request) throws -> Future<[HomeOptionItem]> {
+		
+		return try req.parameters.next(ProductLine.self).flatMap(to: [HomeOptionItem].self) { line in
+			
+			try line.optionItems.query(on: req).all()
+		}
+	}
+	
+	func removeOptionHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(ProductLine.self), req.parameters.next(HomeOptionItem.self)) { line, item in
+			
+			return line.optionItems.detach(item, on: req).transform(to: .noContent)
+		}
+	}
+	
+	
+	func addDecorPackageHandler(_ req: Request) throws -> Future<HTTPStatus>
+	{
+		
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(ProductLine.self), req.parameters.next(DecorPackage.self))
+		{ line, item in
+			
+			return line.decorPackages.attach(item, on: req).transform(to: .created)
+		}
+	}
+	
+	// Get the line's home models
+	//
+	func getDecorPackagesHandler(_ req: Request) throws -> Future<[DecorPackage]> {
+		
+		return try req.parameters.next(ProductLine.self).flatMap(to: [DecorPackage].self) { line in
+			
+			try line.decorPackages.query(on: req).all()
+		}
+	}
+	
+	func removeDecorPackageHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(ProductLine.self), req.parameters.next(DecorPackage.self)) { line, item in
+			
+			return line.decorPackages.detach(item, on: req).transform(to: .noContent)
+		}
+	}
+
 }
 

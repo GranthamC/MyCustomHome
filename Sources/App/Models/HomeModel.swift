@@ -63,11 +63,26 @@ extension HomeModel: Parameter {}
 
 extension HomeModel
 {
+	var optionCategories: Siblings<HomeModel, HomeOptionCategory, HomeModelCategoryPivot> {
+		
+		return siblings()
+	}
+	
+	var optionItems: Siblings<HomeModel, HomeOptionItem, HomeModelOptionPivot> {
+		
+		return siblings()
+	}
+	
 	var productLines: Siblings<HomeModel, ProductLine, ProductLineHomeModelPivot> {
 		
 		return siblings()
 	}
 	
+	var images: Siblings<HomeModel, ImageAsset, ImageAssetHomeModelPivot> {
+		
+		return siblings()
+	}
+
 	var builder: Parent<HomeModel, HomeBuilder> {
 		
 		return parent(\.builderID)
