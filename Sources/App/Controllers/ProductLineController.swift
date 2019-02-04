@@ -22,6 +22,8 @@ struct ProductLineController: RouteCollection
 		
 		productLinesRoute.get(ProductLine.parameter, "option-categories", use: getCategoriesHandler)
 		
+		productLinesRoute.get(ProductLine.parameter, "option-items", use: getOptionsHandler)
+
 		productLinesRoute.get(ProductLine.parameter, "decor-packages", use: getDecorPackagesHandler)
 
 		
@@ -46,6 +48,10 @@ struct ProductLineController: RouteCollection
 		
 		tokenAuthGroup.delete(ProductLine.parameter, "option-category", HomeOptionCategory.parameter, use: removeCategoryHandler)
 		
+		tokenAuthGroup.post(ProductLine.parameter, "option-item", HomeOptionCategory.parameter, use: addOptionHandler)
+		
+		tokenAuthGroup.delete(ProductLine.parameter, "option-item", HomeOptionCategory.parameter, use: removeOptionHandler)
+
 		tokenAuthGroup.post(ProductLine.parameter, "decor-package", DecorPackage.parameter, use: addDecorPackageHandler)
 		
 		tokenAuthGroup.delete(ProductLine.parameter, "decor-package", DecorPackage.parameter, use: removeDecorPackageHandler)
