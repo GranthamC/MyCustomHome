@@ -3,6 +3,24 @@ import Vapor
 import Fluent
 import Authentication
 
+struct ProductLineResponse: Content
+{
+	var name: String
+	var logoURL: String?
+	var websiteURL: String?
+	
+	var homeModels: [HomeModel]
+	
+	init(line: ProductLine, models: [HomeModel])
+	{
+		
+		self.name = line.name
+		self.logoURL = line.logoURL
+		self.websiteURL = line.websiteURL
+		
+		self.homeModels = models
+	}
+}
 
 
 struct ProductLineController: RouteCollection
@@ -25,6 +43,8 @@ struct ProductLineController: RouteCollection
 		productLinesRoute.get(ProductLine.parameter, "option-items", use: getOptionsHandler)
 
 		productLinesRoute.get(ProductLine.parameter, "decor-packages", use: getDecorPackagesHandler)
+
+		productLinesRoute.get("lines-info", use: all)
 
 		
 		// Add-in authentication for creating and updating
@@ -55,6 +75,20 @@ struct ProductLineController: RouteCollection
 		tokenAuthGroup.post(ProductLine.parameter, "decor-package", DecorPackage.parameter, use: addDecorPackageHandler)
 		
 		tokenAuthGroup.delete(ProductLine.parameter, "decor-package", DecorPackage.parameter, use: removeDecorPackageHandler)
+	}
+	
+	func all(_ request: Request) throws -> Future<[ProductLineResponse]> {
+		
+		return ProductLine.query(on: request).all().flatMap { line in
+			
+			let lineResponseFutures = try line.map { line in
+				try line.homeModels.query(on: request).all().map { models in
+					return ProductLineResponse(line: line, models: models)
+				}
+			}
+			
+			return lineResponseFutures.flatten(on: request)
+		}
 	}
 	
 	func createHandler(_ req: Request, line: ProductLine) throws -> Future<ProductLine> {
