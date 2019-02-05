@@ -31,9 +31,9 @@ struct HomeModelResponse: Content
 	var sqftMain: Int16?
 	var sqftUpper: Int16?
 
-	var homeOptions: [HomeOptionCategory]
+	var homeOptions: [OptionCategoryResponse]
 	
-	init(model: HomeModel, homeOptions: [HomeOptionCategory])
+	init(model: HomeModel, homeOptions: [OptionCategoryResponse])
 	{
 		self.id = model.id?.uuidString
 		self.name = model.name
@@ -215,15 +215,35 @@ struct HomeModelController: RouteCollection
 			or.filter(\.modelNumber == searchTerm)
 			}.first().flatMap(to: HomeModelResponse.self) { homemodel in
 				
-				let homeResponse = try homemodel?.optionCategories.query(on: req).all().map { homeCats in
+				let optionCats = try homemodel?.optionCategories.query(on: req).all()
+				
+				let optionResponses = try self.allCatResponses(req, optionCats: optionCats!)
+				
+				let homeResponse = optionResponses.map { responses in
 					
-					return HomeModelResponse(model: homemodel!, homeOptions: homeCats)
+					return HomeModelResponse(model: homemodel!, homeOptions: responses)
 				}
 				
-				return homeResponse!
+				return homeResponse
 		}
 	}
 	
+	
+	func allCatResponses(_ request: Request, optionCats: Future<[HomeOptionCategory]>) throws -> Future<[OptionCategoryResponse]> {
+		
+		return optionCats.flatMap { cats in
+			
+			let catResponseFutures = try cats.map { cat in
+				
+				try cat.optionItems.query(on: request).all().map { items in
+					return OptionCategoryResponse(category: cat, homeOptions: items)
+				}
+			}
+			
+			return catResponseFutures.flatten(on: request)
+		}
+	}
+
 	
 /*
 	func searchHandler2(_ req: Request) throws -> Future<HomeModelResponse>
