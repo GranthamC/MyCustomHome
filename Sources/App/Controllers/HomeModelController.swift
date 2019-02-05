@@ -4,6 +4,87 @@ import Fluent
 import Authentication
 
 
+
+struct HomeModelResponse: Content
+{
+	var id: String?
+	var name: String
+	var modelNumber: String
+	var builderID: String
+	
+	var floorPlanImage: String?
+	var matterportTourURL: String?
+	var panoModelTourURL: String?
+	
+	var sqft: Int16?
+	var baths: Float?
+	var beds: Int16?
+	var features: String?
+	var priceBase: Double?
+	var priceUpper: Double?
+	
+	var isEnabled: Bool
+	var isSingleSection: Bool
+	
+	var hasBasement: Bool?
+	var sqftBasement: Int16?
+	var sqftMain: Int16?
+	var sqftUpper: Int16?
+
+	var homeOptions: [HomeOptionCategory]
+	
+	init(model: HomeModel, homeOptions: [HomeOptionCategory])
+	{
+		self.id = model.id?.uuidString
+		self.name = model.name
+		self.modelNumber = model.modelNumber
+		self.builderID = model.builderID.uuidString
+
+		self.floorPlanImage = model.heroImageURL
+		self.matterportTourURL = model.matterportTourURL
+		self.panoModelTourURL = model.panoModelTourURL
+		
+		self.sqft = model.sqft
+		self.baths = model.baths
+		self.beds = model.beds
+		self.features = model.features
+		self.priceBase = model.priceBase
+		self.priceUpper = model.priceUpper
+		
+		self.isEnabled = model.isEnabled
+		self.isSingleSection = model.isSingleSection
+		
+		self.hasBasement = model.hasBasement
+		self.sqftBasement = model.sqftBasement
+		self.sqftMain = model.sqftMain
+		self.sqftUpper = model.sqftUpper
+		
+		self.homeOptions = homeOptions
+	}
+}
+
+
+struct OptionCategoryResponse: Content
+{
+	var id: String
+	var name: String
+	var builderID: String
+	var optionType: Int64?
+	
+	var optionItems: [HomeOptionItem]
+	
+	init(category: HomeOptionCategory, homeOptions: [HomeOptionItem])
+	{
+		self.name = category.name
+		self.id = category.id?.uuidString ?? ""
+		self.builderID = category.builderID.uuidString
+		self.optionType = category.optionType
+		
+		self.optionItems = homeOptions
+	}
+}
+
+
 struct HomeModelController: RouteCollection
 {
 	
@@ -45,7 +126,7 @@ struct HomeModelController: RouteCollection
 		
 		tokenAuthGroup.put(HomeModel.parameter, use: updateHandler)
 		
-		tokenAuthGroup.post(HomeModel.parameter, "option-category", HomeOptionCategory.parameter, use: addOptionCategoryHandler)
+		tokenAuthGroup.post(HomeModel.parameter, "", HomeOptionCategory.parameter, use: addOptionCategoryHandler)
 		
 		tokenAuthGroup.delete(HomeModel.parameter, "option-category", HomeOptionCategory.parameter, use: removeOptionCategoryHandler)
 		
@@ -122,17 +203,68 @@ struct HomeModelController: RouteCollection
 	}
 	
 	
-	func searchHandler(_ req: Request) throws -> Future<[HomeModel]>
+	
+	func searchHandler(_ req: Request) throws -> Future<HomeModelResponse>
 	{
-		guard let searchTerm = req.query[String.self, at: "param"] else {
+		guard let searchTerm = req.query[String.self, at: "model"] else {
 			throw Abort(.badRequest)
 		}
 		
 		return HomeModel.query(on: req).group(.or) { or in
 			or.filter(\.name == searchTerm)
 			or.filter(\.modelNumber == searchTerm)
-			}.all()
+			}.first().flatMap(to: HomeModelResponse.self) { homemodel in
+				
+				try (homemodel?.optionCategories.query(on: req).all().map { categories in
+					
+					return HomeModelResponse(model: homemodel!, homeOptions: categories)
+					})!
+		}
 	}
+	
+
+/*
+	func searchHandler(_ req: Request) throws -> Future<[HomeModelResponse]>
+	{
+		guard let searchTerm = req.query[String.self, at: "model"] else {
+			throw Abort(.badRequest)
+		}
+		
+		return HomeModel.query(on: req).group(.or) { or in
+			or.filter(\.name == searchTerm)
+			or.filter(\.modelNumber == searchTerm)
+			}.all().flatMap { models in
+				
+				let modelResponseFutures = try models.map { model in
+					
+					try model.optionCategories.query(on: req).all().map { category in
+						
+						return HomeModelResponse(model: model, homeOptions: [])
+					}
+				}
+				
+				return modelResponseFutures.flatten(on: req)
+		}
+	}
+*/
+/*
+	// get the options for the categories
+	//
+	func allOptions(_ request: Request) throws -> [OptionCategoryResponse] {
+		
+		return HomeOptionCategory.query(on: request).all().flatMap { categories in
+			
+			let categoryResponseFutures = try categories.map { category in
+				
+				try category.optionItems.query(on: request).all().map { options in
+					return OptionCategoryResponse(category: category, homeOptions: options)
+				}
+			}
+			
+			return categoryResponseFutures
+		}
+	}
+*/
 	
 	
 	func getFirstHandler(_ req: Request) throws -> Future<HomeModel>
@@ -144,6 +276,8 @@ struct HomeModelController: RouteCollection
 				guard let model = homemodel else {
 					throw Abort(.notFound)
 				}
+				
+				
 				
 				return model
 		}

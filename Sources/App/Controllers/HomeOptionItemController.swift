@@ -72,6 +72,7 @@ struct HomeOptionItemController: RouteCollection
 			optionItem.optionModelURL = updatedItem.optionModelURL
 			optionItem.description = updatedItem.description
 			optionItem.optionColor = updatedItem.optionColor
+			optionItem.isUpgrade = updatedItem.isUpgrade
 			optionItem.imageScale = updatedItem.imageScale
 			optionItem.physicalWidth = updatedItem.physicalWidth
 			optionItem.physicalHeight = updatedItem.physicalHeight

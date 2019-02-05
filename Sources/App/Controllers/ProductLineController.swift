@@ -79,9 +79,10 @@ struct ProductLineController: RouteCollection
 	
 	func all(_ request: Request) throws -> Future<[ProductLineResponse]> {
 		
-		return ProductLine.query(on: request).all().flatMap { line in
+		return ProductLine.query(on: request).all().flatMap { lines in
 			
-			let lineResponseFutures = try line.map { line in
+			let lineResponseFutures = try lines.map { line in
+				
 				try line.homeModels.query(on: request).all().map { models in
 					return ProductLineResponse(line: line, models: models)
 				}
