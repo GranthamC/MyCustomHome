@@ -228,13 +228,13 @@ struct HomeModelController: RouteCollection
 							optionItems.append(categoryResponse)
 							
 							return categoryResponse
-						}
+						}.wait()
 					}
 					
 					return HomeModelResponse(model: homemodel!, homeOptions: optionItems)
 					
 					})!
-				
+			
 				return homeModelResponse
 		}
 	}
