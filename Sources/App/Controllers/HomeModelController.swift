@@ -31,9 +31,9 @@ struct HomeModelResponse: Content
 	var sqftMain: Int16?
 	var sqftUpper: Int16?
 
-	var homeOptions: [OptionCategoryResponse]
+	var homeOptions: [HomeOptionCategory]
 	
-	init(model: HomeModel, homeOptions: [OptionCategoryResponse])
+	init(model: HomeModel, homeOptions: [HomeOptionCategory])
 	{
 		self.id = model.id?.uuidString
 		self.name = model.name
@@ -215,32 +215,35 @@ struct HomeModelController: RouteCollection
 			or.filter(\.modelNumber == searchTerm)
 			}.first().flatMap(to: HomeModelResponse.self) { homemodel in
 				
-				var optionItems: [OptionCategoryResponse] = []
+				let homeResponse = try homemodel?.optionCategories.query(on: req).all().map { homeCats in
+					
+					return HomeModelResponse(model: homemodel!, homeOptions: homeCats)
+				}
 				
-				let homeModelResponse = try (homemodel?.optionCategories.query(on: req).all().map { categories -> HomeModelResponse in
-					
-					_ = try categories.map { category in
-						
-						try category.optionItems.query(on: req).all().map { items -> OptionCategoryResponse in
-							
-							let categoryResponse = OptionCategoryResponse(category: category, homeOptions: items)
-							
-							optionItems.append(categoryResponse)
-							
-							return categoryResponse
-						}.wait()
-					}
-					
-					return HomeModelResponse(model: homemodel!, homeOptions: optionItems)
-					
-					})!
-			
-				return homeModelResponse
+				return homeResponse!
 		}
 	}
 	
-
+	
 /*
+	func searchHandler2(_ req: Request) throws -> Future<HomeModelResponse>
+	{
+		guard let searchTerm = req.query[String.self, at: "model"] else {
+			throw Abort(.badRequest)
+		}
+		
+		return HomeModel.query(on: req).group(.or) { or in
+			or.filter(\.name == searchTerm)
+			or.filter(\.modelNumber == searchTerm)
+			}.first().flatMap(to: HomeModelResponse.self) { homemodel in
+				
+				try (homemodel?.optionCategories.query(on: req).all().map { categories in
+					
+					return HomeModelResponse(model: homemodel!, homeOptions: categories)
+					})!
+		}
+	}
+
 	
 	func searchHandler(_ req: Request) throws -> Future<HomeModelResponse>
 	{
