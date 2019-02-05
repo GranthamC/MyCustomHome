@@ -31,9 +31,9 @@ struct HomeModelResponse: Content
 	var sqftMain: Int16?
 	var sqftUpper: Int16?
 
-	var homeOptions: [HomeOptionCategory]
+	var homeOptions: [OptionCategoryResponse]
 	
-	init(model: HomeModel, homeOptions: [HomeOptionCategory])
+	init(model: HomeModel, homeOptions: [OptionCategoryResponse])
 	{
 		self.id = model.id?.uuidString
 		self.name = model.name
@@ -215,37 +215,52 @@ struct HomeModelController: RouteCollection
 			or.filter(\.modelNumber == searchTerm)
 			}.first().flatMap(to: HomeModelResponse.self) { homemodel in
 				
-				try (homemodel?.optionCategories.query(on: req).all().map { categories in
+				var optionItems: [OptionCategoryResponse] = []
+				
+				let homeModelResponse = try (homemodel?.optionCategories.query(on: req).all().map { categories -> HomeModelResponse in
 					
-					return HomeModelResponse(model: homemodel!, homeOptions: categories)
+					_ = try categories.map { category in
+						
+						try category.optionItems.query(on: req).all().map { items -> OptionCategoryResponse in
+							
+							let categoryResponse = OptionCategoryResponse(category: category, homeOptions: items)
+							
+							optionItems.append(categoryResponse)
+							
+							return categoryResponse
+						}
+					}
+					
+					return HomeModelResponse(model: homemodel!, homeOptions: optionItems)
+					
 					})!
+				
+				return homeModelResponse
 		}
 	}
 	
 
 /*
-	func searchHandler(_ req: Request) throws -> Future<[HomeModelResponse]>
+	
+	func searchHandler(_ req: Request) throws -> Future<HomeModelResponse>
 	{
-		guard let searchTerm = req.query[String.self, at: "model"] else {
-			throw Abort(.badRequest)
-		}
-		
-		return HomeModel.query(on: req).group(.or) { or in
-			or.filter(\.name == searchTerm)
-			or.filter(\.modelNumber == searchTerm)
-			}.all().flatMap { models in
-				
-				let modelResponseFutures = try models.map { model in
-					
-					try model.optionCategories.query(on: req).all().map { category in
-						
-						return HomeModelResponse(model: model, homeOptions: [])
-					}
-				}
-				
-				return modelResponseFutures.flatten(on: req)
-		}
+	guard let searchTerm = req.query[String.self, at: "model"] else {
+	throw Abort(.badRequest)
 	}
+	
+	return HomeModel.query(on: req).group(.or) { or in
+	or.filter(\.name == searchTerm)
+	or.filter(\.modelNumber == searchTerm)
+	}.first().flatMap(to: HomeModelResponse.self) { homemodel in
+	
+	try (homemodel?.optionCategories.query(on: req).all().map { categories in
+	
+	return HomeModelResponse(model: homemodel!, homeOptions: categories)
+	})!
+	}
+	}
+	
+	
 */
 /*
 	// get the options for the categories
