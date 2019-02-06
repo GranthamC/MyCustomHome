@@ -33,7 +33,9 @@ struct HomeModelResponse: Content
 
 	var availableOptions: [OptionCategoryResponse]
 	
-	init(model: HomeModel, homeOptions: [OptionCategoryResponse])
+	var homeImages: [ImageAsset]
+	
+	init(model: HomeModel, homeOptions: [OptionCategoryResponse], images: [ImageAsset])
 	{
 		self.id = model.id?.uuidString
 		self.name = model.name
@@ -60,6 +62,8 @@ struct HomeModelResponse: Content
 		self.sqftUpper = model.sqftUpper
 		
 		self.availableOptions = homeOptions
+		
+		self.homeImages = images
 	}
 }
 
@@ -219,14 +223,33 @@ struct HomeModelController: RouteCollection
 				
 				let optionResponses = try self.allCatResponses(req, optionCats: optionCats!)
 				
-				let homeResponse = optionResponses.map { responses in
+				let homeResponse = optionResponses.map { responses -> Future<HomeModelResponse> in
 					
-					return HomeModelResponse(model: homemodel!, homeOptions: responses)
+					let homeImages = try self.getHomeImages(req, home: homemodel!)
+					
+					let imageResponse = homeImages.map { ssImages in
+						
+						return HomeModelResponse(model: homemodel!, homeOptions: responses, images: ssImages)
+					}
+					
+					return imageResponse
 				}
 				
-				return homeResponse
+				return homeResponse.flatMap(to: HomeModelResponse.self) { allResponses in
+					
+					return allResponses
+				}
 		}
 	}
+	
+	
+	// Get the line's home models
+	//
+	func getHomeImages(_ req: Request, home: HomeModel) throws -> Future<[ImageAsset]> {
+		
+		return try home.images.query(on: req).all()
+	}
+
 	
 	
 	func allCatResponses(_ request: Request, optionCats: Future<[HomeOptionCategory]>) throws -> Future<[OptionCategoryResponse]> {
