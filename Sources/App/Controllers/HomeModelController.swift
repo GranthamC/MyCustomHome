@@ -31,7 +31,7 @@ struct HomeModelResponse: Content
 	var sqftMain: Int16?
 	var sqftUpper: Int16?
 
-	var homeOptions: [OptionCategoryResponse]
+	var availableOptions: [OptionCategoryResponse]
 	
 	init(model: HomeModel, homeOptions: [OptionCategoryResponse])
 	{
@@ -59,7 +59,7 @@ struct HomeModelResponse: Content
 		self.sqftMain = model.sqftMain
 		self.sqftUpper = model.sqftUpper
 		
-		self.homeOptions = homeOptions
+		self.availableOptions = homeOptions
 	}
 }
 
@@ -67,20 +67,20 @@ struct HomeModelResponse: Content
 struct OptionCategoryResponse: Content
 {
 	var id: String
-	var name: String
+	var category: String
 	var builderID: String
 	var optionType: Int64?
 	
-	var optionItems: [HomeOptionItem]
+	var categoryOptions: [HomeOptionItem]
 	
 	init(category: HomeOptionCategory, homeOptions: [HomeOptionItem])
 	{
-		self.name = category.name
+		self.category = category.name
 		self.id = category.id?.uuidString ?? ""
 		self.builderID = category.builderID.uuidString
 		self.optionType = category.optionType
 		
-		self.optionItems = homeOptions
+		self.categoryOptions = homeOptions
 	}
 }
 
