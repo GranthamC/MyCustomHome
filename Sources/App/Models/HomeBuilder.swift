@@ -33,6 +33,11 @@ extension HomeBuilder
 		return children(\.builderID)
 	}
 	
+	var homeModels: Children<HomeBuilder, HomeModel> {
+		
+		return children(\.builderID)
+	}
+	
 	var homeOptionCategories: Children<HomeBuilder, HomeOptionCategory> {
 		
 		return children(\.builderID)
