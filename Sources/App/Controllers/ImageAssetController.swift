@@ -27,6 +27,8 @@ struct ImageAssetController: RouteCollection
 		
 		imageAssetsRoute.get(ImageAsset.parameter, "home-option-items", use: getHomeOptonsHandler)
 		
+		imageAssetsRoute.get(ImageAsset.parameter, "decor-items", use: getDecorOptonsHandler)
+
 		
 		// Add-in authentication for creating and updating
 		//
@@ -43,11 +45,13 @@ struct ImageAssetController: RouteCollection
 		
 		tokenAuthGroup.put(ImageAsset.parameter, use: updateHandler)
 
-		tokenAuthGroup.post(ImageAsset.parameter, "home-models", HomeModel.parameter, use: addHomesHandler)
+		tokenAuthGroup.post(ImageAsset.parameter, "home-model", HomeModel.parameter, use: addHomeHandler)
 		
-		tokenAuthGroup.delete(ImageAsset.parameter, "home-models", HomeModel.parameter, 	use: removeHomesHandler)
-		
-		tokenAuthGroup.delete(ImageAsset.parameter, "home-option-items", HomeOptionItem.parameter, 	use: removeHomeOptionsHandler)
+		tokenAuthGroup.delete(ImageAsset.parameter, "home-model", HomeModel.parameter, 	use: removeHomeHandler)
+
+		tokenAuthGroup.delete(ImageAsset.parameter, "home-option-item", HomeOptionItem.parameter, 	use: removeHomeOptionHandler)
+
+		tokenAuthGroup.delete(ImageAsset.parameter, "decor-item", DecorOptionItem.parameter, 	use: removeDecorOptionHandler)
 
 	}
 	
@@ -85,7 +89,8 @@ struct ImageAssetController: RouteCollection
 			
 			imageAsset.assetImageURL = updatedImage.assetImageURL
 			imageAsset.builderID = updatedImage.builderID
-			
+			imageAsset.changeToken = updatedImage.changeToken
+
 			imageAsset.caption = updatedImage.caption
 			imageAsset.imageScale = updatedImage.imageScale
 			imageAsset.assetImageType = updatedImage.assetImageType
@@ -116,7 +121,7 @@ struct ImageAssetController: RouteCollection
 	}
 	
 	
-	func addHomesHandler(_ req: Request) throws -> Future<HTTPStatus> {
+	func addHomeHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
 		return try flatMap(
 			to: HTTPStatus.self,
@@ -138,7 +143,7 @@ struct ImageAssetController: RouteCollection
 	}
 	
 	
-	func removeHomesHandler(_ req: Request) throws -> Future<HTTPStatus> {
+	func removeHomeHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
 		return try flatMap(
 			to: HTTPStatus.self,
@@ -161,7 +166,7 @@ struct ImageAssetController: RouteCollection
 	}
 	
 	
-	func removeHomeOptionsHandler(_ req: Request) throws -> Future<HTTPStatus> {
+	func removeHomeOptionHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
 		return try flatMap(
 			to: HTTPStatus.self,
@@ -170,6 +175,29 @@ struct ImageAssetController: RouteCollection
 		) { imageAsset, homeOption in
 			
 			return imageAsset.homeOptionExampleImages .detach(homeOption, on: req) .transform(to: .noContent)
+		}
+	}
+	
+	
+	func getDecorOptonsHandler(_ req: Request ) throws -> Future<[DecorOptionItem]> {
+		
+		return try req.parameters.next(ImageAsset.self)
+			.flatMap(to: [DecorOptionItem].self) { imageAsset in
+				
+				try imageAsset.decorOptionImages.query(on: req).all()
+		}
+	}
+	
+	
+	func removeDecorOptionHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try flatMap(
+			to: HTTPStatus.self,
+			req.parameters.next(ImageAsset.self),
+			req.parameters.next(DecorOptionItem.self)
+		) { imageAsset, homeOption in
+			
+			return imageAsset.decorOptionImages .detach(homeOption, on: req) .transform(to: .noContent)
 		}
 	}
 

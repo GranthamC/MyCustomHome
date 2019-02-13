@@ -10,6 +10,8 @@ final class HomeBuilder: Codable
 	var logoURL: String
 	
 	var websiteURL: String?
+	
+	var changeToken: Int32?
 
 	init(name: String, logoURL: String)
 	{
@@ -48,6 +50,16 @@ extension HomeBuilder
 		return children(\.builderID)
 	}
 	
+	var decorOptionCategories: Children<HomeBuilder, DecorOptionCategory> {
+		
+		return children(\.builderID)
+	}
+	
+	var decorOptions: Children<HomeBuilder, DecorOptionItem> {
+		
+		return children(\.builderID)
+	}
+
 	var imageAssets: Children<HomeBuilder, ImageAsset> {
 		
 		return children(\.builderID)

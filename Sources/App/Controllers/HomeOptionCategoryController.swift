@@ -73,6 +73,8 @@ struct HomeOptionCategoryController: RouteCollection
 			category.name = updatedCategory.name
 			category.builderID = updatedCategory.builderID
 			category.optionType = updatedCategory.optionType
+			category.changeToken = updatedCategory.changeToken
+
 			return category.save(on: req)
 		}
 	}

@@ -27,6 +27,10 @@ struct HomeBuilderController: RouteCollection
 		
 		buildersRoute.get(HomeBuilder.parameter, "home-option-items", use: getHomeOptionItemsHandler)
 		
+		buildersRoute.get(HomeBuilder.parameter, "decor-categories", use: getDecorOptionCategoriesHandler)
+		
+		buildersRoute.get(HomeBuilder.parameter, "decor-items", use: getDecorOptionItemsHandler)
+
 		buildersRoute.get(HomeBuilder.parameter, "image-assets", use: getImageAssetsHandler)
 		
 		buildersRoute.get(HomeBuilder.parameter, "decor-packages", use: getDecorPackagesHandler)
@@ -81,7 +85,8 @@ struct HomeBuilderController: RouteCollection
 			builder.name = updatedBuilder.name
 			builder.logoURL = updatedBuilder.logoURL
 			builder.websiteURL = updatedBuilder.websiteURL
-			
+			builder.changeToken = updatedBuilder.changeToken
+
 			// Get the authenticated user who is making this change
 			//
 //			let user = try req.requireAuthenticated(User.self)
@@ -169,6 +174,32 @@ struct HomeBuilderController: RouteCollection
 			.flatMap(to: [HomeOptionItem].self) { builder in
 				
 				try builder.homeOptions.query(on: req).all()
+		}
+	}
+	
+	
+	// Get the builder's home option categories
+	//
+	func getDecorOptionCategoriesHandler(_ req: Request) throws -> Future<[DecorOptionCategory]> {
+		
+		return try req
+			.parameters.next(HomeBuilder.self)
+			.flatMap(to: [DecorOptionCategory].self) { builder in
+				
+				try builder.decorOptionCategories.query(on: req).all()
+		}
+	}
+	
+	
+	// Get the builder's home options
+	//
+	func getDecorOptionItemsHandler(_ req: Request) throws -> Future<[DecorOptionItem]> {
+		
+		return try req
+			.parameters.next(HomeBuilder.self)
+			.flatMap(to: [DecorOptionItem].self) { builder in
+				
+				try builder.decorOptions.query(on: req).all()
 		}
 	}
 

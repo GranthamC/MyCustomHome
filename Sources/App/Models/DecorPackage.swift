@@ -8,6 +8,8 @@ final class DecorPackage: Codable
 	var name: String
 	var builderID: HomeBuilder.ID
 	
+	var changeToken: Int32?
+
 	init(name: String, builderID: HomeBuilder.ID) {
 		self.name = name
 		self.builderID = builderID
@@ -43,7 +45,7 @@ extension DecorPackage
 		return parent(\.builderID)
 	}
 	
-	var optionItems: Siblings<DecorPackage, HomeOptionItem, DecorPackageOptionPivot> {
+	var optionItems: Siblings<DecorPackage, DecorOptionItem, DecorPackageOptionPivot> {
 		
 		return siblings()
 	}

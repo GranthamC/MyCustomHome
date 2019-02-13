@@ -7,17 +7,17 @@ final class ProductLineCategoryPivot: PostgreSQLUUIDPivot, ModifiablePivot
 	var id: UUID?
 	
 	var lineID: ProductLine.ID
-	var categoryID: HomeOptionCategory.ID
+	var categoryID: DecorOptionCategory.ID
 	
 	
 	typealias Left = ProductLine
-	typealias Right = HomeOptionCategory
+	typealias Right = DecorOptionCategory
 	
 	static let leftIDKey: LeftIDKey = \.lineID
 	static let rightIDKey: RightIDKey = \.categoryID
 	
 	
-	init(_ model: ProductLine, _ category: HomeOptionCategory) throws {
+	init(_ model: ProductLine, _ category: DecorOptionCategory) throws {
 		
 		self.lineID = try model.requireID()
 		self.categoryID = try category.requireID()
@@ -33,7 +33,7 @@ extension ProductLineCategoryPivot: Migration
 			
 			try addProperties(to: builder)
 			
-			builder.reference(from: \.categoryID, to: \HomeOptionCategory.id, onDelete: .cascade)
+			builder.reference(from: \.categoryID, to: \DecorOptionCategory.id, onDelete: .cascade)
 			
 			builder.reference(from: \.lineID, to: \ProductLine.id, onDelete: .cascade)
 		}

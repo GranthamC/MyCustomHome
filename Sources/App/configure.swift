@@ -70,21 +70,35 @@ public func configure(
 	migrations.add(model: HomeOptionCategory.self, database: .psql)
 	
 	migrations.add(model: HomeOptionItem.self, database: .psql)
+
+	migrations.add(model: DecorOptionCategory.self, database: .psql)
 	
+	migrations.add(model: DecorOptionItem.self, database: .psql)
+
 	migrations.add(model: HomeModel.self, database: .psql)
 	
 	migrations.add(model: DecorPackage.self, database: .psql)
 	
 	migrations.add(model: DecorPackageOptionPivot.self, database: .psql)
 
+	migrations.add(model: DecorCategoryItemPivot.self, database: .psql)
+
 	migrations.add(model: HomeModelCategoryPivot.self, database: .psql)
 	
 	migrations.add(model: HomeModelOptionPivot.self, database: .psql)
+
+	migrations.add(model: HomeModelDecorCategoryPivot.self, database: .psql)
+	
+	migrations.add(model: HomeModelDecorItemPivot.self, database: .psql)
+	
+	migrations.add(model: OptionCategoryItemPivot.self, database: .psql)
 
 	migrations.add(model: ImageAssetHomeModelPivot.self, database: .psql)
 	
 	migrations.add(model: ImageAssetHomeOptionPivot.self, database: .psql)
 	
+	migrations.add(model: ImageAssetDecorItemPivot.self, database: .psql)
+
 	migrations.add(model: ProductLineHomeModelPivot.self, database: .psql)
 	
 	migrations.add(model: ProductLineCategoryPivot.self, database: .psql)
@@ -92,8 +106,6 @@ public func configure(
 	migrations.add(model: ProductLineDecorPackagePivot.self, database: .psql)
 	
 	migrations.add(model: ProductLineOptionPivot.self, database: .psql)
-	
-	migrations.add(model: OptionCategoryItemPivot.self, database: .psql)
 
 	migrations.add(model: Token.self, database: .psql)
 	

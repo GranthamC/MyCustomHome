@@ -8,6 +8,8 @@ final class ProductLine: Codable
 	var name: String
 	var builderID: HomeBuilder.ID
 	
+	var changeToken: Int32?
+
 	var logoURL: String?
 	
 	var websiteURL: String?
@@ -48,12 +50,12 @@ extension ProductLine
 		return siblings()
 	}
 	
-	var optionCategories: Siblings<ProductLine, HomeOptionCategory, ProductLineCategoryPivot> {
+	var decorCategories: Siblings<ProductLine, DecorOptionCategory, ProductLineCategoryPivot> {
 		
 		return siblings()
 	}
 	
-	var optionItems: Siblings<ProductLine, HomeOptionItem, ProductLineOptionPivot> {
+	var decorItems: Siblings<ProductLine, DecorOptionItem, ProductLineOptionPivot> {
 		
 		return siblings()
 	}

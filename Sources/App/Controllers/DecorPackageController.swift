@@ -15,7 +15,7 @@ struct DecorPackageController: RouteCollection
 		
 		decorPackageRoutes.get(DecorPackage.parameter, "builder", use: getBuilderHandler)
 		
-		decorPackageRoutes.get(DecorPackage.parameter, "option-items", use: getOptionItemHandler)
+		decorPackageRoutes.get(DecorPackage.parameter, "decor-items", use: getOptionItemHandler)
 		
 		
 		// Add-in authentication for creating and updating
@@ -33,9 +33,9 @@ struct DecorPackageController: RouteCollection
 		
 		tokenAuthGroup.put(DecorPackage.parameter, use: updateHandler)
 		
-		tokenAuthGroup.post(DecorPackage.parameter, "option-item", HomeOptionItem.parameter, use: addOptionItemHandler)
+		tokenAuthGroup.post(DecorPackage.parameter, "decor-item", DecorOptionItem.parameter, use: addOptionItemHandler)
 		
-		tokenAuthGroup.delete(DecorPackage.parameter, "option-item", HomeOptionItem.parameter, use: removeOptionItemHandler)
+		tokenAuthGroup.delete(DecorPackage.parameter, "decor-item", DecorOptionItem.parameter, use: removeOptionItemHandler)
 		
 	}
 	
@@ -71,6 +71,7 @@ struct DecorPackageController: RouteCollection
 		) { decorPkg, updatedCategory in
 			decorPkg.name = updatedCategory.name
 			decorPkg.builderID = updatedCategory.builderID
+			decorPkg.changeToken = updatedCategory.changeToken
 			return decorPkg.save(on: req)
 		}
 	}
@@ -99,7 +100,7 @@ struct DecorPackageController: RouteCollection
 	func addOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus>
 	{
 		
-		return try flatMap(to: HTTPStatus.self,	req.parameters.next(DecorPackage.self), req.parameters.next(HomeOptionItem.self))
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(DecorPackage.self), req.parameters.next(DecorOptionItem.self))
 		{ decorPkg, optionItem in
 			
 			return decorPkg.optionItems.attach(optionItem, on: req).transform(to: .created)
@@ -108,9 +109,9 @@ struct DecorPackageController: RouteCollection
 	
 	// Get the line's home models
 	//
-	func getOptionItemHandler(_ req: Request) throws -> Future<[HomeOptionItem]> {
+	func getOptionItemHandler(_ req: Request) throws -> Future<[DecorOptionItem]> {
 		
-		return try req.parameters.next(DecorPackage.self).flatMap(to: [HomeOptionItem].self) { decorPkg in
+		return try req.parameters.next(DecorPackage.self).flatMap(to: [DecorOptionItem].self) { decorPkg in
 			
 			try decorPkg.optionItems.query(on: req).all()
 		}
@@ -118,7 +119,7 @@ struct DecorPackageController: RouteCollection
 	
 	func removeOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try flatMap(to: HTTPStatus.self, req.parameters.next(DecorPackage.self), req.parameters.next(HomeOptionItem.self)) { decorPkg, optionItem in
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(DecorPackage.self), req.parameters.next(DecorOptionItem.self)) { decorPkg, optionItem in
 			
 			return decorPkg.optionItems.detach(optionItem, on: req).transform(to: .noContent)
 		}

@@ -8,6 +8,8 @@ final class HomeModel: Codable
 	var name: String
 	var modelNumber: String
 	var builderID: HomeBuilder.ID
+	
+	var changeToken: Int32?
 
 	var heroImageURL: String?
 	var matterportTourURL: String?
@@ -63,6 +65,16 @@ extension HomeModel: Parameter {}
 
 extension HomeModel
 {
+	var decorCategories: Siblings<HomeModel, DecorOptionCategory, HomeModelDecorCategoryPivot> {
+		
+		return siblings()
+	}
+	
+	var decorItems: Siblings<HomeModel, DecorOptionItem, HomeModelDecorItemPivot> {
+		
+		return siblings()
+	}
+	
 	var optionCategories: Siblings<HomeModel, HomeOptionCategory, HomeModelCategoryPivot> {
 		
 		return siblings()
