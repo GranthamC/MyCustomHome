@@ -2,7 +2,7 @@ import Foundation
 import Vapor
 import FluentPostgreSQL
 
-final class HomeOptionItem: Codable
+final class OptionItem: Codable
 {
 	var id: UUID?
 	var name: String
@@ -30,9 +30,9 @@ final class HomeOptionItem: Codable
 	}
 }
 
-extension HomeOptionItem: PostgreSQLUUIDModel {}
+extension OptionItem: PostgreSQLUUIDModel {}
 
-extension HomeOptionItem: Migration
+extension OptionItem: Migration
 {
 	static func prepare(
 		on connection: PostgreSQLConnection
@@ -48,18 +48,18 @@ extension HomeOptionItem: Migration
 	
 }
 
-extension HomeOptionItem: Content {}
+extension OptionItem: Content {}
 
-extension HomeOptionItem: Parameter {}
+extension OptionItem: Parameter {}
 
-extension HomeOptionItem
+extension OptionItem
 {
-	var builder: Parent<HomeOptionItem, HomeBuilder> {
+	var builder: Parent<OptionItem, HomeBuilder> {
 		
 		return parent(\.builderID)
 	}
 	
-	var images: Siblings<HomeOptionItem, ImageAsset, ImageAssetHomeOptionPivot> {
+	var images: Siblings<OptionItem, ImageAsset, ImageAssetHomeOptionPivot> {
 		
 		return siblings()
 	}

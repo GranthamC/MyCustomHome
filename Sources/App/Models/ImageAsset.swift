@@ -50,7 +50,7 @@ extension ImageAsset
 	}
 	
 	var homeOptionExampleImages: Siblings<ImageAsset,
-		HomeOptionItem,
+		OptionItem,
 		ImageAssetHomeOptionPivot> {
 		
 		return siblings()
@@ -64,7 +64,7 @@ extension ImageAsset
 	}
 	
 	var decorOptionImages: Siblings<ImageAsset,
-		DecorOptionItem,
+		DecorItem,
 		ImageAssetDecorItemPivot> {
 		
 		return siblings()

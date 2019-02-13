@@ -7,17 +7,17 @@ final class HomeModelOptionPivot: PostgreSQLUUIDPivot, ModifiablePivot
 	var id: UUID?
 	
 	var homeModelID: HomeModel.ID
-	var optionItemID: HomeOptionItem.ID
+	var optionItemID: OptionItem.ID
 	
 	
 	typealias Left = HomeModel
-	typealias Right = HomeOptionItem
+	typealias Right = OptionItem
 	
 	static let leftIDKey: LeftIDKey = \.homeModelID
 	static let rightIDKey: RightIDKey = \.optionItemID
 	
 	
-	init(_ model: HomeModel, _ item: HomeOptionItem) throws {
+	init(_ model: HomeModel, _ item: OptionItem) throws {
 		
 		self.homeModelID = try model.requireID()
 		self.optionItemID = try item.requireID()
@@ -33,7 +33,7 @@ extension HomeModelOptionPivot: Migration
 			
 			try addProperties(to: builder)
 			
-			builder.reference(from: \.optionItemID, to: \HomeOptionItem.id, onDelete: .cascade)
+			builder.reference(from: \.optionItemID, to: \OptionItem.id, onDelete: .cascade)
 			
 			builder.reference(from: \.homeModelID, to: \HomeModel.id, onDelete: .cascade)
 		}

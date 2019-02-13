@@ -7,17 +7,17 @@ final class HomeModelDecorItemPivot: PostgreSQLUUIDPivot, ModifiablePivot
 	var id: UUID?
 	
 	var homeModelID: HomeModel.ID
-	var optionItemID: DecorOptionItem.ID
+	var optionItemID: DecorItem.ID
 	
 	
 	typealias Left = HomeModel
-	typealias Right = DecorOptionItem
+	typealias Right = DecorItem
 	
 	static let leftIDKey: LeftIDKey = \.homeModelID
 	static let rightIDKey: RightIDKey = \.optionItemID
 	
 	
-	init(_ model: HomeModel, _ item: DecorOptionItem) throws {
+	init(_ model: HomeModel, _ item: DecorItem) throws {
 		
 		self.homeModelID = try model.requireID()
 		self.optionItemID = try item.requireID()
@@ -33,7 +33,7 @@ extension HomeModelDecorItemPivot: Migration
 			
 			try addProperties(to: builder)
 			
-			builder.reference(from: \.optionItemID, to: \DecorOptionItem.id, onDelete: .cascade)
+			builder.reference(from: \.optionItemID, to: \DecorItem.id, onDelete: .cascade)
 			
 			builder.reference(from: \.homeModelID, to: \HomeModel.id, onDelete: .cascade)
 		}

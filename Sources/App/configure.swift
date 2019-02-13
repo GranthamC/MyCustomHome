@@ -67,13 +67,13 @@ public func configure(
 	
 	migrations.add(model: ImageAsset.self, database: .psql)
 
-	migrations.add(model: HomeOptionCategory.self, database: .psql)
+	migrations.add(model: OptionCategory.self, database: .psql)
 	
-	migrations.add(model: HomeOptionItem.self, database: .psql)
+	migrations.add(model: OptionItem.self, database: .psql)
 
-	migrations.add(model: DecorOptionCategory.self, database: .psql)
+	migrations.add(model: DecorCategory.self, database: .psql)
 	
-	migrations.add(model: DecorOptionItem.self, database: .psql)
+	migrations.add(model: DecorItem.self, database: .psql)
 
 	migrations.add(model: HomeModel.self, database: .psql)
 	

@@ -14,9 +14,9 @@ struct DecorOptionItemController: RouteCollection
 		
 		homeOptionItemsRoute.get(use: getAllHandler)
 		
-		homeOptionItemsRoute.get(DecorOptionItem.parameter, use: getHandler)
+		homeOptionItemsRoute.get(DecorItem.parameter, use: getHandler)
 		
-		homeOptionItemsRoute.get(DecorOptionItem.parameter, "builder", use: getBuilderHandler)
+		homeOptionItemsRoute.get(DecorItem.parameter, "builder", use: getBuilderHandler)
 		
 		// Add-in authentication for creating and updating
 		//
@@ -27,41 +27,41 @@ struct DecorOptionItemController: RouteCollection
 			tokenAuthMiddleware,
 			guardAuthMiddleware)
 		
-		tokenAuthGroup.post(DecorOptionItem.self, use: createHandler)
+		tokenAuthGroup.post(DecorItem.self, use: createHandler)
 		
-		tokenAuthGroup.delete(DecorOptionItem.parameter, use: deleteHandler)
+		tokenAuthGroup.delete(DecorItem.parameter, use: deleteHandler)
 		
-		tokenAuthGroup.put(DecorOptionItem.parameter, use: updateHandler)
+		tokenAuthGroup.put(DecorItem.parameter, use: updateHandler)
 		
 	}
 	
 	
-	func createHandler(_ req: Request, homeOptionItem: DecorOptionItem) throws -> Future<DecorOptionItem> {
+	func createHandler(_ req: Request, homeOptionItem: DecorItem) throws -> Future<DecorItem> {
 		
 		return homeOptionItem.save(on: req)
 	}
 	
 	
-	func getAllHandler(_ req: Request) throws -> Future<[DecorOptionItem]>
+	func getAllHandler(_ req: Request) throws -> Future<[DecorItem]>
 	{
-		return DecorOptionItem.query(on: req).all()
+		return DecorItem.query(on: req).all()
 	}
 	
 	
-	func getHandler(_ req: Request) throws -> Future<DecorOptionItem>
+	func getHandler(_ req: Request) throws -> Future<DecorItem>
 	{
-		return try req.parameters.next(DecorOptionItem.self)
+		return try req.parameters.next(DecorItem.self)
 	}
 	
 	
 	// Update passed product home option Item with parameters
 	//
-	func updateHandler(_ req: Request) throws -> Future<DecorOptionItem> {
+	func updateHandler(_ req: Request) throws -> Future<DecorItem> {
 		
 		return try flatMap(
-			to: DecorOptionItem.self,
-			req.parameters.next(DecorOptionItem.self),
-			req.content.decode(DecorOptionItem.self)
+			to: DecorItem.self,
+			req.parameters.next(DecorItem.self),
+			req.content.decode(DecorItem.self)
 		) { optionItem, updatedItem in
 			
 			optionItem.name = updatedItem.name
@@ -85,7 +85,7 @@ struct DecorOptionItemController: RouteCollection
 	
 	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try req.parameters.next(DecorOptionItem.self).delete(on: req).transform(to: HTTPStatus.noContent)
+		return try req.parameters.next(DecorItem.self).delete(on: req).transform(to: HTTPStatus.noContent)
 	}
 	
 	
@@ -93,7 +93,7 @@ struct DecorOptionItemController: RouteCollection
 	//
 	func getBuilderHandler(_ req: Request) throws -> Future<HomeBuilder> {
 		
-		return try req.parameters.next(DecorOptionItem.self).flatMap(to: HomeBuilder.self) { homeOptionItem in
+		return try req.parameters.next(DecorItem.self).flatMap(to: HomeBuilder.self) { homeOptionItem in
 			
 			homeOptionItem.builder.get(on: req)
 		}

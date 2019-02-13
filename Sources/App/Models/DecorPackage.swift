@@ -45,7 +45,7 @@ extension DecorPackage
 		return parent(\.builderID)
 	}
 	
-	var optionItems: Siblings<DecorPackage, DecorOptionItem, DecorPackageOptionPivot> {
+	var optionItems: Siblings<DecorPackage, DecorItem, DecorPackageOptionPivot> {
 		
 		return siblings()
 	}

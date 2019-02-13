@@ -154,11 +154,11 @@ struct HomeBuilderController: RouteCollection
 	
 	// Get the builder's home option categories
 	//
-	func getHomeOptionCategoriesHandler(_ req: Request) throws -> Future<[HomeOptionCategory]> {
+	func getHomeOptionCategoriesHandler(_ req: Request) throws -> Future<[OptionCategory]> {
 		
 		return try req
 			.parameters.next(HomeBuilder.self)
-			.flatMap(to: [HomeOptionCategory].self) { builder in
+			.flatMap(to: [OptionCategory].self) { builder in
 				
 				try builder.homeOptionCategories.query(on: req).all()
 		}
@@ -167,11 +167,11 @@ struct HomeBuilderController: RouteCollection
 	
 	// Get the builder's home options
 	//
-	func getHomeOptionItemsHandler(_ req: Request) throws -> Future<[HomeOptionItem]> {
+	func getHomeOptionItemsHandler(_ req: Request) throws -> Future<[OptionItem]> {
 		
 		return try req
 			.parameters.next(HomeBuilder.self)
-			.flatMap(to: [HomeOptionItem].self) { builder in
+			.flatMap(to: [OptionItem].self) { builder in
 				
 				try builder.homeOptions.query(on: req).all()
 		}
@@ -180,11 +180,11 @@ struct HomeBuilderController: RouteCollection
 	
 	// Get the builder's home option categories
 	//
-	func getDecorOptionCategoriesHandler(_ req: Request) throws -> Future<[DecorOptionCategory]> {
+	func getDecorOptionCategoriesHandler(_ req: Request) throws -> Future<[DecorCategory]> {
 		
 		return try req
 			.parameters.next(HomeBuilder.self)
-			.flatMap(to: [DecorOptionCategory].self) { builder in
+			.flatMap(to: [DecorCategory].self) { builder in
 				
 				try builder.decorOptionCategories.query(on: req).all()
 		}
@@ -193,11 +193,11 @@ struct HomeBuilderController: RouteCollection
 	
 	// Get the builder's home options
 	//
-	func getDecorOptionItemsHandler(_ req: Request) throws -> Future<[DecorOptionItem]> {
+	func getDecorOptionItemsHandler(_ req: Request) throws -> Future<[DecorItem]> {
 		
 		return try req
 			.parameters.next(HomeBuilder.self)
-			.flatMap(to: [DecorOptionItem].self) { builder in
+			.flatMap(to: [DecorItem].self) { builder in
 				
 				try builder.decorOptions.query(on: req).all()
 		}

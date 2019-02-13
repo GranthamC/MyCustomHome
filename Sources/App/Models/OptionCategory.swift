@@ -2,25 +2,25 @@ import Foundation
 import Vapor
 import FluentPostgreSQL
 
-final class DecorOptionCategory: Codable
+final class OptionCategory: Codable
 {
 	var id: UUID?
 	var name: String
 	var builderID: HomeBuilder.ID
 	
-	var optionType: Int32?
-	
 	var changeToken: Int32?
-	
+
+	var optionType: Int32?
+
 	init(name: String, builderID: HomeBuilder.ID) {
 		self.name = name
 		self.builderID = builderID
 	}
 }
 
-extension DecorOptionCategory: PostgreSQLUUIDModel {}
+extension OptionCategory: PostgreSQLUUIDModel {}
 
-extension DecorOptionCategory: Migration
+extension OptionCategory: Migration
 {
 	static func prepare(
 		on connection: PostgreSQLConnection
@@ -36,28 +36,27 @@ extension DecorOptionCategory: Migration
 	
 }
 
-extension DecorOptionCategory: Content {}
+extension OptionCategory: Content {}
 
-extension DecorOptionCategory: Parameter {}
+extension OptionCategory: Parameter {}
 
-extension DecorOptionCategory
+extension OptionCategory
 {
-	var builder: Parent<DecorOptionCategory, HomeBuilder> {
+	var builder: Parent<OptionCategory, HomeBuilder> {
 		
 		return parent(\.builderID)
 	}
 	
-	var homeModels: Siblings<DecorOptionCategory, HomeModel, HomeModelDecorCategoryPivot> {
+	var homeModels: Siblings<OptionCategory, HomeModel, HomeModelCategoryPivot> {
 		
 		return siblings()
 	}
 	
-	var optionItems: Siblings<DecorOptionCategory, DecorOptionItem, DecorCategoryItemPivot> {
+	var optionItems: Siblings<OptionCategory, OptionItem, OptionCategoryItemPivot> {
 		
 		return siblings()
 	}
-	
-}
 
+}
 
 

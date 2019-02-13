@@ -50,12 +50,12 @@ extension ProductLine
 		return siblings()
 	}
 	
-	var decorCategories: Siblings<ProductLine, DecorOptionCategory, ProductLineCategoryPivot> {
+	var decorCategories: Siblings<ProductLine, DecorCategory, ProductLineCategoryPivot> {
 		
 		return siblings()
 	}
 	
-	var decorItems: Siblings<ProductLine, DecorOptionItem, ProductLineOptionPivot> {
+	var decorItems: Siblings<ProductLine, DecorItem, ProductLineOptionPivot> {
 		
 		return siblings()
 	}

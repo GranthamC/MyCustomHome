@@ -40,22 +40,22 @@ extension HomeBuilder
 		return children(\.builderID)
 	}
 	
-	var homeOptionCategories: Children<HomeBuilder, HomeOptionCategory> {
+	var homeOptionCategories: Children<HomeBuilder, OptionCategory> {
 		
 		return children(\.builderID)
 	}
 	
-	var homeOptions: Children<HomeBuilder, HomeOptionItem> {
+	var homeOptions: Children<HomeBuilder, OptionItem> {
 		
 		return children(\.builderID)
 	}
 	
-	var decorOptionCategories: Children<HomeBuilder, DecorOptionCategory> {
+	var decorOptionCategories: Children<HomeBuilder, DecorCategory> {
 		
 		return children(\.builderID)
 	}
 	
-	var decorOptions: Children<HomeBuilder, DecorOptionItem> {
+	var decorOptions: Children<HomeBuilder, DecorItem> {
 		
 		return children(\.builderID)
 	}

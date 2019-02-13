@@ -65,22 +65,22 @@ extension HomeModel: Parameter {}
 
 extension HomeModel
 {
-	var decorCategories: Siblings<HomeModel, DecorOptionCategory, HomeModelDecorCategoryPivot> {
+	var decorCategories: Siblings<HomeModel, DecorCategory, HomeModelDecorCategoryPivot> {
 		
 		return siblings()
 	}
 	
-	var decorItems: Siblings<HomeModel, DecorOptionItem, HomeModelDecorItemPivot> {
+	var decorItems: Siblings<HomeModel, DecorItem, HomeModelDecorItemPivot> {
 		
 		return siblings()
 	}
 	
-	var optionCategories: Siblings<HomeModel, HomeOptionCategory, HomeModelCategoryPivot> {
+	var optionCategories: Siblings<HomeModel, OptionCategory, HomeModelCategoryPivot> {
 		
 		return siblings()
 	}
 	
-	var optionItems: Siblings<HomeModel, HomeOptionItem, HomeModelOptionPivot> {
+	var optionItems: Siblings<HomeModel, OptionItem, HomeModelOptionPivot> {
 		
 		return siblings()
 	}

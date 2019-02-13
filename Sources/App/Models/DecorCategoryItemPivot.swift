@@ -6,18 +6,18 @@ final class DecorCategoryItemPivot: PostgreSQLUUIDPivot, ModifiablePivot
 {
 	var id: UUID?
 	
-	var categoryID: DecorOptionCategory.ID
-	var optionItemID: DecorOptionItem.ID
+	var categoryID: DecorCategory.ID
+	var optionItemID: DecorItem.ID
 	
 	
-	typealias Left = DecorOptionCategory
-	typealias Right = DecorOptionItem
+	typealias Left = DecorCategory
+	typealias Right = DecorItem
 	
 	static let leftIDKey: LeftIDKey = \.categoryID
 	static let rightIDKey: RightIDKey = \.optionItemID
 	
 	
-	init(_ category: DecorOptionCategory, _ item: DecorOptionItem) throws {
+	init(_ category: DecorCategory, _ item: DecorItem) throws {
 		
 		self.optionItemID = try item.requireID()
 		self.categoryID = try category.requireID()
@@ -33,9 +33,9 @@ extension DecorCategoryItemPivot: Migration
 			
 			try addProperties(to: builder)
 			
-			builder.reference(from: \.categoryID, to: \DecorOptionCategory.id, onDelete: .cascade)
+			builder.reference(from: \.categoryID, to: \DecorCategory.id, onDelete: .cascade)
 			
-			builder.reference(from: \.optionItemID, to: \DecorOptionItem.id, onDelete: .cascade)
+			builder.reference(from: \.optionItemID, to: \DecorItem.id, onDelete: .cascade)
 		}
 	}
 }

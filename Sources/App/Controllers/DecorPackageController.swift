@@ -33,9 +33,9 @@ struct DecorPackageController: RouteCollection
 		
 		tokenAuthGroup.put(DecorPackage.parameter, use: updateHandler)
 		
-		tokenAuthGroup.post(DecorPackage.parameter, "decor-item", DecorOptionItem.parameter, use: addOptionItemHandler)
+		tokenAuthGroup.post(DecorPackage.parameter, "decor-item", DecorItem.parameter, use: addOptionItemHandler)
 		
-		tokenAuthGroup.delete(DecorPackage.parameter, "decor-item", DecorOptionItem.parameter, use: removeOptionItemHandler)
+		tokenAuthGroup.delete(DecorPackage.parameter, "decor-item", DecorItem.parameter, use: removeOptionItemHandler)
 		
 	}
 	
@@ -100,7 +100,7 @@ struct DecorPackageController: RouteCollection
 	func addOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus>
 	{
 		
-		return try flatMap(to: HTTPStatus.self,	req.parameters.next(DecorPackage.self), req.parameters.next(DecorOptionItem.self))
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(DecorPackage.self), req.parameters.next(DecorItem.self))
 		{ decorPkg, optionItem in
 			
 			return decorPkg.optionItems.attach(optionItem, on: req).transform(to: .created)
@@ -109,9 +109,9 @@ struct DecorPackageController: RouteCollection
 	
 	// Get the line's home models
 	//
-	func getOptionItemHandler(_ req: Request) throws -> Future<[DecorOptionItem]> {
+	func getOptionItemHandler(_ req: Request) throws -> Future<[DecorItem]> {
 		
-		return try req.parameters.next(DecorPackage.self).flatMap(to: [DecorOptionItem].self) { decorPkg in
+		return try req.parameters.next(DecorPackage.self).flatMap(to: [DecorItem].self) { decorPkg in
 			
 			try decorPkg.optionItems.query(on: req).all()
 		}
@@ -119,7 +119,7 @@ struct DecorPackageController: RouteCollection
 	
 	func removeOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try flatMap(to: HTTPStatus.self, req.parameters.next(DecorPackage.self), req.parameters.next(DecorOptionItem.self)) { decorPkg, optionItem in
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(DecorPackage.self), req.parameters.next(DecorItem.self)) { decorPkg, optionItem in
 			
 			return decorPkg.optionItems.detach(optionItem, on: req).transform(to: .noContent)
 		}

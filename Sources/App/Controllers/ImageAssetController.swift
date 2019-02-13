@@ -49,9 +49,9 @@ struct ImageAssetController: RouteCollection
 		
 		tokenAuthGroup.delete(ImageAsset.parameter, "home-model", HomeModel.parameter, 	use: removeHomeHandler)
 
-		tokenAuthGroup.delete(ImageAsset.parameter, "home-option-item", HomeOptionItem.parameter, 	use: removeHomeOptionHandler)
+		tokenAuthGroup.delete(ImageAsset.parameter, "home-option-item", OptionItem.parameter, 	use: removeHomeOptionHandler)
 
-		tokenAuthGroup.delete(ImageAsset.parameter, "decor-item", DecorOptionItem.parameter, 	use: removeDecorOptionHandler)
+		tokenAuthGroup.delete(ImageAsset.parameter, "decor-item", DecorItem.parameter, 	use: removeDecorOptionHandler)
 
 	}
 	
@@ -156,10 +156,10 @@ struct ImageAssetController: RouteCollection
 	}
 	
 	
-	func getHomeOptonsHandler(_ req: Request ) throws -> Future<[HomeOptionItem]> {
+	func getHomeOptonsHandler(_ req: Request ) throws -> Future<[OptionItem]> {
 		
 		return try req.parameters.next(ImageAsset.self)
-			.flatMap(to: [HomeOptionItem].self) { imageAsset in
+			.flatMap(to: [OptionItem].self) { imageAsset in
 				
 				try imageAsset.homeOptionExampleImages.query(on: req).all()
 		}
@@ -171,7 +171,7 @@ struct ImageAssetController: RouteCollection
 		return try flatMap(
 			to: HTTPStatus.self,
 			req.parameters.next(ImageAsset.self),
-			req.parameters.next(HomeOptionItem.self)
+			req.parameters.next(OptionItem.self)
 		) { imageAsset, homeOption in
 			
 			return imageAsset.homeOptionExampleImages .detach(homeOption, on: req) .transform(to: .noContent)
@@ -179,10 +179,10 @@ struct ImageAssetController: RouteCollection
 	}
 	
 	
-	func getDecorOptonsHandler(_ req: Request ) throws -> Future<[DecorOptionItem]> {
+	func getDecorOptonsHandler(_ req: Request ) throws -> Future<[DecorItem]> {
 		
 		return try req.parameters.next(ImageAsset.self)
-			.flatMap(to: [DecorOptionItem].self) { imageAsset in
+			.flatMap(to: [DecorItem].self) { imageAsset in
 				
 				try imageAsset.decorOptionImages.query(on: req).all()
 		}
@@ -194,7 +194,7 @@ struct ImageAssetController: RouteCollection
 		return try flatMap(
 			to: HTTPStatus.self,
 			req.parameters.next(ImageAsset.self),
-			req.parameters.next(DecorOptionItem.self)
+			req.parameters.next(DecorItem.self)
 		) { imageAsset, homeOption in
 			
 			return imageAsset.decorOptionImages .detach(homeOption, on: req) .transform(to: .noContent)
