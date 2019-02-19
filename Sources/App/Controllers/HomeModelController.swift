@@ -99,7 +99,7 @@ struct HomeModelController: RouteCollection
 		homeModelsRoute.get(use: getAllHandler)
 		
 		homeModelsRoute.get(HomeModel.parameter, use: getHandler)
-		
+
 		homeModelsRoute.get("search", use: searchHandler)
 		
 		homeModelsRoute.get("first", use: getFirstHandler)
@@ -218,8 +218,7 @@ struct HomeModelController: RouteCollection
 		
 		return try req.parameters.next(HomeModel.self).delete(on: req).transform(to: HTTPStatus.noContent)
 	}
-	
-	
+
 	
 	func searchHandler(_ req: Request) throws -> Future<HomeModelResponse>
 	{

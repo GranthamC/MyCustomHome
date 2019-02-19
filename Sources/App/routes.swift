@@ -164,6 +164,11 @@ public func routes(_ router: Router) throws {
 	let tokensPackageController = ChangeTokenController()
 	
 	try router.register(collection: tokensPackageController)
+	
+	
+	let modelOptionsPackageController = ModelOptionController()
+	
+	try router.register(collection: modelOptionsPackageController)
 
 	
 }
