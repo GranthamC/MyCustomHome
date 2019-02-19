@@ -79,6 +79,8 @@ public func configure(
 	
 	migrations.add(model: DecorPackage.self, database: .psql)
 	
+	migrations.add(model: ChangeToken.self, database: .psql)
+
 	migrations.add(model: DecorPackageOptionPivot.self, database: .psql)
 
 	migrations.add(model: DecorCategoryItemPivot.self, database: .psql)

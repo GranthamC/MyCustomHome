@@ -159,6 +159,11 @@ public func routes(_ router: Router) throws {
 	let decorPackageController = DecorPackageController()
 	
 	try router.register(collection: decorPackageController)
+	
+	
+	let tokensPackageController = ChangeTokenController()
+	
+	try router.register(collection: tokensPackageController)
 
 	
 }

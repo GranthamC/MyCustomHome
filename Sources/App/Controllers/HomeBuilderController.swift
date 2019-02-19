@@ -36,6 +36,8 @@ struct HomeBuilderController: RouteCollection
 		buildersRoute.get(HomeBuilder.parameter, "decor-packages", use: getDecorPackagesHandler)
 		
 		buildersRoute.get(HomeBuilder.parameter, "home-models", use: getHomeModelsHandler)
+		
+		buildersRoute.get(HomeBuilder.parameter, "change-tokens", use: getTokensHandler)
 
 
 		// Add-in authentication for creating and updating
@@ -239,6 +241,18 @@ struct HomeBuilderController: RouteCollection
 			.flatMap(to: [HomeModel].self) { builder in
 				
 				try builder.homeModels.query(on: req).all()
+		}
+	}
+
+	
+	
+	// Get the Builder record for this decorPkg
+	//
+	func getTokensHandler(_ req: Request) throws -> Future<ChangeToken> {
+		
+		return try req.parameters.next(HomeBuilder.self).flatMap(to: ChangeToken.self) { builder in
+			
+			builder.changeTokens.get(on: req)
 		}
 	}
 

@@ -12,6 +12,8 @@ final class HomeBuilder: Codable
 	var websiteURL: String?
 	
 	var changeToken: Int32?
+	
+	var changeTokensID: ChangeToken.ID?
 
 	init(name: String, logoURL: String)
 	{
@@ -19,6 +21,7 @@ final class HomeBuilder: Codable
 		self.logoURL = logoURL
 	}
 }
+
 
 extension HomeBuilder: PostgreSQLUUIDModel {}
 
@@ -30,6 +33,11 @@ extension HomeBuilder: Parameter {}
 
 extension HomeBuilder
 {
+	var changeTokens: Parent<HomeBuilder, ChangeToken> {
+		
+		return parent(\.changeTokensID!)
+	}
+	
 	var productLines: Children<HomeBuilder, ProductLine> {
 		
 		return children(\.builderID)
