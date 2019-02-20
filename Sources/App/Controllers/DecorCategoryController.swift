@@ -16,7 +16,7 @@ struct DecorOptionCategoryController: RouteCollection
 		
 		homeOptionsCategoriesRoute.get(DecorCategory.parameter, "builder", use: getBuilderHandler)
 		
-		homeOptionsCategoriesRoute.get(DecorCategory.parameter, "decor-items", use: getOptionItemHandler)
+		homeOptionsCategoriesRoute.get(DecorCategory.parameter, "decor-items", use: getCategoryOptionsHandler)
 		
 		
 		// Add-in authentication for creating and updating
@@ -33,10 +33,6 @@ struct DecorOptionCategoryController: RouteCollection
 		tokenAuthGroup.delete(DecorCategory.parameter, use: deleteHandler)
 		
 		tokenAuthGroup.put(DecorCategory.parameter, use: updateHandler)
-		
-		tokenAuthGroup.post(DecorCategory.parameter, "decor-item", DecorItem.parameter, use: addOptionItemHandler)
-		
-		tokenAuthGroup.delete(DecorCategory.parameter, "decor-item", DecorItem.parameter, use: removeOptionItemHandler)
 		
 	}
 	
@@ -97,6 +93,19 @@ struct DecorOptionCategoryController: RouteCollection
 		}
 	}
 	
+	
+	// Get the category options for this category
+	//
+	func getCategoryOptionsHandler(_ req: Request) throws -> Future<[DecorItem]> {
+		
+		return try req
+			.parameters.next(DecorCategory.self)
+			.flatMap(to: [DecorItem].self) { category in
+				
+				try category.categoryOptions.query(on: req).all()
+		}
+	}
+
 	
 	
 	func addOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus>

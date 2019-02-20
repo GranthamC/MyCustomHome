@@ -16,6 +16,8 @@ struct DecorOptionItemController: RouteCollection
 		
 		homeOptionItemsRoute.get(DecorItem.parameter, use: getHandler)
 		
+		homeOptionItemsRoute.get(DecorItem.parameter, "category", use: getCategoryHandler)
+
 		homeOptionItemsRoute.get(DecorItem.parameter, "builder", use: getBuilderHandler)
 		
 		// Add-in authentication for creating and updating
@@ -88,6 +90,17 @@ struct DecorOptionItemController: RouteCollection
 		return try req.parameters.next(DecorItem.self).delete(on: req).transform(to: HTTPStatus.noContent)
 	}
 	
+	
+	// Get the category record for this home option Item
+	//
+	func getCategoryHandler(_ req: Request) throws -> Future<DecorCategory> {
+		
+		return try req.parameters.next(DecorItem.self).flatMap(to: DecorCategory.self) { optionItem in
+			
+			optionItem.category.get(on: req)
+		}
+	}
+
 	
 	// Get the Builder record for this home option Item
 	//

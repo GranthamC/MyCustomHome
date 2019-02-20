@@ -7,7 +7,8 @@ final class DecorItem: Codable
 	var id: UUID?
 	var name: String
 	var builderID: HomeBuilder.ID
-	
+	var categoryID: DecorCategory.ID
+
 	var changeToken: Int32?
 
 	var optionImageURL: String
@@ -23,9 +24,10 @@ final class DecorItem: Codable
 	var physicalHeight: Float?
 	var physicalWidth: Float?
 	
-	init(name: String, builderID: HomeBuilder.ID, imagePath: String) {
+	init(name: String, builderID: HomeBuilder.ID, categoryID: DecorCategory.ID, imagePath: String) {
 		self.name = name
 		self.builderID = builderID
+		self.categoryID = categoryID
 		self.optionImageURL = imagePath
 	}
 }
@@ -43,6 +45,8 @@ extension DecorItem: Migration
 			try addProperties(to: homeOption)
 			
 			homeOption.reference(from: \.builderID, to: \HomeBuilder.id)
+			
+			homeOption.reference(from: \.categoryID, to: \DecorCategory.id)
 		}
 	}
 	
@@ -59,6 +63,11 @@ extension DecorItem
 		return parent(\.builderID)
 	}
 	
+	var category: Parent<DecorItem, DecorCategory> {
+		
+		return parent(\.categoryID)
+	}
+
 	var images: Siblings<DecorItem, ImageAsset, ImageAssetDecorItemPivot> {
 		
 		return siblings()

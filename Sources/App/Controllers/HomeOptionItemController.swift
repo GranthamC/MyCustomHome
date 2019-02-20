@@ -16,6 +16,8 @@ struct HomeOptionItemController: RouteCollection
 		
 		homeOptionItemsRoute.get(OptionItem.parameter, use: getHandler)
 		
+		homeOptionItemsRoute.get(OptionItem.parameter, "category", use: getCategoryHandler)
+
 		homeOptionItemsRoute.get(OptionItem.parameter, "builder", use: getBuilderHandler)
 		
 		// Add-in authentication for creating and updating
@@ -32,7 +34,6 @@ struct HomeOptionItemController: RouteCollection
 		tokenAuthGroup.delete(OptionItem.parameter, use: deleteHandler)
 		
 		tokenAuthGroup.put(OptionItem.parameter, use: updateHandler)
-
 	}
 	
 	
@@ -86,6 +87,17 @@ struct HomeOptionItemController: RouteCollection
 	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
 		return try req.parameters.next(OptionItem.self).delete(on: req).transform(to: HTTPStatus.noContent)
+	}
+	
+	
+	// Get the category record for this option Item
+	//
+	func getCategoryHandler(_ req: Request) throws -> Future<OptionCategory> {
+		
+		return try req.parameters.next(OptionItem.self).flatMap(to: OptionCategory.self) { optionItem in
+			
+			optionItem.category.get(on: req)
+		}
 	}
 
 	

@@ -47,6 +47,11 @@ extension OptionCategory
 		return parent(\.builderID)
 	}
 	
+	var categoryOptions: Children<OptionCategory, OptionItem> {
+		
+		return children(\.categoryID)
+	}
+
 	var homeModels: Siblings<OptionCategory, HomeModel, HomeModelCategoryPivot> {
 		
 		return siblings()

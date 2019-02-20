@@ -65,6 +65,12 @@ extension HomeModel: Parameter {}
 
 extension HomeModel
 {
+	
+	var modelOptions: Children<HomeModel, ModelOption> {
+		
+		return children(\.modelID)
+	}
+	
 	var decorCategories: Siblings<HomeModel, DecorCategory, HomeModelDecorCategoryPivot> {
 		
 		return siblings()

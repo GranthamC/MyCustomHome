@@ -47,6 +47,13 @@ extension DecorCategory
 		return parent(\.builderID)
 	}
 	
+	
+	var categoryOptions: Children<DecorCategory, DecorItem> {
+		
+		return children(\.builderID)
+	}
+
+	
 	var homeModels: Siblings<DecorCategory, HomeModel, HomeModelDecorCategoryPivot> {
 		
 		return siblings()
