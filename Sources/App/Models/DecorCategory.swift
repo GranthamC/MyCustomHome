@@ -50,7 +50,7 @@ extension DecorCategory
 	
 	var categoryOptions: Children<DecorCategory, DecorItem> {
 		
-		return children(\.builderID)
+		return children(\.categoryID)
 	}
 
 	
