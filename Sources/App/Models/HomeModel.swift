@@ -12,6 +12,8 @@ final class HomeModel: Codable
 	var changeToken: Int32?
 
 	var heroImageURL: String?
+	var floorPlanURL: String?
+	var exteriorImageURL: String?
 	var matterportTourURL: String?
 	var panoModelTourURL: String?
 	

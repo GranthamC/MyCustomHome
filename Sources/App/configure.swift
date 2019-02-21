@@ -38,9 +38,9 @@ public func configure(
 	
     let password = Environment.get("DATABASE_PASSWORD") ?? "password"
 	
-	adminName = Environment.get("MCH_ADMIN_USER")
+	adminName = Environment.get("MCH_ADMIN_USER")  ??  "vapor"
 	
-	adminPassword = Environment.get("MCH_ADMIN_PASSWORD")
+	adminPassword = Environment.get("MCH_ADMIN_PASSWORD")  ??  "password!"
 	
 
     let databaseConfig = PostgreSQLDatabaseConfig(

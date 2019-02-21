@@ -12,7 +12,9 @@ struct HomeModelResponse: Content
 	var modelNumber: String
 	var builderID: String
 	
-	var floorPlanImage: String?
+	var heroImageURL: String?
+	var floorPlanURL: String?
+	var exteriorImageURL: String?
 	var matterportTourURL: String?
 	var panoModelTourURL: String?
 	
@@ -31,18 +33,24 @@ struct HomeModelResponse: Content
 	var sqftMain: Int16?
 	var sqftUpper: Int16?
 
-	var availableOptions: [OptionCategoryResponse]
+	var builderOptions: [BuilderOptionResponse]
+	var decorOptions: [BuilderOptionResponse]
+	
+	var modelOptions: [BuilderOptionResponse]
 	
 	var homeImages: [ImageAsset]
 	
-	init(model: HomeModel, homeOptions: [OptionCategoryResponse], images: [ImageAsset])
+//	init(model: HomeModel, homeOptions: [BuilderOptionResponse], decorOptions: [DecorOptionResponse], modelOptions: [ModelOption]?, images: [ImageAsset])
+	init(model: HomeModel, homeOptions: [BuilderOptionResponse], decorOptions: [BuilderOptionResponse], modelOptions: [BuilderOptionResponse], images: [ImageAsset])
 	{
 		self.id = model.id?.uuidString
 		self.name = model.name
 		self.modelNumber = model.modelNumber
 		self.builderID = model.builderID.uuidString
 
-		self.floorPlanImage = model.heroImageURL
+		self.heroImageURL = model.heroImageURL
+		self.floorPlanURL = model.floorPlanURL
+		self.exteriorImageURL = model.exteriorImageURL
 		self.matterportTourURL = model.matterportTourURL
 		self.panoModelTourURL = model.panoModelTourURL
 		
@@ -61,14 +69,17 @@ struct HomeModelResponse: Content
 		self.sqftMain = model.sqftMain
 		self.sqftUpper = model.sqftUpper
 		
-		self.availableOptions = homeOptions
+		self.builderOptions = homeOptions
+		self.decorOptions = decorOptions
+		
+		self.modelOptions = modelOptions
 		
 		self.homeImages = images
 	}
 }
 
 
-struct OptionCategoryResponse: Content
+struct BuilderOptionResponse: Content
 {
 	var id: String
 	var category: String
@@ -78,6 +89,27 @@ struct OptionCategoryResponse: Content
 	var categoryOptions: [OptionItem]
 	
 	init(category: OptionCategory, homeOptions: [OptionItem])
+	{
+		self.category = category.name
+		self.id = category.id?.uuidString ?? ""
+		self.builderID = category.builderID.uuidString
+		self.optionType = category.optionType
+		
+		self.categoryOptions = homeOptions
+	}
+}
+
+
+struct DecorOptionResponse: Content
+{
+	var id: String
+	var category: String
+	var builderID: String
+	var optionType: Int32?
+	
+	var categoryOptions: [DecorItem]
+	
+	init(category: DecorCategory, homeOptions: [DecorItem])
 	{
 		self.category = category.name
 		self.id = category.id?.uuidString ?? ""
@@ -191,6 +223,8 @@ struct HomeModelController: RouteCollection
 			model.changeToken = updatedModel.changeToken
 
 			model.heroImageURL = updatedModel.heroImageURL
+			model.floorPlanURL = updatedModel.floorPlanURL
+			model.exteriorImageURL = updatedModel.exteriorImageURL
 			model.matterportTourURL = updatedModel.matterportTourURL
 			model.panoModelTourURL = updatedModel.panoModelTourURL
 
@@ -241,7 +275,8 @@ struct HomeModelController: RouteCollection
 					
 					let imageResponse = homeImages.map { ssImages in
 						
-						return HomeModelResponse(model: homemodel!, homeOptions: responses, images: ssImages)
+//						return HomeModelResponse(model: homemodel!, homeOptions: responses, images: ssImages)
+						return HomeModelResponse(model: homemodel!, homeOptions: responses, decorOptions: responses, modelOptions: responses, images: ssImages)
 					}
 					
 					return imageResponse
@@ -264,14 +299,14 @@ struct HomeModelController: RouteCollection
 
 	
 	
-	func allCatResponses(_ request: Request, optionCats: Future<[OptionCategory]>) throws -> Future<[OptionCategoryResponse]> {
+	func allCatResponses(_ request: Request, optionCats: Future<[OptionCategory]>) throws -> Future<[BuilderOptionResponse]> {
 		
 		return optionCats.flatMap { cats in
 			
 			let catResponseFutures = try cats.map { cat in
 				
 				try cat.optionItems.query(on: request).all().map { items in
-					return OptionCategoryResponse(category: cat, homeOptions: items)
+					return BuilderOptionResponse(category: cat, homeOptions: items)
 				}
 			}
 			
