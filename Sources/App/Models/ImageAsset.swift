@@ -2,6 +2,20 @@ import Foundation
 import Vapor
 import FluentPostgreSQL
 
+
+
+
+// MARK: Image Asset Type Enum and labels
+//
+enum AssetImageType: Int32 {
+	case HomeImage = 0
+	case DecorSwatch = 1
+	case DecorOptionTexture = 2
+	case BuilderOptionTexture = 3
+	case ModelOptionTexture = 4
+	case ObjectModelTexture = 5
+}
+
 final class ImageAsset: Codable
 {
 	var id: UUID?

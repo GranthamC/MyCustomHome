@@ -13,7 +13,7 @@ final class ModelOption: Codable
 	var detailInfo: String?
 	
 	var isUpgrade: Bool?
-	var optionType: Int32?
+	var optionImageType: Int32?
 
 	var optionModelURL: String?
 	var optionTexCoordsURL: String?

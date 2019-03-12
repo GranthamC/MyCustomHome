@@ -10,22 +10,24 @@ struct DecorOptionItemController: RouteCollection
 	
 	func boot(router: Router) throws {
 		
-		let homeOptionItemsRoute = router.grouped("api", "decor-item")
+		let decorOptionItemsRoute = router.grouped("api", "decor-item")
 		
-		homeOptionItemsRoute.get(use: getAllHandler)
+		decorOptionItemsRoute.get(use: getAllHandler)
 		
-		homeOptionItemsRoute.get(DecorItem.parameter, use: getHandler)
+		decorOptionItemsRoute.get(DecorItem.parameter, use: getHandler)
 		
-		homeOptionItemsRoute.get(DecorItem.parameter, "category", use: getCategoryHandler)
+		decorOptionItemsRoute.get(DecorItem.parameter, "category", use: getCategoryHandler)
 
-		homeOptionItemsRoute.get(DecorItem.parameter, "builder", use: getBuilderHandler)
-		
+		decorOptionItemsRoute.get(DecorItem.parameter, "builder", use: getBuilderHandler)
+
+		decorOptionItemsRoute.get(DecorItem.parameter, "images", use: getImagesHandler)
+
 		// Add-in authentication for creating and updating
 		//
 		let tokenAuthMiddleware = User.tokenAuthMiddleware()
 		let guardAuthMiddleware = User.guardAuthMiddleware()
 		
-		let tokenAuthGroup = homeOptionItemsRoute.grouped(
+		let tokenAuthGroup = decorOptionItemsRoute.grouped(
 			tokenAuthMiddleware,
 			guardAuthMiddleware)
 		
@@ -34,7 +36,11 @@ struct DecorOptionItemController: RouteCollection
 		tokenAuthGroup.delete(DecorItem.parameter, use: deleteHandler)
 		
 		tokenAuthGroup.put(DecorItem.parameter, use: updateHandler)
+
+		tokenAuthGroup.post(DecorItem.parameter, "image", ImageAsset.parameter, use: addImageHandler)
 		
+		tokenAuthGroup.delete(DecorItem.parameter, "image", ImageAsset.parameter, use: removeImageHandler)
+
 	}
 	
 	
@@ -68,7 +74,7 @@ struct DecorOptionItemController: RouteCollection
 			
 			optionItem.name = updatedItem.name
 			optionItem.builderID = updatedItem.builderID
-			optionItem.optionType = updatedItem.optionType
+			optionItem.optionImageType = updatedItem.optionImageType
 			optionItem.changeToken = updatedItem.changeToken
 
 			optionItem.optionImageURL = updatedItem.optionImageURL
@@ -111,7 +117,38 @@ struct DecorOptionItemController: RouteCollection
 			homeOptionItem.builder.get(on: req)
 		}
 	}
+
 	
+	func addImageHandler(_ req: Request) throws -> Future<HTTPStatus>
+	{
+		
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(DecorItem.self), req.parameters.next(ImageAsset.self))
+		{ item, image in
+			
+			return item.images.attach(image, on: req).transform(to: .created)
+		}
+	}
+	
+	
+	// Get the item's example images
+	//
+	func getImagesHandler(_ req: Request) throws -> Future<[ImageAsset]> {
+		
+		return try req.parameters.next(DecorItem.self).flatMap(to: [ImageAsset].self) { item in
+			
+			try item.images.query(on: req).all()
+		}
+	}
+	
+	
+	func removeImageHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(DecorItem.self), req.parameters.next(ImageAsset.self)) { item, image in
+			
+			return item.images.detach(image, on: req).transform(to: .noContent)
+		}
+	}
+
 	
 }
 

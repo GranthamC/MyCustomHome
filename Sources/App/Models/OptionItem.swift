@@ -16,12 +16,15 @@ final class OptionItem: Codable
 	
 	var optionModelURL: String?
 	
+	var manufacturerURL: String?
+	var productID: String?
+
 	var detailInfo: String?
 	
 	var optionColor: Int32?
 	var imageScale: Float?
 	var isUpgrade: Bool?
-	var optionType: Int32?
+	var optionImageType: Int32?
 	var physicalHeight: Float?
 	var physicalWidth: Float?
 
@@ -45,6 +48,8 @@ extension OptionItem: Migration
 			
 			try addProperties(to: homeOption)
 			
+			homeOption.unique(on: \.name)
+
 			homeOption.reference(from: \.builderID, to: \HomeBuilder.id)
 			
 			homeOption.reference(from: \.categoryID, to: \OptionCategory.id)

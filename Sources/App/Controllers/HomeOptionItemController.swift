@@ -67,7 +67,7 @@ struct HomeOptionItemController: RouteCollection
 			
 			optionItem.name = updatedItem.name
 			optionItem.builderID = updatedItem.builderID
-			optionItem.optionType = updatedItem.optionType
+			optionItem.optionImageType = updatedItem.optionImageType
 			optionItem.changeToken = updatedItem.changeToken
 
 			optionItem.optionImageURL = updatedItem.optionImageURL

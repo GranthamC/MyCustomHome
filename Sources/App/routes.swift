@@ -169,6 +169,9 @@ public func routes(_ router: Router) throws {
 	let modelOptionsPackageController = ModelOptionController()
 	
 	try router.register(collection: modelOptionsPackageController)
-
+	
+	let websiteController = WebsiteController()
+	try router.register(collection: websiteController)
+	
 	
 }

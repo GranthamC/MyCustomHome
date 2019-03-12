@@ -34,10 +34,12 @@ extension ProductLine: Migration
 			try addProperties(to: line)
 
 			line.reference(from: \.builderID, to: \HomeBuilder.id)
+			
+			line.unique(on: \.name)
 		}
 	}
-	
 }
+
 
 extension ProductLine: Content {}
 

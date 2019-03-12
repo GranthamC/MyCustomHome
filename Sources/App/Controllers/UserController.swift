@@ -43,7 +43,7 @@ struct UserController: RouteCollection
 		
 		tokenAuthGroup.put(User.parameter, use: updateHandler)
 		
-		tokenAuthGroup.put(User.parameter, use: getHandler)
+		tokenAuthGroup.get(User.parameter, use: getHandler)
 
 		tokenAuthGroup.get("search", use: searchHandler)
 

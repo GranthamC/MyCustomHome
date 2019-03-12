@@ -12,22 +12,24 @@ public func configure(
     _ env: inout Environment,
     _ services: inout Services
     ) throws {
-
+	
+	
     try services.register(FluentPostgreSQLProvider())
 
 	try services.register(LeafProvider())
 	
 	try services.register(AuthenticationProvider())
-    
+	
     let router = EngineRouter.default()
+	
     try routes(router)
+	
     services.register(router, as: Router.self)
     
     var middlewares = MiddlewareConfig()
     middlewares.use(ErrorMiddleware.self)
     services.register(middlewares)
-    
-
+	
     var databases = DatabasesConfig()
 	
     let hostname = Environment.get("DATABASE_HOSTNAME") ?? "localhost"
@@ -119,6 +121,8 @@ public func configure(
 
     services.register(migrations)
 	
+	config.prefer(LeafRenderer.self, for: ViewRenderer.self)
+
 	// Add command line configuration service
 	//
 	var commandConfig = CommandConfig.default()
@@ -126,4 +130,6 @@ public func configure(
 	commandConfig.useFluentCommands()
 
 	services.register(commandConfig)
+	
+	
 }

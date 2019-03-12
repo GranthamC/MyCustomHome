@@ -56,6 +56,8 @@ extension HomeModel: Migration
 			try addProperties(to: homeModel)
 
 			homeModel.reference(from: \.builderID, to: \HomeBuilder.id)
+			
+			homeModel.unique(on: \.modelNumber)
 		}
 	}
 	

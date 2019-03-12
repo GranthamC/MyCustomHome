@@ -25,7 +25,18 @@ final class HomeBuilder: Codable
 
 extension HomeBuilder: PostgreSQLUUIDModel {}
 
-extension HomeBuilder: Migration {}
+extension HomeBuilder: Migration
+{
+	static func prepare(on connection: PostgreSQLConnection) -> Future<Void>
+	{
+		return Database.create(self, on: connection) { builder in
+			
+			try addProperties(to: builder)
+			
+			builder.unique(on: \.name)
+		}
+	}
+}
 
 extension HomeBuilder: Content {}
 

@@ -66,7 +66,7 @@ struct ModelOptionController: RouteCollection
 			
 			optionItem.name = updatedItem.name
 			optionItem.modelID = updatedItem.modelID
-			optionItem.optionType = updatedItem.optionType
+			optionItem.optionImageType = updatedItem.optionImageType
 			optionItem.changeToken = updatedItem.changeToken
 			
 			optionItem.optionImageURL = updatedItem.optionImageURL
