@@ -170,6 +170,11 @@ public func routes(_ router: Router) throws {
 	
 	try router.register(collection: modelOptionsPackageController)
 	
+	
+	let homeSetsPackageController = HomeSetController()
+	
+	try router.register(collection: homeSetsPackageController)
+
 	let websiteController = WebsiteController()
 	try router.register(collection: websiteController)
 	
