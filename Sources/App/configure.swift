@@ -123,6 +123,11 @@ public func configure(
 
     services.register(migrations)
 	
+	
+//	BuilderHomeSet.defaultDatabase = DatabaseIdentifier<PostgreSQLDatabase>.psql
+	
+	BuilderHomeSet.defaultDatabase = .psql
+
 	config.prefer(LeafRenderer.self, for: ViewRenderer.self)
 
 	// Add command line configuration service
