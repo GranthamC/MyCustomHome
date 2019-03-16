@@ -11,6 +11,22 @@ struct AddModelSetToBuilder: Migration {
 		return Database.create(	BuilderHomeSet.self, on: connection	) { builder in
 
 			builder.field(for: \.id, isIdentifier: true)
+			
+			builder.field(for: \.setTitle)
+			builder.unique(on: \.setTitle)
+			
+			builder.field(for: \.changeToken)
+			builder.field(for: \.logoURL)
+			
+			builder.field(for: \.setDescription)
+			builder.field(for: \.setIndex)
+			builder.field(for: \.websiteURL)
+			
+			builder.field(for: \.orderByIndex)
+			builder.field(for: \.useFactoryTour)
+			builder.field(for: \.useSlideOverForHomeInfo)
+			
+			builder.reference(from: \.builderID, to: \HomeBuilder.id)
 		}
 	}
 	
