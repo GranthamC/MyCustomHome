@@ -37,6 +37,8 @@ struct HomeBuilderController: RouteCollection
 		
 		buildersRoute.get(HomeBuilder.parameter, "home-models", use: getHomeModelsHandler)
 		
+		buildersRoute.get(HomeBuilder.parameter, "home-sets", use: getHomeSetsHandler)
+
 		buildersRoute.get(HomeBuilder.parameter, "change-tokens", use: getTokensHandler)
 
 
@@ -245,8 +247,20 @@ struct HomeBuilderController: RouteCollection
 	}
 
 	
+	// Get the builder's home sets of models to group
+	//
+	func getHomeSetsHandler(_ req: Request) throws -> Future<[BuilderHomeSet]> {
+		
+		return try req
+			.parameters.next(HomeBuilder.self)
+			.flatMap(to: [BuilderHomeSet].self) { builder in
+				
+				try builder.homeSets.query(on: req).all()
+		}
+	}
+
 	
-	// Get the Builder record for this decorPkg
+	// Get the change tokens for this builder
 	//
 	func getTokensHandler(_ req: Request) throws -> Future<ChangeToken> {
 		
