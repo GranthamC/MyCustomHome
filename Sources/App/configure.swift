@@ -120,6 +120,8 @@ public func configure(
 	migrations.add(migration: AdminUser.self, database: .psql)
 	
 	migrations.add(migration: AddModelSetToBuilder.self, database: .psql)
+	
+	migrations.add(migration: AddHomeSetPivot.self, database: .psql)
 
     services.register(migrations)
 	
@@ -127,6 +129,8 @@ public func configure(
 //	BuilderHomeSet.defaultDatabase = DatabaseIdentifier<PostgreSQLDatabase>.psql
 	
 	BuilderHomeSet.defaultDatabase = .psql
+	
+	HomeSetToHomeModelPivot.defaultDatabase = .psql
 
 	config.prefer(LeafRenderer.self, for: ViewRenderer.self)
 

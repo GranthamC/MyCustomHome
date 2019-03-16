@@ -15,6 +15,8 @@ struct AddModelSetToBuilder: Migration {
 			builder.field(for: \.setTitle)
 			builder.unique(on: \.setTitle)
 			
+			builder.field(for: \.builderID)
+
 			builder.field(for: \.changeToken)
 			builder.field(for: \.logoURL)
 			

@@ -26,16 +26,16 @@ final class HomeSetToHomeModelPivot: PostgreSQLUUIDPivot, ModifiablePivot
 
 extension HomeSetToHomeModelPivot: Migration
 {
-	static func prepare(on connection: PostgreSQLConnection) -> Future<Void>
-	{
-		return Database.create(self, on: connection) { builder in
-			
-			try addProperties(to: builder)
-			
-			builder.reference(from: \.homeSetID, to: \BuilderHomeSet.id, onDelete: .cascade)
-			
-			builder.reference(from: \.homeModelID, to: \HomeModel.id, onDelete: .cascade)
-		}
-	}
+//	static func prepare(on connection: PostgreSQLConnection) -> Future<Void>
+//	{
+//		return Database.create(self, on: connection) { builder in
+//			
+//			try addProperties(to: builder)
+//			
+//			builder.reference(from: \.homeSetID, to: \BuilderHomeSet.id, onDelete: .cascade)
+//			
+//			builder.reference(from: \.homeModelID, to: \HomeModel.id, onDelete: .cascade)
+//		}
+//	}
 }
 
