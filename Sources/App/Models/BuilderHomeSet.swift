@@ -40,11 +40,23 @@ extension BuilderHomeSet: Migration
 		
 		return Database.create(self, on: connection) { builder in
 			
-			try addProperties(to: builder)
+			builder.field(for: \.id, isIdentifier: true)
+			
+			builder.field(for: \.setTitle)
+			builder.unique(on: \.setTitle)
+			
+			builder.field(for: \.changeToken)
+			builder.field(for: \.logoURL)
+			
+			builder.field(for: \.setDescription)
+			builder.field(for: \.setIndex)
+			builder.field(for: \.websiteURL)
+			
+			builder.field(for: \.orderByIndex)
+			builder.field(for: \.useFactoryTour)
+			builder.field(for: \.useSlideOverForHomeInfo)
 			
 			builder.reference(from: \.builderID, to: \HomeBuilder.id)
-			
-			builder.unique(on: \.setTitle)
 		}
 	}
 }
