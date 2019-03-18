@@ -25,11 +25,7 @@ extension HomeSetCategory: Migration
 		
 		return Database.create(self, on: connection) { builder in
 			
-			builder.field(for: \.id, isIdentifier: true)
-			
-			builder.field(for: \.name)
-			
-			builder.field(for: \.homeSetID)
+			try addProperties(to: builder)
 			
 			builder.reference(from: \.homeSetID, to: \BuilderHomeSet.id)
 		}

@@ -26,17 +26,17 @@ final class SetCategoryHomesPivot: PostgreSQLUUIDPivot, ModifiablePivot
 
 extension SetCategoryHomesPivot: Migration
 {
-		static func prepare(on connection: PostgreSQLConnection) -> Future<Void>
-		{
-			return Database.create(self, on: connection) { builder in
-	
-//				try addProperties(to: builder)
-//	
-//				builder.reference(from: \.homeSetID, to: \BuilderHomeSet.id, onDelete: .cascade)
-//	
-//				builder.reference(from: \.homeModelID, to: \HomeModel.id, onDelete: .cascade)
-			}
+	static func prepare(on connection: PostgreSQLConnection) -> Future<Void>
+	{
+		return Database.create(self, on: connection) { builder in
+			
+			try addProperties(to: builder)
+			
+			builder.reference(from: \.setCategoryID, to: \HomeSetCategory.id, onDelete: .cascade)
+			
+			builder.reference(from: \.homeModelID, to: \HomeModel.id, onDelete: .cascade)
 		}
+	}
 }
 
 

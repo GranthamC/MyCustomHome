@@ -116,32 +116,33 @@ public func configure(
 	migrations.add(model: ProductLineOptionPivot.self, database: .psql)
 
 	migrations.add(model: Token.self, database: .psql)
-	
+
+	migrations.add(model: BuilderHomeSet.self, database: .psql)
+
+	migrations.add(model: HomeSetToHomeModelPivot.self, database: .psql)
+
+	migrations.add(model: HomeSetCategory.self, database: .psql)
+
+	migrations.add(model: SetCategoryHomesPivot.self, database: .psql)
+
 	migrations.add(migration: AdminUser.self, database: .psql)
 	
-	migrations.add(migration: AddModelSetToBuilder.self, database: .psql)
-	
-	migrations.add(migration: AddHomeSetPivot.self, database: .psql)
-	
-	migrations.add(migration: AddModelSetCategory.self, database: .psql)
-	
-	migrations.add(migration: AddSetCategoryHomesPivot.self, database: .psql)
-	
-	migrations.add(migration: AddModelSetFieldsForCategory.self, database: .psql)
+//	migrations.add(migration: AddModelSetToBuilder.self, database: .psql)
+//	
+//	migrations.add(migration: AddHomeSetPivot.self, database: .psql)
+//	
+//	migrations.add(migration: AddModelSetCategory.self, database: .psql)
+//	
+//	migrations.add(migration: AddSetCategoryHomesPivot.self, database: .psql)
+//	
+//	migrations.add(migration: AddModelSetFieldsForCategory.self, database: .psql)
 
     services.register(migrations)
 	
 	
 //	BuilderHomeSet.defaultDatabase = DatabaseIdentifier<PostgreSQLDatabase>.psql
 	
-	BuilderHomeSet.defaultDatabase = .psql
 	
-	HomeSetToHomeModelPivot.defaultDatabase = .psql
-	
-	HomeSetCategory.defaultDatabase = .psql
-	
-	SetCategoryHomesPivot.defaultDatabase = .psql
-
 	config.prefer(LeafRenderer.self, for: ViewRenderer.self)
 
 	// Add command line configuration service
