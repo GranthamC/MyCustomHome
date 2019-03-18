@@ -130,7 +130,6 @@ public func routes(_ router: Router) throws {
 	try router.register(collection: imageAssetController)
 
 	
-	
 	let homeOptionCategoryController = HomeOptionCategoryController()
 	
 	try router.register(collection: homeOptionCategoryController)
@@ -174,6 +173,11 @@ public func routes(_ router: Router) throws {
 	let homeSetsPackageController = HomeSetController()
 	
 	try router.register(collection: homeSetsPackageController)
+	
+	
+	let setCategoryPackageController = CategoryController()
+	
+	try router.register(collection: setCategoryPackageController)
 
 	let websiteController = WebsiteController()
 	try router.register(collection: websiteController)

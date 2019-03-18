@@ -23,6 +23,11 @@ final class BuilderHomeSet: Codable
 	var useFactoryTour: Bool?
 	var useSlideOverForHomeInfo: Bool?
 	
+	var homeSetBrochureURL: String?
+	
+	var useCategories: Bool?
+	var useBrochure: Bool?
+
 	init(name: String, builderID: HomeBuilder.ID) {
 		
 		self.setTitle = name
@@ -76,6 +81,11 @@ extension BuilderHomeSet
 		return siblings()
 	}
 	
+	var homeCategories: Children<BuilderHomeSet, HomeSetCategory> {
+		
+		return children(\.homeSetID)
+	}
+
 	var builder: Parent<BuilderHomeSet, HomeBuilder> {
 		
 		return parent(\.builderID)

@@ -57,7 +57,8 @@ struct HomeSetController: RouteCollection
 		
 		homeSetRoute.get("home-sets", use: all)
 		
-		
+		homeSetRoute.get(BuilderHomeSet.parameter, "categories", use: getSetCategoriesHandler)
+
 		// Add-in authentication for creating and updating
 		//
 		let tokenAuthMiddleware = User.tokenAuthMiddleware()
@@ -128,7 +129,10 @@ struct HomeSetController: RouteCollection
 			homeSet.logoURL = updatedSet.logoURL
 			homeSet.websiteURL = updatedSet.websiteURL
 			homeSet.changeToken = updatedSet.changeToken
-			
+			homeSet.homeSetBrochureURL = updatedSet.homeSetBrochureURL
+			homeSet.useCategories = updatedSet.useCategories
+			homeSet.useBrochure = updatedSet.useBrochure
+
 			return homeSet.save(on: req)
 		}
 	}
@@ -182,6 +186,20 @@ struct HomeSetController: RouteCollection
 			return line.homeModels.detach(model, on: req).transform(to: .noContent)
 		}
 	}
+	
+	
+	// Get the builder's product lines
+	//
+	func getSetCategoriesHandler(_ req: Request) throws -> Future<[HomeSetCategory]> {
+		
+		return try req
+			.parameters.next(BuilderHomeSet.self)
+			.flatMap(to: [HomeSetCategory].self) { builder in
+				
+				try builder.homeCategories.query(on: req).all()
+		}
+	}
+
 	
 }
 
