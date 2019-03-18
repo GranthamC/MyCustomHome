@@ -23,11 +23,15 @@ extension HomeSetCategory: Migration
 		on connection: PostgreSQLConnection
 		) -> Future<Void> {
 		
-		return Database.create(self, on: connection) { line in
+		return Database.create(self, on: connection) { builder in
 			
-//			try addProperties(to: line)
-//			
-//			line.reference(from: \.homeSetID, to: \BuilderHomeSet.id)
+			builder.field(for: \.id, isIdentifier: true)
+			
+			builder.field(for: \.name)
+			
+			builder.field(for: \.homeSetID)
+			
+			builder.reference(from: \.homeSetID, to: \BuilderHomeSet.id)
 		}
 	}
 }
