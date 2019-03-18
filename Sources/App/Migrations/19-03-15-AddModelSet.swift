@@ -28,10 +28,10 @@ struct AddModelSetToBuilder: Migration {
 			builder.field(for: \.useFactoryTour)
 			builder.field(for: \.useSlideOverForHomeInfo)
 			
-			builder.field(for: \.homeSetBrochureURL)
-			
-			builder.field(for: \.useCategories)
-			builder.field(for: \.useBrochure)
+//			builder.field(for: \.homeSetBrochureURL)
+//
+//			builder.field(for: \.useCategories)
+//			builder.field(for: \.useBrochure)
 
 			builder.reference(from: \.builderID, to: \HomeBuilder.id)
 		}
