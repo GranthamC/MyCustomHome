@@ -127,15 +127,6 @@ public func configure(
 
 	migrations.add(migration: AdminUser.self, database: .psql)
 	
-//	migrations.add(migration: AddModelSetToBuilder.self, database: .psql)
-//	
-//	migrations.add(migration: AddHomeSetPivot.self, database: .psql)
-//	
-//	migrations.add(migration: AddModelSetCategory.self, database: .psql)
-//	
-//	migrations.add(migration: AddSetCategoryHomesPivot.self, database: .psql)
-//	
-//	migrations.add(migration: AddModelSetFieldsForCategory.self, database: .psql)
 
     services.register(migrations)
 	
