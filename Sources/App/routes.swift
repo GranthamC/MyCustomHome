@@ -130,12 +130,12 @@ public func routes(_ router: Router) throws {
 	try router.register(collection: imageAssetController)
 
 	
-	let builderOptionCategoryController = BuilderOptionCategoryController()
+	let builderOptionCategoryController = BuilderCategoryController()
 	
 	try router.register(collection: builderOptionCategoryController)
 	
 	
-	let builderOptionItemController = BuilderOptionItemController()
+	let builderOptionItemController = BuilderOptionController()
 	
 	try router.register(collection: builderOptionItemController)
 	

@@ -69,9 +69,9 @@ public func configure(
 	
 	migrations.add(model: ImageAsset.self, database: .psql)
 
-	migrations.add(model: BuilderOptionCategory.self, database: .psql)
+	migrations.add(model: BuilderCategory.self, database: .psql)
 	
-	migrations.add(model: BuilderOptionItem.self, database: .psql)
+	migrations.add(model: BuilderOption.self, database: .psql)
 
 	migrations.add(model: DecorCategory.self, database: .psql)
 	
@@ -83,6 +83,8 @@ public func configure(
 	
 	migrations.add(model: ChangeToken.self, database: .psql)
 	
+	migrations.add(model: ModelOptionCategory.self, database: .psql)
+
 	migrations.add(model: ModelOption.self, database: .psql)
 
 	migrations.add(model: DecorPackageOptionPivot.self, database: .psql)
@@ -132,8 +134,6 @@ public func configure(
 	migrations.add(model: ModelDecorCategory.self, database: .psql)
 	
 	migrations.add(model: ModelCategoryItemPivot.self, database: .psql)
-	
-	migrations.add(model: ModelOptionCategory.self, database: .psql)
 
 	migrations.add(migration: AdminUser.self, database: .psql)
 	

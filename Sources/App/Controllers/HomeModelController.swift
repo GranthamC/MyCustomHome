@@ -86,9 +86,9 @@ struct BuilderOptionResponse: Content
 	var builderID: String
 	var optionType: Int32?
 	
-	var categoryOptions: [BuilderOptionItem]
+	var categoryOptions: [BuilderOption]
 	
-	init(category: BuilderOptionCategory, homeOptions: [BuilderOptionItem])
+	init(category: BuilderCategory, homeOptions: [BuilderOption])
 	{
 		self.category = category.name
 		self.id = category.id?.uuidString ?? ""
@@ -166,13 +166,13 @@ struct HomeModelController: RouteCollection
 		
 		tokenAuthGroup.put(HomeModel.parameter, use: updateHandler)
 		
-		tokenAuthGroup.post(HomeModel.parameter, "option-category", BuilderOptionCategory.parameter, use: addOptionCategoryHandler)
+		tokenAuthGroup.post(HomeModel.parameter, "option-category", BuilderCategory.parameter, use: addOptionCategoryHandler)
 		
-		tokenAuthGroup.delete(HomeModel.parameter, "option-category", BuilderOptionCategory.parameter, use: removeOptionCategoryHandler)
+		tokenAuthGroup.delete(HomeModel.parameter, "option-category", BuilderCategory.parameter, use: removeOptionCategoryHandler)
 		
-		tokenAuthGroup.post(HomeModel.parameter, "option-item", BuilderOptionItem.parameter, use: addOptionItemHandler)
+		tokenAuthGroup.post(HomeModel.parameter, "option-item", BuilderOption.parameter, use: addOptionItemHandler)
 		
-		tokenAuthGroup.delete(HomeModel.parameter, "option-item", BuilderOptionItem.parameter, use: removeOptionItemHandler)
+		tokenAuthGroup.delete(HomeModel.parameter, "option-item", BuilderOption.parameter, use: removeOptionItemHandler)
 		
 		tokenAuthGroup.post(HomeModel.parameter, "decor-category", DecorCategory.parameter, use: addDecorCategoryHandler)
 		
@@ -299,7 +299,7 @@ struct HomeModelController: RouteCollection
 
 	
 	
-	func allCatResponses(_ request: Request, optionCats: Future<[BuilderOptionCategory]>) throws -> Future<[BuilderOptionResponse]> {
+	func allCatResponses(_ request: Request, optionCats: Future<[BuilderCategory]>) throws -> Future<[BuilderOptionResponse]> {
 		
 		return optionCats.flatMap { cats in
 			
@@ -417,7 +417,7 @@ struct HomeModelController: RouteCollection
 		func addOptionCategoryHandler(_ req: Request) throws -> Future<HTTPStatus>
 		{
 			
-			return try flatMap(to: HTTPStatus.self,	req.parameters.next(HomeModel.self), req.parameters.next(BuilderOptionCategory.self))
+			return try flatMap(to: HTTPStatus.self,	req.parameters.next(HomeModel.self), req.parameters.next(BuilderCategory.self))
 			{ model, category in
 				
 				return model.optionCategories.attach(category, on: req).transform(to: .created)
@@ -426,9 +426,9 @@ struct HomeModelController: RouteCollection
 	
 		// Get the line's home models
 		//
-		func getOptionCategoryHandler(_ req: Request) throws -> Future<[BuilderOptionCategory]> {
+		func getOptionCategoryHandler(_ req: Request) throws -> Future<[BuilderCategory]> {
 			
-			return try req.parameters.next(HomeModel.self).flatMap(to: [BuilderOptionCategory].self) { model in
+			return try req.parameters.next(HomeModel.self).flatMap(to: [BuilderCategory].self) { model in
 				
 				try model.optionCategories.query(on: req).all()
 			}
@@ -436,7 +436,7 @@ struct HomeModelController: RouteCollection
 	
 		func removeOptionCategoryHandler(_ req: Request) throws -> Future<HTTPStatus> {
 			
-			return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeModel.self), req.parameters.next(BuilderOptionCategory.self)) { model, category in
+			return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeModel.self), req.parameters.next(BuilderCategory.self)) { model, category in
 				
 				return model.optionCategories.detach(category, on: req).transform(to: .noContent)
 			}
@@ -445,7 +445,7 @@ struct HomeModelController: RouteCollection
 		func addOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus>
 		{
 			
-			return try flatMap(to: HTTPStatus.self,	req.parameters.next(HomeModel.self), req.parameters.next(BuilderOptionItem.self))
+			return try flatMap(to: HTTPStatus.self,	req.parameters.next(HomeModel.self), req.parameters.next(BuilderOption.self))
 			{ model, item in
 				
 				return model.optionItems.attach(item, on: req).transform(to: .created)
@@ -454,9 +454,9 @@ struct HomeModelController: RouteCollection
 	
 		// Get the line's home models
 		//
-		func getOptionItemHandler(_ req: Request) throws -> Future<[BuilderOptionItem]> {
+		func getOptionItemHandler(_ req: Request) throws -> Future<[BuilderOption]> {
 			
-			return try req.parameters.next(HomeModel.self).flatMap(to: [BuilderOptionItem].self) { model in
+			return try req.parameters.next(HomeModel.self).flatMap(to: [BuilderOption].self) { model in
 				
 				try model.optionItems.query(on: req).all()
 			}
@@ -464,7 +464,7 @@ struct HomeModelController: RouteCollection
 	
 		func removeOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus> {
 			
-			return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeModel.self), req.parameters.next(BuilderOptionItem.self)) { model, item in
+			return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeModel.self), req.parameters.next(BuilderOption.self)) { model, item in
 				
 				return model.optionItems.detach(item, on: req).transform(to: .noContent)
 			}

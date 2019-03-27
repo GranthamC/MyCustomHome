@@ -85,12 +85,12 @@ extension HomeModel
 		return siblings()
 	}
 	
-	var optionCategories: Siblings<HomeModel, BuilderOptionCategory, HomeModelCategoryPivot> {
+	var optionCategories: Siblings<HomeModel, BuilderCategory, HomeModelCategoryPivot> {
 		
 		return siblings()
 	}
 	
-	var optionItems: Siblings<HomeModel, BuilderOptionItem, HomeModelOptionPivot> {
+	var optionItems: Siblings<HomeModel, BuilderOption, HomeModelOptionPivot> {
 		
 		return siblings()
 	}

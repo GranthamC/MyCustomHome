@@ -158,11 +158,11 @@ struct HomeBuilderController: RouteCollection
 	
 	// Get the builder's home option categories
 	//
-	func getHomeOptionCategoriesHandler(_ req: Request) throws -> Future<[BuilderOptionCategory]> {
+	func getHomeOptionCategoriesHandler(_ req: Request) throws -> Future<[BuilderCategory]> {
 		
 		return try req
 			.parameters.next(HomeBuilder.self)
-			.flatMap(to: [BuilderOptionCategory].self) { builder in
+			.flatMap(to: [BuilderCategory].self) { builder in
 				
 				try builder.homeOptionCategories.query(on: req).all()
 		}
@@ -171,11 +171,11 @@ struct HomeBuilderController: RouteCollection
 	
 	// Get the builder's home options
 	//
-	func getHomeOptionItemsHandler(_ req: Request) throws -> Future<[BuilderOptionItem]> {
+	func getHomeOptionItemsHandler(_ req: Request) throws -> Future<[BuilderOption]> {
 		
 		return try req
 			.parameters.next(HomeBuilder.self)
-			.flatMap(to: [BuilderOptionItem].self) { builder in
+			.flatMap(to: [BuilderOption].self) { builder in
 				
 				try builder.homeOptions.query(on: req).all()
 		}

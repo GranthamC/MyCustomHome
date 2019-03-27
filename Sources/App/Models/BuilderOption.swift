@@ -2,13 +2,13 @@ import Foundation
 import Vapor
 import FluentPostgreSQL
 
-final class BuilderOptionItem: Codable
+final class BuilderOption: Codable
 {
 	var id: UUID?
 	var name: String
 	var builderID: HomeBuilder.ID
 	
-	var categoryID: BuilderOptionCategory.ID
+	var categoryID: BuilderCategory.ID
 
 	var changeToken: Int32?
 
@@ -28,7 +28,7 @@ final class BuilderOptionItem: Codable
 	var physicalHeight: Float?
 	var physicalWidth: Float?
 
-	init(name: String, builderID: HomeBuilder.ID, categoryID: BuilderOptionCategory.ID, imagePath: String) {
+	init(name: String, builderID: HomeBuilder.ID, categoryID: BuilderCategory.ID, imagePath: String) {
 		self.name = name
 		self.builderID = builderID
 		self.categoryID = categoryID
@@ -36,9 +36,9 @@ final class BuilderOptionItem: Codable
 	}
 }
 
-extension BuilderOptionItem: PostgreSQLUUIDModel {}
+extension BuilderOption: PostgreSQLUUIDModel {}
 
-extension BuilderOptionItem: Migration
+extension BuilderOption: Migration
 {
 	static func prepare(
 		on connection: PostgreSQLConnection
@@ -52,29 +52,29 @@ extension BuilderOptionItem: Migration
 
 			homeOption.reference(from: \.builderID, to: \HomeBuilder.id)
 			
-			homeOption.reference(from: \.categoryID, to: \BuilderOptionCategory.id)
+			homeOption.reference(from: \.categoryID, to: \BuilderCategory.id)
 		}
 	}
 	
 }
 
-extension BuilderOptionItem: Content {}
+extension BuilderOption: Content {}
 
-extension BuilderOptionItem: Parameter {}
+extension BuilderOption: Parameter {}
 
-extension BuilderOptionItem
+extension BuilderOption
 {
-	var builder: Parent<BuilderOptionItem, HomeBuilder> {
+	var builder: Parent<BuilderOption, HomeBuilder> {
 		
 		return parent(\.builderID)
 	}
 	
-	var category: Parent<BuilderOptionItem, BuilderOptionCategory> {
+	var category: Parent<BuilderOption, BuilderCategory> {
 		
 		return parent(\.categoryID)
 	}
 	
-	var images: Siblings<BuilderOptionItem, ImageAsset, ImageAssetHomeOptionPivot> {
+	var images: Siblings<BuilderOption, ImageAsset, ImageAssetHomeOptionPivot> {
 		
 		return siblings()
 	}

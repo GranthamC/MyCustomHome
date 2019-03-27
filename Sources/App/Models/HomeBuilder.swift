@@ -59,12 +59,12 @@ extension HomeBuilder
 		return children(\.builderID)
 	}
 	
-	var homeOptionCategories: Children<HomeBuilder, BuilderOptionCategory> {
+	var homeOptionCategories: Children<HomeBuilder, BuilderCategory> {
 		
 		return children(\.builderID)
 	}
 	
-	var homeOptions: Children<HomeBuilder, BuilderOptionItem> {
+	var homeOptions: Children<HomeBuilder, BuilderOption> {
 		
 		return children(\.builderID)
 	}

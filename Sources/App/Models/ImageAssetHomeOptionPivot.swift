@@ -7,17 +7,17 @@ final class ImageAssetHomeOptionPivot: PostgreSQLUUIDPivot, ModifiablePivot
 	var id: UUID?
 	
 	var imageAssetID: ImageAsset.ID
-	var homeOptionID: BuilderOptionItem.ID
+	var homeOptionID: BuilderOption.ID
 	
 	
 	typealias Left = ImageAsset
-	typealias Right = BuilderOptionItem
+	typealias Right = BuilderOption
 	
 	static let leftIDKey: LeftIDKey = \.imageAssetID
 	static let rightIDKey: RightIDKey = \.homeOptionID
 	
 	
-	init(_ image: ImageAsset, _ homeOption: BuilderOptionItem) throws {
+	init(_ image: ImageAsset, _ homeOption: BuilderOption) throws {
 		self.imageAssetID = try image.requireID()
 		self.homeOptionID = try homeOption.requireID()
 	}
@@ -34,7 +34,7 @@ extension ImageAssetHomeOptionPivot: Migration
 			
 			builder.reference(from: \.imageAssetID, to: \ImageAsset.id, onDelete: .cascade)
 			
-			builder.reference(from: \.homeOptionID, to: \BuilderOptionItem.id, onDelete: .cascade)
+			builder.reference(from: \.homeOptionID, to: \BuilderOption.id, onDelete: .cascade)
 		}
 	}
 	
