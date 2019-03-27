@@ -8,6 +8,9 @@ final class DecorCategory: Codable
 	var name: String
 	var builderID: HomeBuilder.ID
 	
+	var lineID: ProductLine.ID?
+	var homeModelID: HomeModel.ID?
+
 	var optionType: Int32?
 	
 	var changeToken: Int32?
@@ -55,7 +58,7 @@ extension DecorCategory
 		return children(\.categoryID)
 	}
 
-	
+/*
 	var homeModels: Siblings<DecorCategory, HomeModel, HomeModelDecorCategoryPivot> {
 		
 		return siblings()
@@ -65,7 +68,7 @@ extension DecorCategory
 		
 		return siblings()
 	}
-	
+*/
 }
 
 

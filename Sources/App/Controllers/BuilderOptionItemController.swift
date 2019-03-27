@@ -5,20 +5,20 @@ import Authentication
 
 
 
-struct HomeOptionItemController: RouteCollection
+struct BuilderOptionItemController: RouteCollection
 {
 	
 	func boot(router: Router) throws {
 		
-		let homeOptionItemsRoute = router.grouped("api", "option-item")
+		let homeOptionItemsRoute = router.grouped("api", "builder-option")
 		
 		homeOptionItemsRoute.get(use: getAllHandler)
 		
-		homeOptionItemsRoute.get(OptionItem.parameter, use: getHandler)
+		homeOptionItemsRoute.get(BuilderOptionItem.parameter, use: getHandler)
 		
-		homeOptionItemsRoute.get(OptionItem.parameter, "category", use: getCategoryHandler)
+		homeOptionItemsRoute.get(BuilderOptionItem.parameter, "category", use: getCategoryHandler)
 
-		homeOptionItemsRoute.get(OptionItem.parameter, "builder", use: getBuilderHandler)
+		homeOptionItemsRoute.get(BuilderOptionItem.parameter, "builder", use: getBuilderHandler)
 		
 		// Add-in authentication for creating and updating
 		//
@@ -29,40 +29,40 @@ struct HomeOptionItemController: RouteCollection
 			tokenAuthMiddleware,
 			guardAuthMiddleware)
 		
-		tokenAuthGroup.post(OptionItem.self, use: createHandler)
+		tokenAuthGroup.post(BuilderOptionItem.self, use: createHandler)
 		
-		tokenAuthGroup.delete(OptionItem.parameter, use: deleteHandler)
+		tokenAuthGroup.delete(BuilderOptionItem.parameter, use: deleteHandler)
 		
-		tokenAuthGroup.put(OptionItem.parameter, use: updateHandler)
+		tokenAuthGroup.put(BuilderOptionItem.parameter, use: updateHandler)
 	}
 	
 	
-	func createHandler(_ req: Request, homeOptionItem: OptionItem) throws -> Future<OptionItem> {
+	func createHandler(_ req: Request, homeOptionItem: BuilderOptionItem) throws -> Future<BuilderOptionItem> {
 		
 		return homeOptionItem.save(on: req)
 	}
 	
 	
-	func getAllHandler(_ req: Request) throws -> Future<[OptionItem]>
+	func getAllHandler(_ req: Request) throws -> Future<[BuilderOptionItem]>
 	{
-		return OptionItem.query(on: req).all()
+		return BuilderOptionItem.query(on: req).all()
 	}
 	
 	
-	func getHandler(_ req: Request) throws -> Future<OptionItem>
+	func getHandler(_ req: Request) throws -> Future<BuilderOptionItem>
 	{
-		return try req.parameters.next(OptionItem.self)
+		return try req.parameters.next(BuilderOptionItem.self)
 	}
 	
 	
 	// Update passed product home option Item with parameters
 	//
-	func updateHandler(_ req: Request) throws -> Future<OptionItem> {
+	func updateHandler(_ req: Request) throws -> Future<BuilderOptionItem> {
 		
 		return try flatMap(
-			to: OptionItem.self,
-			req.parameters.next(OptionItem.self),
-			req.content.decode(OptionItem.self)
+			to: BuilderOptionItem.self,
+			req.parameters.next(BuilderOptionItem.self),
+			req.content.decode(BuilderOptionItem.self)
 		) { optionItem, updatedItem in
 			
 			optionItem.name = updatedItem.name
@@ -86,15 +86,15 @@ struct HomeOptionItemController: RouteCollection
 	
 	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try req.parameters.next(OptionItem.self).delete(on: req).transform(to: HTTPStatus.noContent)
+		return try req.parameters.next(BuilderOptionItem.self).delete(on: req).transform(to: HTTPStatus.noContent)
 	}
 	
 	
 	// Get the category record for this option Item
 	//
-	func getCategoryHandler(_ req: Request) throws -> Future<OptionCategory> {
+	func getCategoryHandler(_ req: Request) throws -> Future<BuilderOptionCategory> {
 		
-		return try req.parameters.next(OptionItem.self).flatMap(to: OptionCategory.self) { optionItem in
+		return try req.parameters.next(BuilderOptionItem.self).flatMap(to: BuilderOptionCategory.self) { optionItem in
 			
 			optionItem.category.get(on: req)
 		}
@@ -105,7 +105,7 @@ struct HomeOptionItemController: RouteCollection
 	//
 	func getBuilderHandler(_ req: Request) throws -> Future<HomeBuilder> {
 		
-		return try req.parameters.next(OptionItem.self).flatMap(to: HomeBuilder.self) { homeOptionItem in
+		return try req.parameters.next(BuilderOptionItem.self).flatMap(to: HomeBuilder.self) { homeOptionItem in
 			
 			homeOptionItem.builder.get(on: req)
 		}

@@ -64,7 +64,7 @@ extension ImageAsset
 	}
 	
 	var homeOptionExampleImages: Siblings<ImageAsset,
-		OptionItem,
+		BuilderOptionItem,
 		ImageAssetHomeOptionPivot> {
 		
 		return siblings()

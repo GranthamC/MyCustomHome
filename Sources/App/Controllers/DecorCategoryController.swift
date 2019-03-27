@@ -107,7 +107,7 @@ struct DecorOptionCategoryController: RouteCollection
 	}
 
 	
-	
+/*
 	func addOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus>
 	{
 		
@@ -135,7 +135,7 @@ struct DecorOptionCategoryController: RouteCollection
 			return category.optionItems.detach(optionItem, on: req).transform(to: .noContent)
 		}
 	}
-	
+*/
 }
 
 

@@ -49,7 +49,7 @@ struct ImageAssetController: RouteCollection
 		
 		tokenAuthGroup.delete(ImageAsset.parameter, "home-model", HomeModel.parameter, 	use: removeHomeHandler)
 
-		tokenAuthGroup.delete(ImageAsset.parameter, "home-option-item", OptionItem.parameter, 	use: removeHomeOptionHandler)
+		tokenAuthGroup.delete(ImageAsset.parameter, "home-option-item", BuilderOptionItem.parameter, 	use: removeHomeOptionHandler)
 
 		tokenAuthGroup.delete(ImageAsset.parameter, "decor-item", DecorItem.parameter, 	use: removeDecorOptionHandler)
 
@@ -156,10 +156,10 @@ struct ImageAssetController: RouteCollection
 	}
 	
 	
-	func getHomeOptonsHandler(_ req: Request ) throws -> Future<[OptionItem]> {
+	func getHomeOptonsHandler(_ req: Request ) throws -> Future<[BuilderOptionItem]> {
 		
 		return try req.parameters.next(ImageAsset.self)
-			.flatMap(to: [OptionItem].self) { imageAsset in
+			.flatMap(to: [BuilderOptionItem].self) { imageAsset in
 				
 				try imageAsset.homeOptionExampleImages.query(on: req).all()
 		}
@@ -171,7 +171,7 @@ struct ImageAssetController: RouteCollection
 		return try flatMap(
 			to: HTTPStatus.self,
 			req.parameters.next(ImageAsset.self),
-			req.parameters.next(OptionItem.self)
+			req.parameters.next(BuilderOptionItem.self)
 		) { imageAsset, homeOption in
 			
 			return imageAsset.homeOptionExampleImages .detach(homeOption, on: req) .transform(to: .noContent)

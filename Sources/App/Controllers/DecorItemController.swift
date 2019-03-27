@@ -5,7 +5,7 @@ import Authentication
 
 
 
-struct DecorOptionItemController: RouteCollection
+struct DecorItemController: RouteCollection
 {
 	
 	func boot(router: Router) throws {

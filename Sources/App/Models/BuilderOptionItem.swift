@@ -2,13 +2,13 @@ import Foundation
 import Vapor
 import FluentPostgreSQL
 
-final class OptionItem: Codable
+final class BuilderOptionItem: Codable
 {
 	var id: UUID?
 	var name: String
 	var builderID: HomeBuilder.ID
 	
-	var categoryID: OptionCategory.ID
+	var categoryID: BuilderOptionCategory.ID
 
 	var changeToken: Int32?
 
@@ -28,7 +28,7 @@ final class OptionItem: Codable
 	var physicalHeight: Float?
 	var physicalWidth: Float?
 
-	init(name: String, builderID: HomeBuilder.ID, categoryID: OptionCategory.ID, imagePath: String) {
+	init(name: String, builderID: HomeBuilder.ID, categoryID: BuilderOptionCategory.ID, imagePath: String) {
 		self.name = name
 		self.builderID = builderID
 		self.categoryID = categoryID
@@ -36,9 +36,9 @@ final class OptionItem: Codable
 	}
 }
 
-extension OptionItem: PostgreSQLUUIDModel {}
+extension BuilderOptionItem: PostgreSQLUUIDModel {}
 
-extension OptionItem: Migration
+extension BuilderOptionItem: Migration
 {
 	static func prepare(
 		on connection: PostgreSQLConnection
@@ -52,29 +52,29 @@ extension OptionItem: Migration
 
 			homeOption.reference(from: \.builderID, to: \HomeBuilder.id)
 			
-			homeOption.reference(from: \.categoryID, to: \OptionCategory.id)
+			homeOption.reference(from: \.categoryID, to: \BuilderOptionCategory.id)
 		}
 	}
 	
 }
 
-extension OptionItem: Content {}
+extension BuilderOptionItem: Content {}
 
-extension OptionItem: Parameter {}
+extension BuilderOptionItem: Parameter {}
 
-extension OptionItem
+extension BuilderOptionItem
 {
-	var builder: Parent<OptionItem, HomeBuilder> {
+	var builder: Parent<BuilderOptionItem, HomeBuilder> {
 		
 		return parent(\.builderID)
 	}
 	
-	var category: Parent<OptionItem, OptionCategory> {
+	var category: Parent<BuilderOptionItem, BuilderOptionCategory> {
 		
 		return parent(\.categoryID)
 	}
 	
-	var images: Siblings<OptionItem, ImageAsset, ImageAssetHomeOptionPivot> {
+	var images: Siblings<BuilderOptionItem, ImageAsset, ImageAssetHomeOptionPivot> {
 		
 		return siblings()
 	}

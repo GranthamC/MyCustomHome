@@ -4,7 +4,7 @@ import Fluent
 import Authentication
 
 
-struct CategoryController: RouteCollection
+struct SetCategoryController: RouteCollection
 {
 	
 	func boot(router: Router) throws {

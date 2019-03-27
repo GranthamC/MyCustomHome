@@ -7,12 +7,13 @@ final class DecorItem: Codable
 	var id: UUID?
 	var name: String
 	var builderID: HomeBuilder.ID
+	
 	var categoryID: DecorCategory.ID
+
+	var optionImageURL: String
 
 	var changeToken: Int32?
 
-	var optionImageURL: String
-	
 	var optionModelURL: String?
 	
 	var manufacturerURL: String?
@@ -43,15 +44,15 @@ extension DecorItem: Migration
 		on connection: PostgreSQLConnection
 		) -> Future<Void> {
 		
-		return Database.create(self, on: connection) { homeOption in
+		return Database.create(self, on: connection) { builder in
 			
-			try addProperties(to: homeOption)
+			try addProperties(to: builder)
 			
-			homeOption.unique(on: \.name)
+			builder.unique(on: \.name)
 
-			homeOption.reference(from: \.builderID, to: \HomeBuilder.id)
+			builder.reference(from: \.builderID, to: \HomeBuilder.id)
 			
-			homeOption.reference(from: \.categoryID, to: \DecorCategory.id)
+			builder.reference(from: \.categoryID, to: \DecorCategory.id)
 		}
 	}
 	

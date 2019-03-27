@@ -8,7 +8,12 @@ final class ModelOption: Codable
 	
 	var name: String
 	var modelID: HomeModel.ID
+	
+	var categoryID: ModelOptionCategory.ID
+
 	var optionImageURL: String
+
+	var changeToken: Int32?
 
 	var detailInfo: String?
 	
@@ -24,11 +29,10 @@ final class ModelOption: Codable
 	var physicalHeight: Float?
 	var physicalWidth: Float?
 
-	var changeToken: Int32?
-
-	init(name: String, modelID: HomeModel.ID, imagePath: String) {
+	init(name: String, modelID: HomeModel.ID, categoryID: ModelOptionCategory.ID, imagePath: String) {
 		self.name = name
 		self.modelID = modelID
+		self.categoryID = categoryID
 		self.optionImageURL = imagePath
 	}
 }
@@ -41,11 +45,13 @@ extension ModelOption: Migration
 		on connection: PostgreSQLConnection
 		) -> Future<Void> {
 		
-		return Database.create(self, on: connection) { homeOption in
+		return Database.create(self, on: connection) { builder in
 			
-			try addProperties(to: homeOption)
+			try addProperties(to: builder)
 			
-			homeOption.reference(from: \.modelID, to: \HomeModel.id)
+			builder.reference(from: \.modelID, to: \HomeModel.id)
+			
+			builder.reference(from: \.categoryID, to: \ModelOptionCategory.id)
 		}
 	}
 	
@@ -60,6 +66,11 @@ extension ModelOption
 	var homeModel: Parent<ModelOption, HomeModel> {
 		
 		return parent(\.modelID)
+	}
+	
+	var category: Parent<ModelOption, ModelOptionCategory> {
+		
+		return parent(\.categoryID)
 	}
 	
 	var images: Siblings<ModelOption, ImageAsset, ImageModelOptionPivot> {

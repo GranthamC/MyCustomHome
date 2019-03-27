@@ -130,14 +130,14 @@ public func routes(_ router: Router) throws {
 	try router.register(collection: imageAssetController)
 
 	
-	let homeOptionCategoryController = HomeOptionCategoryController()
+	let builderOptionCategoryController = BuilderOptionCategoryController()
 	
-	try router.register(collection: homeOptionCategoryController)
+	try router.register(collection: builderOptionCategoryController)
 	
 	
-	let homeOptionItemController = HomeOptionItemController()
+	let builderOptionItemController = BuilderOptionItemController()
 	
-	try router.register(collection: homeOptionItemController)
+	try router.register(collection: builderOptionItemController)
 	
 	
 	let decorOptionCategoryController = DecorOptionCategoryController()
@@ -145,7 +145,7 @@ public func routes(_ router: Router) throws {
 	try router.register(collection: decorOptionCategoryController)
 	
 	
-	let decorOptionItemController = DecorOptionItemController()
+	let decorOptionItemController = DecorItemController()
 	
 	try router.register(collection: decorOptionItemController)
 
@@ -170,15 +170,31 @@ public func routes(_ router: Router) throws {
 	try router.register(collection: modelOptionsPackageController)
 	
 	
+	let modelOptionCategoryPackageController = ModelOptionCategoryController()
+	
+	try router.register(collection: modelOptionCategoryPackageController)
+
+	
 	let homeSetsPackageController = HomeSetController()
 	
 	try router.register(collection: homeSetsPackageController)
 	
 	
-	let setCategoryPackageController = CategoryController()
+	let setCategoryPackageController = SetCategoryController()
 	
 	try router.register(collection: setCategoryPackageController)
+	
+	
+	let lineDecorCategoryPackageController = LineDecorCategoryController()
+	
+	try router.register(collection: lineDecorCategoryPackageController)
+	
+	
+	let modelDecorCategoryPackageController = ModelDecorCategoryController()
+	
+	try router.register(collection: modelDecorCategoryPackageController)
 
+	
 	let websiteController = WebsiteController()
 	try router.register(collection: websiteController)
 	
