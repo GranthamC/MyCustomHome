@@ -16,6 +16,8 @@ struct LineDecorCategoryController: RouteCollection
 		
 		homeOptionsCategoriesRoute.get(LineDecorCategory.parameter, "line", use: getProductLineHandler)
 		
+		homeOptionsCategoriesRoute.get(LineDecorCategory.parameter, "decor-category", use: getDecorCategoryHandler)
+
 		homeOptionsCategoriesRoute.get(LineDecorCategory.parameter, "decor-items", use: getCategoryItemsHandler)
 		
 		
@@ -34,9 +36,9 @@ struct LineDecorCategoryController: RouteCollection
 		
 		tokenAuthGroup.put(LineDecorCategory.parameter, use: updateHandler)
 		
-		tokenAuthGroup.post(LineDecorCategory.parameter, "decor-item", DecorCategory.parameter, use: addOptionItemHandler)
+		tokenAuthGroup.post(LineDecorCategory.parameter, "decor-item", DecorItem.parameter, use: addOptionItemHandler)
 		
-		tokenAuthGroup.delete(LineDecorCategory.parameter, "decor-item", DecorCategory.parameter, use: removeOptionItemHandler)
+		tokenAuthGroup.delete(LineDecorCategory.parameter, "decor-item", DecorItem.parameter, use: removeOptionItemHandler)
 	}
 	
 	
@@ -96,6 +98,17 @@ struct LineDecorCategoryController: RouteCollection
 		}
 	}
 	
+	
+	// Get the product line record for this category
+	//
+	func getDecorCategoryHandler(_ req: Request) throws -> Future<DecorCategory> {
+		
+		return try req.parameters.next(LineDecorCategory.self).flatMap(to: DecorCategory.self) { category in
+			
+			category.decorCategory.get(on: req)
+		}
+	}
+
 	
 	// Get the category options for this category
 	//

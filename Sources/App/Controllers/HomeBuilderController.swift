@@ -23,9 +23,9 @@ struct HomeBuilderController: RouteCollection
 		
 		buildersRoute.get(HomeBuilder.parameter, "lines", use: getProductLinesHandler)
 		
-		buildersRoute.get(HomeBuilder.parameter, "home-option-categories", use: getHomeOptionCategoriesHandler)
+		buildersRoute.get(HomeBuilder.parameter, "builder-option-categories", use: getHomeOptionCategoriesHandler)
 		
-		buildersRoute.get(HomeBuilder.parameter, "home-option-items", use: getHomeOptionItemsHandler)
+		buildersRoute.get(HomeBuilder.parameter, "builder-option-items", use: getHomeOptionItemsHandler)
 		
 		buildersRoute.get(HomeBuilder.parameter, "decor-categories", use: getDecorOptionCategoriesHandler)
 		

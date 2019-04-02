@@ -52,14 +52,9 @@ extension ProductLine
 		return siblings()
 	}
 	
-	var decorCategories: Siblings<ProductLine, DecorCategory, ProductLineCategoryPivot> {
+	var decorCategories: Children<ProductLine, LineDecorCategory> {
 		
-		return siblings()
-	}
-	
-	var decorItems: Siblings<ProductLine, DecorItem, ProductLineOptionPivot> {
-		
-		return siblings()
+		return children(\.lineID)
 	}
 	
 	var decorPackages: Siblings<ProductLine, DecorPackage, ProductLineDecorPackagePivot> {

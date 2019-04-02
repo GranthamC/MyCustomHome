@@ -193,6 +193,10 @@ public func routes(_ router: Router) throws {
 	let modelDecorCategoryPackageController = ModelDecorCategoryController()
 	
 	try router.register(collection: modelDecorCategoryPackageController)
+	
+	let modelBuilderCategoryPackageController = ModelBuilderCategoryController()
+	
+	try router.register(collection: modelBuilderCategoryPackageController)
 
 	
 	let websiteController = WebsiteController()

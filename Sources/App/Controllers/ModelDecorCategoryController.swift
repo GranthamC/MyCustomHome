@@ -12,11 +12,11 @@ struct ModelDecorCategoryController: RouteCollection
 		
 		homeOptionsCategoriesRoute.get(use: getAllHandler)
 		
-		homeOptionsCategoriesRoute.get(ModelDecorCategory.parameter, use: getHandler)
+		homeOptionsCategoriesRoute.get(HM_DecorCategory.parameter, use: getHandler)
 		
-		homeOptionsCategoriesRoute.get(ModelDecorCategory.parameter, "line", use: getProductLineHandler)
+		homeOptionsCategoriesRoute.get(HM_DecorCategory.parameter, "home-model", use: getHomeModelHandler)
 		
-		homeOptionsCategoriesRoute.get(ModelDecorCategory.parameter, "decor-items", use: getCategoryItemsHandler)
+		homeOptionsCategoriesRoute.get(HM_DecorCategory.parameter, "decor-items", use: getCategoryItemsHandler)
 		
 		
 		// Add-in authentication for creating and updating
@@ -28,46 +28,46 @@ struct ModelDecorCategoryController: RouteCollection
 			tokenAuthMiddleware,
 			guardAuthMiddleware)
 		
-		tokenAuthGroup.post(ModelDecorCategory.self, use: createHandler)
+		tokenAuthGroup.post(HM_DecorCategory.self, use: createHandler)
 		
-		tokenAuthGroup.delete(ModelDecorCategory.parameter, use: deleteHandler)
+		tokenAuthGroup.delete(HM_DecorCategory.parameter, use: deleteHandler)
 		
-		tokenAuthGroup.put(ModelDecorCategory.parameter, use: updateHandler)
+		tokenAuthGroup.put(HM_DecorCategory.parameter, use: updateHandler)
 		
-		tokenAuthGroup.post(ModelDecorCategory.parameter, "decor-item", DecorCategory.parameter, use: addOptionItemHandler)
+		tokenAuthGroup.post(HM_DecorCategory.parameter, "decor-item", DecorItem.parameter, use: addOptionItemHandler)
 		
-		tokenAuthGroup.delete(ModelDecorCategory.parameter, "decor-item", DecorCategory.parameter, use: removeOptionItemHandler)
+		tokenAuthGroup.delete(HM_DecorCategory.parameter, "decor-item", DecorItem.parameter, use: removeOptionItemHandler)
 	}
 	
 	
 	func createHandler(
 		_ req: Request,
-		category: ModelDecorCategory
-		) throws -> Future<ModelDecorCategory> {
+		category: HM_DecorCategory
+		) throws -> Future<HM_DecorCategory> {
 		
 		return category.save(on: req)
 	}
 	
-	func getAllHandler(_ req: Request) throws -> Future<[ModelDecorCategory]>
+	func getAllHandler(_ req: Request) throws -> Future<[HM_DecorCategory]>
 	{
-		return ModelDecorCategory.query(on: req).all()
+		return HM_DecorCategory.query(on: req).all()
 	}
 	
 	
-	func getHandler(_ req: Request) throws -> Future<ModelDecorCategory>
+	func getHandler(_ req: Request) throws -> Future<HM_DecorCategory>
 	{
-		return try req.parameters.next(ModelDecorCategory.self)
+		return try req.parameters.next(HM_DecorCategory.self)
 	}
 	
 	
 	// Update passed category with parameters
 	//
-	func updateHandler(_ req: Request) throws -> Future<ModelDecorCategory> {
+	func updateHandler(_ req: Request) throws -> Future<HM_DecorCategory> {
 		
 		return try flatMap(
-			to: ModelDecorCategory.self,
-			req.parameters.next(ModelDecorCategory.self),
-			req.content.decode(ModelDecorCategory.self)
+			to: HM_DecorCategory.self,
+			req.parameters.next(HM_DecorCategory.self),
+			req.content.decode(HM_DecorCategory.self)
 		) { category, updatedCategory in
 			category.name = updatedCategory.name
 			category.modelID = updatedCategory.modelID
@@ -80,7 +80,7 @@ struct ModelDecorCategoryController: RouteCollection
 	
 	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try req.parameters.next(ModelDecorCategory.self)
+		return try req.parameters.next(HM_DecorCategory.self)
 			.delete(on: req)
 			.transform(to: HTTPStatus.noContent)
 	}
@@ -88,9 +88,9 @@ struct ModelDecorCategoryController: RouteCollection
 	
 	// Get the product line record for this category
 	//
-	func getProductLineHandler(_ req: Request) throws -> Future<HomeModel> {
+	func getHomeModelHandler(_ req: Request) throws -> Future<HomeModel> {
 		
-		return try req.parameters.next(ModelDecorCategory.self).flatMap(to: HomeModel.self) { category in
+		return try req.parameters.next(HM_DecorCategory.self).flatMap(to: HomeModel.self) { category in
 			
 			category.homeModel.get(on: req)
 		}
@@ -102,7 +102,7 @@ struct ModelDecorCategoryController: RouteCollection
 	func getCategoryItemsHandler(_ req: Request) throws -> Future<[DecorItem]> {
 		
 		return try req
-			.parameters.next(ModelDecorCategory.self)
+			.parameters.next(HM_DecorCategory.self)
 			.flatMap(to: [DecorItem].self) { category in
 				
 				try category.optionItems.query(on: req).all()
@@ -114,7 +114,7 @@ struct ModelDecorCategoryController: RouteCollection
 	func addOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus>
 	{
 		
-		return try flatMap(to: HTTPStatus.self,	req.parameters.next(ModelDecorCategory.self), req.parameters.next(DecorItem.self))
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(HM_DecorCategory.self), req.parameters.next(DecorItem.self))
 		{ category, optionItem in
 			
 			return category.optionItems.attach(optionItem, on: req).transform(to: .created)
@@ -125,7 +125,7 @@ struct ModelDecorCategoryController: RouteCollection
 	//
 	func getOptionItemHandler(_ req: Request) throws -> Future<[DecorItem]> {
 		
-		return try req.parameters.next(ModelDecorCategory.self).flatMap(to: [DecorItem].self) { category in
+		return try req.parameters.next(HM_DecorCategory.self).flatMap(to: [DecorItem].self) { category in
 			
 			try category.optionItems.query(on: req).all()
 		}
@@ -133,7 +133,7 @@ struct ModelDecorCategoryController: RouteCollection
 	
 	func removeOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try flatMap(to: HTTPStatus.self, req.parameters.next(ModelDecorCategory.self), req.parameters.next(DecorItem.self)) { category, optionItem in
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(HM_DecorCategory.self), req.parameters.next(DecorItem.self)) { category, optionItem in
 			
 			return category.optionItems.detach(optionItem, on: req).transform(to: .noContent)
 		}

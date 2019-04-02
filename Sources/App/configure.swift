@@ -131,9 +131,14 @@ public func configure(
 	
 	migrations.add(model: LineCategoryItemPivot.self, database: .psql)
 	
-	migrations.add(model: ModelDecorCategory.self, database: .psql)
+	migrations.add(model: HM_DecorCategory.self, database: .psql)
 	
 	migrations.add(model: ModelCategoryItemPivot.self, database: .psql)
+	
+	
+	migrations.add(model: HM_BdrOptCategory.self, database: .psql)
+	
+	migrations.add(model: HM_BdrOptionCategoryPivot.self, database: .psql)
 
 	migrations.add(migration: AdminUser.self, database: .psql)
 	

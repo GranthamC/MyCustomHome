@@ -9,13 +9,16 @@ final class LineDecorCategory: Codable
 	
 	var lineID: ProductLine.ID
 	
+	var categoryID: DecorCategory.ID
+
 	var optionType: Int32?
 	
 	var changeToken: Int32?
 	
-	init(name: String, lineID: ProductLine.ID) {
+	init(name: String, lineID: ProductLine.ID, categoryID: DecorCategory.ID) {
 		self.name = name
 		self.lineID = lineID
+		self.categoryID = categoryID
 	}
 }
 
@@ -34,6 +37,8 @@ extension LineDecorCategory: Migration
 //			builder.unique(on: \.name)
 			
 			builder.reference(from: \.lineID, to: \ProductLine.id)
+			
+			builder.reference(from: \.categoryID, to: \DecorCategory.id)
 		}
 	}
 	
@@ -50,7 +55,12 @@ extension LineDecorCategory
 		return parent(\.lineID)
 	}
 	
+	var decorCategory: Parent<LineDecorCategory, DecorCategory> {
+		
+		return parent(\.categoryID)
+	}
 	
+
 	var optionItems: Siblings<LineDecorCategory, DecorItem, LineCategoryItemPivot> {
 		
 		return siblings()

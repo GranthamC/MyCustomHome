@@ -75,26 +75,16 @@ extension HomeModel
 		return children(\.modelID)
 	}
 	
-	var decorCategories: Siblings<HomeModel, DecorCategory, HomeModelDecorCategoryPivot> {
+	var decorCategories: Children<HomeModel, HM_DecorCategory> {
 		
-		return siblings()
+		return children(\.modelID)
 	}
 	
-	var decorItems: Siblings<HomeModel, DecorItem, HomeModelDecorItemPivot> {
+	var builderOptionCategories: Children<HomeModel, HM_BdrOptCategory> {
 		
-		return siblings()
+		return children(\.modelID)
 	}
-	
-	var optionCategories: Siblings<HomeModel, BuilderCategory, HomeModelCategoryPivot> {
-		
-		return siblings()
-	}
-	
-	var optionItems: Siblings<HomeModel, BuilderOption, HomeModelOptionPivot> {
-		
-		return siblings()
-	}
-	
+
 	var productLines: Siblings<HomeModel, ProductLine, ProductLineHomeModelPivot> {
 		
 		return siblings()

@@ -48,7 +48,7 @@ extension DecorItem: Migration
 			
 			try addProperties(to: builder)
 			
-			builder.unique(on: \.name)
+//			builder.unique(on: \.name)
 
 			builder.reference(from: \.builderID, to: \HomeBuilder.id)
 			

@@ -19,7 +19,9 @@ struct BuilderOptionController: RouteCollection
 		homeOptionItemsRoute.get(BuilderOption.parameter, "category", use: getCategoryHandler)
 
 		homeOptionItemsRoute.get(BuilderOption.parameter, "builder", use: getBuilderHandler)
-		
+
+		homeOptionItemsRoute.get(BuilderOption.parameter, "images", use: getImagesHandler)
+
 		// Add-in authentication for creating and updating
 		//
 		let tokenAuthMiddleware = User.tokenAuthMiddleware()
@@ -34,6 +36,10 @@ struct BuilderOptionController: RouteCollection
 		tokenAuthGroup.delete(BuilderOption.parameter, use: deleteHandler)
 		
 		tokenAuthGroup.put(BuilderOption.parameter, use: updateHandler)
+
+		tokenAuthGroup.post(BuilderOption.parameter, "image", ImageAsset.parameter, use: addImageHandler)
+		
+		tokenAuthGroup.delete(BuilderOption.parameter, "image", ImageAsset.parameter, use: removeImageHandler)
 	}
 	
 	
@@ -110,7 +116,38 @@ struct BuilderOptionController: RouteCollection
 			homeOptionItem.builder.get(on: req)
 		}
 	}
+
 	
+	func addImageHandler(_ req: Request) throws -> Future<HTTPStatus>
+	{
+		
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(BuilderOption.self), req.parameters.next(ImageAsset.self))
+		{ item, image in
+			
+			return item.images.attach(image, on: req).transform(to: .created)
+		}
+	}
+	
+	
+	// Get the item's example images
+	//
+	func getImagesHandler(_ req: Request) throws -> Future<[ImageAsset]> {
+		
+		return try req.parameters.next(BuilderOption.self).flatMap(to: [ImageAsset].self) { item in
+			
+			try item.images.query(on: req).all()
+		}
+	}
+	
+	
+	func removeImageHandler(_ req: Request) throws -> Future<HTTPStatus> {
+		
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(BuilderOption.self), req.parameters.next(ImageAsset.self)) { item, image in
+			
+			return item.images.detach(image, on: req).transform(to: .noContent)
+		}
+	}
+
 	
 }
 

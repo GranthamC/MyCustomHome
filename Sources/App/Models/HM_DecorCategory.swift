@@ -2,26 +2,29 @@ import Foundation
 import Vapor
 import FluentPostgreSQL
 
-final class ModelDecorCategory: Codable
+final class HM_DecorCategory: Codable
 {
 	var id: UUID?
 	var name: String
 	
 	var modelID: HomeModel.ID
 	
+	var categoryID: LineDecorCategory.ID
+
 	var optionType: Int32?
 	
 	var changeToken: Int32?
 	
-	init(name: String, modelID: HomeModel.ID) {
+	init(name: String, modelID: HomeModel.ID, categoryID: LineDecorCategory.ID) {
 		self.name = name
 		self.modelID = modelID
+		self.categoryID = categoryID
 	}
 }
 
-extension ModelDecorCategory: PostgreSQLUUIDModel {}
+extension HM_DecorCategory: PostgreSQLUUIDModel {}
 
-extension ModelDecorCategory: Migration
+extension HM_DecorCategory: Migration
 {
 	static func prepare(
 		on connection: PostgreSQLConnection
@@ -34,24 +37,26 @@ extension ModelDecorCategory: Migration
 //			builder.unique(on: \.name)
 			
 			builder.reference(from: \.modelID, to: \HomeModel.id)
+			
+			builder.reference(from: \.categoryID, to: \LineDecorCategory.id)
 		}
 	}
 	
 }
 
-extension ModelDecorCategory: Content {}
+extension HM_DecorCategory: Content {}
 
-extension ModelDecorCategory: Parameter {}
+extension HM_DecorCategory: Parameter {}
 
-extension ModelDecorCategory
+extension HM_DecorCategory
 {
-	var homeModel: Parent<ModelDecorCategory, HomeModel> {
+	var homeModel: Parent<HM_DecorCategory, HomeModel> {
 		
 		return parent(\.modelID)
 	}
 	
 	
-	var optionItems: Siblings<ModelDecorCategory, DecorItem, ModelCategoryItemPivot> {
+	var optionItems: Siblings<HM_DecorCategory, DecorItem, ModelCategoryItemPivot> {
 		
 		return siblings()
 	}
