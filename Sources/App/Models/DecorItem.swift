@@ -79,7 +79,11 @@ extension DecorItem
 		return siblings()
 	}
 	
-	
+	var decorMedia: Children<DecorItem, DecorMedia> {
+		
+		return children(\.decorItemID)
+	}
+
 }
 
 

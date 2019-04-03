@@ -77,8 +77,10 @@ public func configure(
 	
 	migrations.add(model: DecorItem.self, database: .psql)
 
+	migrations.add(model: DecorMedia.self, database: .psql)
+
 	migrations.add(model: HomeModel.self, database: .psql)
-	
+
 	migrations.add(model: DecorPackage.self, database: .psql)
 	
 	migrations.add(model: ChangeToken.self, database: .psql)
