@@ -7,19 +7,19 @@ final class HM_BdrOptionCategoryPivot: PostgreSQLUUIDPivot, ModifiablePivot
 	var id: UUID?
 	
 	var catID: HM_BdrOptCategory.ID
-	var optionItemID: BuilderOption.ID
+	var optionID: BuilderOption.ID
 	
 	
 	typealias Left = HM_BdrOptCategory
 	typealias Right = BuilderOption
 	
 	static let leftIDKey: LeftIDKey = \.catID
-	static let rightIDKey: RightIDKey = \.optionItemID
+	static let rightIDKey: RightIDKey = \.optionID
 	
 	
 	init(_ category: HM_BdrOptCategory, _ item: BuilderOption) throws {
 		
-		self.optionItemID = try item.requireID()
+		self.optionID = try item.requireID()
 		self.catID = try category.requireID()
 	}
 }
@@ -35,7 +35,7 @@ extension HM_BdrOptionCategoryPivot: Migration
 			
 			builder.reference(from: \.catID, to: \HM_BdrOptCategory.id, onDelete: .cascade)
 			
-			builder.reference(from: \.optionItemID, to: \BuilderOption.id, onDelete: .cascade)
+			builder.reference(from: \.optionID, to: \BuilderOption.id, onDelete: .cascade)
 		}
 	}
 }
