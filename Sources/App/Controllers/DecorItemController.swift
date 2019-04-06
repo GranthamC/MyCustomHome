@@ -76,6 +76,7 @@ struct DecorItemController: RouteCollection
 			optionItem.builderID = updatedItem.builderID
 			optionItem.optionImageType = updatedItem.optionImageType
 			optionItem.changeToken = updatedItem.changeToken
+			optionItem.categoryID = updatedItem.categoryID
 
 			optionItem.optionImageURL = updatedItem.optionImageURL
 			optionItem.optionModelURL = updatedItem.optionModelURL
