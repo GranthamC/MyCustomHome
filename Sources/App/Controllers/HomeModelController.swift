@@ -27,21 +27,21 @@ struct HomeModelResponse: Content
 	
 	var isEnabled: Bool
 	var isSingleSection: Bool
-	
+	var isMultiLevel: Bool?
 	var hasBasement: Bool?
+	
 	var sqftBasement: Int16?
 	var sqftMain: Int16?
 	var sqftUpper: Int16?
 
 	var builderOptions: [BuilderOptionResponse]
-	var decorOptions: [BuilderOptionResponse]
+	var decorOptions: [DecorOptionResponse]
 	
-	var modelOptions: [BuilderOptionResponse]
+	var modelOptions: [ModelOptionResponse]
 	
 	var homeImages: [ImageAsset]
 	
-//	init(model: HomeModel, homeOptions: [BuilderOptionResponse], decorOptions: [DecorOptionResponse], modelOptions: [ModelOption]?, images: [ImageAsset])
-	init(model: HomeModel, homeOptions: [BuilderOptionResponse], decorOptions: [BuilderOptionResponse], modelOptions: [BuilderOptionResponse], images: [ImageAsset])
+	init(model: HomeModel, builderOptions: [BuilderOptionResponse], decorOptions: [DecorOptionResponse], modelOptions: [ModelOptionResponse], images: [ImageAsset])
 	{
 		self.id = model.id?.uuidString
 		self.name = model.name
@@ -63,13 +63,14 @@ struct HomeModelResponse: Content
 		
 		self.isEnabled = model.isEnabled
 		self.isSingleSection = model.isSingleSection
-		
+
 		self.hasBasement = model.hasBasement
 		self.sqftBasement = model.sqftBasement
 		self.sqftMain = model.sqftMain
 		self.sqftUpper = model.sqftUpper
 		
-		self.builderOptions = homeOptions
+		self.builderOptions = builderOptions
+		
 		self.decorOptions = decorOptions
 		
 		self.modelOptions = modelOptions
@@ -81,18 +82,16 @@ struct HomeModelResponse: Content
 
 struct BuilderOptionResponse: Content
 {
-	var id: String
 	var category: String
-	var builderID: String
+	var categoryID: String
 	var optionType: Int32?
 	
 	var categoryOptions: [BuilderOption]
 	
-	init(category: BuilderCategory, homeOptions: [BuilderOption])
+	init(category: HM_BdrOptCategory, homeOptions: [BuilderOption])
 	{
 		self.category = category.name
-		self.id = category.id?.uuidString ?? ""
-		self.builderID = category.builderID.uuidString
+		self.categoryID = category.categoryID.uuidString
 		self.optionType = category.optionType
 		
 		self.categoryOptions = homeOptions
@@ -102,23 +101,41 @@ struct BuilderOptionResponse: Content
 
 struct DecorOptionResponse: Content
 {
-	var id: String
 	var category: String
-	var builderID: String
+	var categoryID: String
 	var optionType: Int32?
 	
 	var categoryOptions: [DecorItem]
 	
-	init(category: DecorCategory, homeOptions: [DecorItem])
+	init(category: HM_DecorCategory, homeOptions: [DecorItem])
 	{
 		self.category = category.name
-		self.id = category.id?.uuidString ?? ""
-		self.builderID = category.builderID.uuidString
+		self.categoryID = category.categoryID.uuidString
 		self.optionType = category.optionType
 		
 		self.categoryOptions = homeOptions
 	}
 }
+
+
+struct ModelOptionResponse: Content
+{
+	var category: String
+	var categoryID: String
+	var optionType: Int32?
+	
+	var categoryOptions: [DecorItem]
+	
+	init(category: HM_DecorCategory, homeOptions: [DecorItem])
+	{
+		self.category = category.name
+		self.categoryID = category.categoryID.uuidString
+		self.optionType = category.optionType
+		
+		self.categoryOptions = homeOptions
+	}
+}
+
 
 
 struct HomeModelController: RouteCollection
@@ -130,6 +147,8 @@ struct HomeModelController: RouteCollection
 		
 		homeModelsRoute.get(use: getAllHandler)
 		
+		homeModelsRoute.get("model-number", String.parameter, use: getModelNumberHandler)
+
 		homeModelsRoute.get(HomeModel.parameter, use: getHandler)
 
 //		homeModelsRoute.get("search", use: searchHandler)
@@ -139,11 +158,7 @@ struct HomeModelController: RouteCollection
 		homeModelsRoute.get("sorted", use: sortedHandler)
 
 		homeModelsRoute.get(HomeModel.parameter, "line", use: getProductLineHandler)
-/*
-		homeModelsRoute.get(HomeModel.parameter, "option-categories", use: getOptionCategoryHandler)
-		
-		homeModelsRoute.get(HomeModel.parameter, "option-items", use: getOptionItemHandler)
-*/
+
 		homeModelsRoute.get(HomeModel.parameter, "decor-categories", use: getDecorCategoryHandler)
 
 		homeModelsRoute.get(HomeModel.parameter, "builder-option-categories", use: getBuilderOptionCategoryHandler)
@@ -165,23 +180,7 @@ struct HomeModelController: RouteCollection
 		tokenAuthGroup.delete(HomeModel.parameter, use: deleteHandler)
 		
 		tokenAuthGroup.put(HomeModel.parameter, use: updateHandler)
-/*
-		tokenAuthGroup.post(HomeModel.parameter, "option-category", BuilderCategory.parameter, use: addOptionCategoryHandler)
-		
-		tokenAuthGroup.delete(HomeModel.parameter, "option-category", BuilderCategory.parameter, use: removeOptionCategoryHandler)
-		
-		tokenAuthGroup.post(HomeModel.parameter, "option-item", BuilderOption.parameter, use: addOptionItemHandler)
-		
-		tokenAuthGroup.delete(HomeModel.parameter, "option-item", BuilderOption.parameter, use: removeOptionItemHandler)
-		
-		tokenAuthGroup.post(HomeModel.parameter, "decor-category", DecorCategory.parameter, use: addDecorCategoryHandler)
-		
-		tokenAuthGroup.delete(HomeModel.parameter, "decor-category", DecorCategory.parameter, use: removeDecorCategoryHandler)
-		
-		tokenAuthGroup.post(HomeModel.parameter, "decor-item", DecorItem.parameter, use: addDecorItemHandler)
-		
-		tokenAuthGroup.delete(HomeModel.parameter, "decor-item", DecorItem.parameter, use: removeDecorItemHandler)
-*/
+
 		tokenAuthGroup.post(HomeModel.parameter, "image", ImageAsset.parameter, use: addImageHandler)
 		
 		tokenAuthGroup.delete(HomeModel.parameter, "image", ImageAsset.parameter, use: removeImageHandler)
@@ -200,6 +199,55 @@ struct HomeModelController: RouteCollection
 		return HomeModel.query(on: req).all()
 	}
 	
+	
+	func getModelNumberHandler(_ req: Request) throws -> Future<HomeModelResponse>
+	{
+		let modelNumber = try req.parameters.next(String.self)
+		
+		return HomeModel.query(on: req).group(.or) { or in
+			
+			or.filter(\.modelNumber == modelNumber.capitalized)
+			}.first().flatMap(to: HomeModelResponse.self) { homemodel in
+				
+				let decorCategories = try homemodel?.decorCategories.query(on: req).all()
+				
+				let decorResponses = try self.getDecorItemsResponses(req, decorCategories: decorCategories!)
+				
+				let homeResponse = decorResponses.map { responses -> Future<HomeModelResponse> in
+					
+					let homeImages = try self.getHomeImages(req, home: homemodel!)
+					
+					let modelResponse = homeImages.map { ssImages in
+						
+						return HomeModelResponse(model: homemodel!, builderOptions: [], decorOptions: responses, modelOptions: [], images: ssImages)
+					}
+					
+					return modelResponse
+				}
+				
+				return homeResponse.flatMap(to: HomeModelResponse.self) { allResponses in
+					
+					return allResponses
+				}
+		}
+	}
+
+	
+	func getDecorItemsResponses(_ request: Request, decorCategories: Future<[HM_DecorCategory]>) throws -> Future<[DecorOptionResponse]> {
+		
+		return decorCategories.flatMap { categories in
+			
+			let catResponseFutures = try categories.map { category in
+				
+				try category.optionItems.query(on: request).all().map { items in
+					return DecorOptionResponse(category: category, homeOptions: items)
+				}
+			}
+			
+			return catResponseFutures.flatten(on: request)
+		}
+	}
+
 	
 	func getHandler(_ req: Request) throws -> Future<HomeModel>
 	{
@@ -298,82 +346,6 @@ struct HomeModelController: RouteCollection
 	}
 
 	
-/*
-	func allCatResponses(_ request: Request, optionCats: Future<[ModelDecorCategory]>) throws -> Future<[BuilderOptionResponse]> {
-		
-		return optionCats.flatMap { cats in
-			
-			let catResponseFutures = try cats.map { cat in
-				
-				try cat.optionItems.query(on: request).all().map { items in
-					return BuilderOptionResponse(category: cat, homeOptions: items)
-				}
-			}
-			
-			return catResponseFutures.flatten(on: request)
-		}
-	}
-*/
-	
-/*
-	func searchHandler2(_ req: Request) throws -> Future<HomeModelResponse>
-	{
-		guard let searchTerm = req.query[String.self, at: "model"] else {
-			throw Abort(.badRequest)
-		}
-		
-		return HomeModel.query(on: req).group(.or) { or in
-			or.filter(\.name == searchTerm)
-			or.filter(\.modelNumber == searchTerm)
-			}.first().flatMap(to: HomeModelResponse.self) { homemodel in
-				
-				try (homemodel?.optionCategories.query(on: req).all().map { categories in
-					
-					return HomeModelResponse(model: homemodel!, homeOptions: categories)
-					})!
-		}
-	}
-
-	
-	func searchHandler(_ req: Request) throws -> Future<HomeModelResponse>
-	{
-	guard let searchTerm = req.query[String.self, at: "model"] else {
-	throw Abort(.badRequest)
-	}
-	
-	return HomeModel.query(on: req).group(.or) { or in
-	or.filter(\.name == searchTerm)
-	or.filter(\.modelNumber == searchTerm)
-	}.first().flatMap(to: HomeModelResponse.self) { homemodel in
-	
-	try (homemodel?.optionCategories.query(on: req).all().map { categories in
-	
-	return HomeModelResponse(model: homemodel!, homeOptions: categories)
-	})!
-	}
-	}
-	
-	
-*/
-/*
-	// get the options for the categories
-	//
-	func allOptions(_ request: Request) throws -> [OptionCategoryResponse] {
-		
-		return HomeOptionCategory.query(on: request).all().flatMap { categories in
-			
-			let categoryResponseFutures = try categories.map { category in
-				
-				try category.optionItems.query(on: request).all().map { options in
-					return OptionCategoryResponse(category: category, homeOptions: options)
-				}
-			}
-			
-			return categoryResponseFutures
-		}
-	}
-*/
-	
 	
 	func getFirstHandler(_ req: Request) throws -> Future<HomeModel>
 	{
@@ -412,64 +384,6 @@ struct HomeModelController: RouteCollection
 	}
 
 	
-/*
-		func addOptionCategoryHandler(_ req: Request) throws -> Future<HTTPStatus>
-		{
-			
-			return try flatMap(to: HTTPStatus.self,	req.parameters.next(HomeModel.self), req.parameters.next(BuilderCategory.self))
-			{ model, category in
-				
-				return model.optionCategories.attach(category, on: req).transform(to: .created)
-			}
-		}
-	
-		// Get the home models decor categories
-		//
-		func getOptionCategoryHandler(_ req: Request) throws -> Future<[BuilderCategory]> {
-			
-			return try req.parameters.next(HomeModel.self).flatMap(to: [BuilderCategory].self) { model in
-				
-				try model.optionCategories.query(on: req).all()
-			}
-		}
-	
-		func removeOptionCategoryHandler(_ req: Request) throws -> Future<HTTPStatus> {
-			
-			return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeModel.self), req.parameters.next(BuilderCategory.self)) { model, category in
-				
-				return model.optionCategories.detach(category, on: req).transform(to: .noContent)
-			}
-		}
-	
-		func addOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus>
-		{
-			
-			return try flatMap(to: HTTPStatus.self,	req.parameters.next(HomeModel.self), req.parameters.next(BuilderOption.self))
-			{ model, item in
-				
-				return model.optionItems.attach(item, on: req).transform(to: .created)
-			}
-		}
-	
-	// Get the line's home models
-	//
-	func getOptionItemHandler(_ req: Request) throws -> Future<[BuilderOption]> {
-		
-		return try req.parameters.next(HomeModel.self).flatMap(to: [BuilderOption].self) { model in
-			
-			try model.optionItems.query(on: req).all()
-		}
-	}
-	
-	func removeOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus> {
-		
-		return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeModel.self), req.parameters.next(BuilderOption.self)) { model, item in
-			
-			return model.optionItems.detach(item, on: req).transform(to: .noContent)
-		}
-	}
-*/
-	
 	
 	// Get the home's decor option categories
 	//
@@ -492,43 +406,6 @@ struct HomeModelController: RouteCollection
 		}
 	}
 
-/*
-	func removeDecorCategoryHandler(_ req: Request) throws -> Future<HTTPStatus> {
-		
-		return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeModel.self), req.parameters.next(DecorCategory.self)) { model, category in
-			
-			return model.decorCategories.detach(category, on: req).transform(to: .noContent)
-		}
-	}
-	
-	func addDecorItemHandler(_ req: Request) throws -> Future<HTTPStatus>
-	{
-		
-		return try flatMap(to: HTTPStatus.self,	req.parameters.next(HomeModel.self), req.parameters.next(DecorItem.self))
-		{ model, item in
-			
-			return model.decorItems.attach(item, on: req).transform(to: .created)
-		}
-	}
-	
-	// Get the line's home models
-	//
-	func getDecorItemHandler(_ req: Request) throws -> Future<[DecorItem]> {
-		
-		return try req.parameters.next(HomeModel.self).flatMap(to: [DecorItem].self) { model in
-			
-			try model.decorItems.query(on: req).all()
-		}
-	}
-	
-	func removeDecorItemHandler(_ req: Request) throws -> Future<HTTPStatus> {
-		
-		return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeModel.self), req.parameters.next(DecorItem.self)) { model, item in
-			
-			return model.decorItems.detach(item, on: req).transform(to: .noContent)
-		}
-	}
-*/
 	
 	func addImageHandler(_ req: Request) throws -> Future<HTTPStatus>
 	{
