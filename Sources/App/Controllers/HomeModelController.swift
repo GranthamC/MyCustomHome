@@ -225,16 +225,30 @@ struct HomeModelController: RouteCollection
 				
 				let decorResponses = try self.getDecorItemsResponses(req, decorCategories: decorCategories)
 				
-				let homeResponse = decorResponses.map { responses -> Future<HomeModelResponse> in
+				let homeResponse = decorResponses.map { decorOptions -> Future<HomeModelResponse> in
 					
-					let homeImages = try self.getHomeImages(req, home: homemodel!)
-					
-					let modelResponse = homeImages.map { ssImages in
-						
-						return HomeModelResponse(model: homemodel!, builderOptions: [], decorOptions: responses, modelOptions: [], images: ssImages)
+					guard let builderOptionCategories = try homemodel?.builderOptionCategories.query(on: req).all() else {
+						throw Abort(.notFound)
 					}
 					
-					return modelResponse
+					let builderOptionResponses = try self.getBuilderOptionItemsResponses(req, builderOptionCategories: builderOptionCategories)
+					
+					let builderOptResponse = builderOptionResponses.map { builderOptions -> Future<HomeModelResponse> in
+						
+						let homeImages = try self.getHomeImages(req, home: homemodel!)
+						
+						let modelResponse = homeImages.map { ssImages in
+							
+							return HomeModelResponse(model: homemodel!, builderOptions: builderOptions, decorOptions: decorOptions, modelOptions: [], images: ssImages)
+						}
+						
+						return modelResponse
+					}
+					
+					return builderOptResponse.flatMap(to: HomeModelResponse.self) { allResponses in
+						
+						return allResponses
+					}
 				}
 				
 				return homeResponse.flatMap(to: HomeModelResponse.self) { allResponses in
@@ -253,6 +267,22 @@ struct HomeModelController: RouteCollection
 				
 				try category.optionItems.query(on: request).all().map { items in
 					return DecorOptionResponse(category: category, homeOptions: items)
+				}
+			}
+			
+			return catResponseFutures.flatten(on: request)
+		}
+	}
+
+	
+	func getBuilderOptionItemsResponses(_ request: Request, builderOptionCategories: Future<[HM_BdrOptCategory]>) throws -> Future<[BuilderOptionResponse]> {
+		
+		return builderOptionCategories.flatMap { categories in
+			
+			let catResponseFutures = try categories.map { category in
+				
+				try category.optionItems.query(on: request).all().map { items in
+					return BuilderOptionResponse(category: category, homeOptions: items)
 				}
 			}
 			
