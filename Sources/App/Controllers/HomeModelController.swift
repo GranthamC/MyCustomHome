@@ -148,6 +148,8 @@ struct HomeModelController: RouteCollection
 		homeModelsRoute.get(use: getAllHandler)
 		
 		homeModelsRoute.get("model-number", String.parameter, use: getModelNumberHandler)
+		
+		homeModelsRoute.get("test-model-number", String.parameter, use: getHelloModelHandler)
 
 		homeModelsRoute.get(HomeModel.parameter, use: getHandler)
 
@@ -200,18 +202,28 @@ struct HomeModelController: RouteCollection
 	}
 	
 	
+	func getHelloModelHandler(_ req: Request) throws -> String {
+	
+	let modelNumber = try req.parameters.next(String.self)
+	
+		return "You're looking for \(modelNumber.uppercased())"
+	}
+	
+	
 	func getModelNumberHandler(_ req: Request) throws -> Future<HomeModelResponse>
 	{
 		let modelNumber = try req.parameters.next(String.self)
 		
 		return HomeModel.query(on: req).group(.or) { or in
 			
-			or.filter(\.modelNumber == modelNumber.capitalized)
+			or.filter(\.modelNumber == modelNumber.uppercased())
 			}.first().flatMap(to: HomeModelResponse.self) { homemodel in
 				
-				let decorCategories = try homemodel?.decorCategories.query(on: req).all()
+				guard let decorCategories = try homemodel?.decorCategories.query(on: req).all() else {
+					throw Abort(.notFound)
+				}
 				
-				let decorResponses = try self.getDecorItemsResponses(req, decorCategories: decorCategories!)
+				let decorResponses = try self.getDecorItemsResponses(req, decorCategories: decorCategories)
 				
 				let homeResponse = decorResponses.map { responses -> Future<HomeModelResponse> in
 					
