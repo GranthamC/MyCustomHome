@@ -98,9 +98,19 @@ public func routes(_ router: Router) throws {
 	try router.register(collection: modelBuilderCategoryPackageController)
 	
 	
+	let lineBuilderCategoryPackageController = PL_BdrOptionCategoryController()
+	
+	try router.register(collection: lineBuilderCategoryPackageController)
+
+	
 	let decorMediaPackageController = DecorMediaController()
 	
 	try router.register(collection: decorMediaPackageController)
+	
+	
+	let lineSeriesPackageController = ProductSeriesController()
+	
+	try router.register(collection: lineSeriesPackageController)
 
 	
 	let websiteController = WebsiteController()

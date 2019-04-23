@@ -7,7 +7,6 @@ final class BuilderHomeSet: Codable
 	var id: UUID?
 	
 	var setTitle: String
-	var builderID: HomeBuilder.ID
 	
 	var changeToken: Int32?
 	
@@ -31,7 +30,6 @@ final class BuilderHomeSet: Codable
 	init(name: String, builderID: HomeBuilder.ID) {
 		
 		self.setTitle = name
-		self.builderID = builderID
 	}
 }
 
@@ -48,8 +46,6 @@ extension BuilderHomeSet: Migration
 			try addProperties(to: builder)
 			
 			builder.unique(on: \.setTitle)
-
-			builder.reference(from: \.builderID, to: \HomeBuilder.id)
 		}
 	}
 }
@@ -70,11 +66,6 @@ extension BuilderHomeSet
 	var homeCategories: Children<BuilderHomeSet, HomeSetCategory> {
 		
 		return children(\.homeSetID)
-	}
-
-	var builder: Parent<BuilderHomeSet, HomeBuilder> {
-		
-		return parent(\.builderID)
 	}
 }
 

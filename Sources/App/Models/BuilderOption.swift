@@ -5,6 +5,7 @@ import FluentPostgreSQL
 final class BuilderOption: Codable
 {
 	var id: UUID?
+	
 	var name: String
 	var builderID: HomeBuilder.ID
 	

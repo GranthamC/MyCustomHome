@@ -7,7 +7,7 @@ final class BuilderCategory: Codable
 	var id: UUID?
 	var name: String
 	var builderID: HomeBuilder.ID
-	
+
 	var changeToken: Int32?
 
 	var optionType: Int32?

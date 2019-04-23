@@ -5,6 +5,7 @@ import FluentPostgreSQL
 final class DecorItem: Codable
 {
 	var id: UUID?
+	
 	var name: String
 	var builderID: HomeBuilder.ID
 	
@@ -47,8 +48,6 @@ extension DecorItem: Migration
 		return Database.create(self, on: connection) { builder in
 			
 			try addProperties(to: builder)
-			
-//			builder.unique(on: \.name)
 
 			builder.reference(from: \.builderID, to: \HomeBuilder.id)
 			

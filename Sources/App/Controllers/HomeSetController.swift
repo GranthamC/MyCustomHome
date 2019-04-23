@@ -51,8 +51,6 @@ struct HomeSetController: RouteCollection
 		
 		homeSetRoute.get(BuilderHomeSet.parameter, use: getHandler)
 		
-		homeSetRoute.get(BuilderHomeSet.parameter, "builder", use: getBuilderHandler)
-		
 		homeSetRoute.get(BuilderHomeSet.parameter, "home-models", use: getHomeModelsHandler)
 		
 		homeSetRoute.get("home-sets", use: all)
@@ -125,7 +123,6 @@ struct HomeSetController: RouteCollection
 			homeSet.useFactoryTour = updatedSet.useFactoryTour
 			homeSet.orderByIndex = updatedSet.orderByIndex
 			homeSet.useSlideOverForHomeInfo = updatedSet.useSlideOverForHomeInfo
-			homeSet.builderID = updatedSet.builderID
 			homeSet.logoURL = updatedSet.logoURL
 			homeSet.websiteURL = updatedSet.websiteURL
 			homeSet.changeToken = updatedSet.changeToken
@@ -145,18 +142,6 @@ struct HomeSetController: RouteCollection
 			.transform(to: HTTPStatus.noContent)
 	}
 	
-	
-	// Get the Builder record for this product line
-	//
-	func getBuilderHandler(_ req: Request) throws -> Future<HomeBuilder> {
-		
-		return try req
-			.parameters.next(BuilderHomeSet.self)
-			.flatMap(to: HomeBuilder.self) { line in
-				
-				line.builder.get(on: req)
-		}
-	}
 	
 	
 	func addHomeModelHandler(_ req: Request) throws -> Future<HTTPStatus>
