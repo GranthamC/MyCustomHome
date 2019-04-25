@@ -60,14 +60,14 @@ public func configure(
 	// Create and register our database models
 	//
     var migrations = MigrationConfig()
-	
+
 	migrations.add(model: User.self, database: .psql)
 	
 	migrations.add(model: HomeBuilder.self, database: .psql)
 	
+	migrations.add(model: ChangeToken.self, database: .psql)
+
 	migrations.add(model: ProductLine.self, database: .psql)
-	
-	migrations.add(model: ImageAsset.self, database: .psql)
 
 	migrations.add(model: BuilderCategory.self, database: .psql)
 	
@@ -83,11 +83,11 @@ public func configure(
 
 	migrations.add(model: DecorPackage.self, database: .psql)
 	
-	migrations.add(model: ChangeToken.self, database: .psql)
-	
 	migrations.add(model: ModelOptionCategory.self, database: .psql)
 
 	migrations.add(model: ModelOption.self, database: .psql)
+	
+	migrations.add(model: ImageAsset.self, database: .psql)
 
 	migrations.add(model: DecorPackageOptionPivot.self, database: .psql)
 
