@@ -27,7 +27,7 @@ final class BuilderHomeSet: Codable
 	var useCategories: Bool?
 	var useBrochure: Bool?
 
-	init(name: String, builderID: HomeBuilder.ID) {
+	init(name: String) {
 		
 		self.setTitle = name
 	}

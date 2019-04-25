@@ -123,9 +123,9 @@ public func configure(
 
 	migrations.add(model: BuilderHomeSet.self, database: .psql)
 
-	migrations.add(model: HomeSetToHomeModelPivot.self, database: .psql)
-
 	migrations.add(model: HomeSetCategory.self, database: .psql)
+
+	migrations.add(model: HomeSetToHomeModelPivot.self, database: .psql)
 
 	migrations.add(model: SetCategoryHomesPivot.self, database: .psql)
 
