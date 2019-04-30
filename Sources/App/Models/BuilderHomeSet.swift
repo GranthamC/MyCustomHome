@@ -6,7 +6,7 @@ final class BuilderHomeSet: Codable
 {
 	var id: UUID?
 	
-	var builderID: HomeBuilder.ID
+	var builderID: HomeBuilder.ID?
 
 	var setTitle: String
 	
@@ -29,7 +29,7 @@ final class BuilderHomeSet: Codable
 	var useCategories: Bool?
 	var useBrochure: Bool?
 
-	init(title: String, builderID: HomeBuilder.ID) {
+	init(title: String, builderID: HomeBuilder.ID?) {
 		
 		self.setTitle = title
 		self.builderID = builderID
@@ -88,7 +88,7 @@ extension BuilderHomeSet: Parameter {}
 extension BuilderHomeSet
 {
 	var builder: Parent<BuilderHomeSet, HomeBuilder> {
-		return parent(\.builderID)
+		return parent(\.builderID)!
 	}
 	
 	var homeModels: Siblings<BuilderHomeSet, HomeModel, HomeSetToHomeModelPivot> {
