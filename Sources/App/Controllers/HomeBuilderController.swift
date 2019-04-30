@@ -39,6 +39,8 @@ struct HomeBuilderController: RouteCollection
 
 		buildersRoute.get(HomeBuilder.parameter, "change-tokens", use: getTokensHandler)
 
+		buildersRoute.get(HomeBuilder.parameter, "home-sets", use: getHomeSetsHandler)
+
 
 		// Add-in authentication for creating and updating
 		//
@@ -241,6 +243,19 @@ struct HomeBuilderController: RouteCollection
 			.flatMap(to: [HomeModel].self) { builder in
 				
 				try builder.homeModels.query(on: req).all()
+		}
+	}
+
+	
+	// Get the builder's home sets
+	//
+	func getHomeSetsHandler(_ req: Request) throws -> Future<[BuilderHomeSet]> {
+		
+		return try req
+			.parameters.next(HomeBuilder.self)
+			.flatMap(to: [BuilderHomeSet].self) { builder in
+				
+				try builder.homeSets.query(on: req).all()
 		}
 	}
 

@@ -6,6 +6,8 @@ final class BuilderHomeSet: Codable
 {
 	var id: UUID?
 	
+	var builderID: HomeBuilder.ID
+
 	var setTitle: String
 	
 	var changeToken: Int32?
@@ -27,9 +29,10 @@ final class BuilderHomeSet: Codable
 	var useCategories: Bool?
 	var useBrochure: Bool?
 
-	init(name: String) {
+	init(title: String, builderID: HomeBuilder.ID) {
 		
-		self.setTitle = name
+		self.setTitle = title
+		self.builderID = builderID
 	}
 }
 
@@ -43,9 +46,35 @@ extension BuilderHomeSet: Migration
 		
 		return Database.create(self, on: connection) { builder in
 			
-			try addProperties(to: builder)
+			builder.field(for: \.id, isIdentifier: true)
 			
+			builder.field(for: \.setTitle)
 			builder.unique(on: \.setTitle)
+			
+			builder.field(for: \.changeToken)
+			
+			builder.field(for: \.logoURL)
+			
+			builder.field(for: \.setDescription)
+			
+			builder.field(for: \.setIndex)
+			
+			builder.field(for: \.websiteURL)
+			
+			builder.field(for: \.orderByIndex)
+			
+			builder.field(for: \.useFactoryTour)
+			
+			builder.field(for: \.useSlideOverForHomeInfo)
+			
+			builder.field(for: \.homeSetBrochureURL)
+			
+			builder.field(for: \.useCategories)
+			
+			builder.field(for: \.useBrochure)
+
+			builder.reference(from: \.builderID, to: \HomeBuilder.id)
+
 		}
 	}
 }
@@ -58,6 +87,10 @@ extension BuilderHomeSet: Parameter {}
 
 extension BuilderHomeSet
 {
+	var builder: Parent<BuilderHomeSet, HomeBuilder> {
+		return parent(\.builderID)
+	}
+	
 	var homeModels: Siblings<BuilderHomeSet, HomeModel, HomeSetToHomeModelPivot> {
 		
 		return siblings()

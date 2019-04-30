@@ -118,6 +118,7 @@ struct HomeSetController: RouteCollection
 			req.content.decode(BuilderHomeSet.self)
 		) { homeSet, updatedSet in
 			
+			homeSet.builderID = updatedSet.builderID
 			homeSet.setTitle = updatedSet.setTitle
 			homeSet.setDescription = updatedSet.setDescription
 			homeSet.useFactoryTour = updatedSet.useFactoryTour

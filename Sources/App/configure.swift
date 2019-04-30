@@ -154,6 +154,7 @@ public func configure(
 	
 	migrations.add(migration: AdminUser.self, database: .psql)
 	
+	migrations.add(migration: AddBuilderIDToHomeSet.self, database: .psql)
 
     services.register(migrations)
 	
