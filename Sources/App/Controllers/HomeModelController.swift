@@ -398,6 +398,8 @@ struct HomeModelController: RouteCollection
 			
 			let modelOptions = try self.getHomeModelOptions(req, modelNumber: modelNumber)
 			
+//			let modelOptions = try self.getHomeModelOptions(req, modelNumber: modelNumber).catchFlatMap(<#T##callback: (Error) throws -> (EventLoopFuture<HomeModelOptionsResponse>)##(Error) throws -> (EventLoopFuture<HomeModelOptionsResponse>)#>)
+
 			let modelResponse = modelInfo.map({ model -> Future<HomeModelResponse> in
 				
 				let modelOptionsResponse = modelOptions.map { options -> HomeModelResponse in
