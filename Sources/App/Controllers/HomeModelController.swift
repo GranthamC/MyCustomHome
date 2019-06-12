@@ -51,7 +51,7 @@ struct SimApiHomeModel: Content
 	var lowPrice: Double?
 	var highPrice: Double?
 	
-	var homeImages: [SimApiImage]
+//	var homeImages: [SimApiImage]
 	
 	init(model: SimApiHomeModel)
 	{
@@ -100,14 +100,14 @@ struct SimApiHomeModel: Content
 		self.lowPrice = model.lowPrice
 		self.highPrice = model.highPrice
 		
-		self.homeImages = model.homeImages
+//		self.homeImages = model.homeImages
 	}
 }
 
 
 struct SimApiImage: Content
 {
-	var id: String?
+	var id: String
 	
 	var imageID: String
 	
@@ -115,15 +115,16 @@ struct SimApiImage: Content
 	
 	var imagePath: String
 	
+	var changeToken: UInt32
 	
-	init(id: String?, imageID: String, imagePath: String, referencePath: String)
+	
+	init(id: String, imageID: String, imagePath: String, referencePath: String, changeToken: UInt32)
 	{
 		self.imageID = imageID
 		self.referencePath = referencePath
-		
 		self.imagePath = imagePath
-		
 		self.id = id
+		self.changeToken = changeToken
 	}
 }
 
@@ -332,7 +333,11 @@ struct HomeModelController: RouteCollection
 		
 		let resUrl = "https://sc-mch.vapor.cloud/api/home-model/model-number/" + modelNumber.uppercased()
 		
-		return try req.client().get(resUrl).flatMap { response in try response.content.decode(SimApiHomeModel.self) }
+		let simResponse = try req.client().get(resUrl).flatMap { response in
+			try response.content.decode(SimApiHomeModel.self)
+		}
+		
+		return simResponse
 	}
 	
 	

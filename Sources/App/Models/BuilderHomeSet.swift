@@ -73,6 +73,8 @@ extension BuilderHomeSet: Migration
 			
 			builder.field(for: \.useBrochure)
 
+			builder.field(for: \.builderID)
+
 			builder.reference(from: \.builderID, to: \HomeBuilder.id)
 
 		}
