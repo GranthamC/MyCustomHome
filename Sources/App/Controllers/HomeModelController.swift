@@ -273,7 +273,7 @@ struct HomeModelController: RouteCollection
 		
 		homeModelsRoute.get("model-number", String.parameter, use: getModelNumberHandler)
 		
-		homeModelsRoute.get("test-model-number", String.parameter, use: getHelloModelHandler)
+		homeModelsRoute.get("sim-model-number", String.parameter, use: getSimModelHandler)
 
 		homeModelsRoute.get(HomeModel.parameter, use: getHandler)
 
@@ -326,11 +326,13 @@ struct HomeModelController: RouteCollection
 	}
 	
 	
-	func getHelloModelHandler(_ req: Request) throws -> String {
-	
-	let modelNumber = try req.parameters.next(String.self)
-	
-		return "You're looking for \(modelNumber.uppercased())"
+	func getSimModelHandler(_ req: Request) throws -> Future<SimApiHomeModel> {
+		
+		let modelNumber = try req.parameters.next(String.self)
+		
+		let resUrl = "https://sc-mch.vapor.cloud/api/home-model/model-number/" + modelNumber.uppercased()
+		
+		return try req.client().get(resUrl).flatMap { response in try response.content.decode(SimApiHomeModel.self) }
 	}
 	
 	
