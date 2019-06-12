@@ -330,6 +330,8 @@ struct HomeModelController: RouteCollection
 		homeModelsRoute.get("model-options", String.parameter, use: getModelNumberHandler)
 		
 		homeModelsRoute.get("model-number", String.parameter, use: getSimModelHandler)
+		
+		homeModelsRoute.get("model-data", String.parameter, use: getModelInfoHandler)
 
 		homeModelsRoute.get(HomeModel.parameter, use: getHandler)
 
@@ -465,6 +467,25 @@ struct HomeModelController: RouteCollection
 					return allResponses
 				}
 		}
+	}
+	
+	
+	func getModelInfoHandler(_ req: Request) throws -> Future<SimApiHomeModel>
+	{
+		let modelNumber = try req.parameters.next(String.self)
+		
+		let resUrl = "https://sc-simapi.vapor.cloud/api/home-model/model-number/" + modelNumber.uppercased()
+		
+		let simResponse = try req.client().get(resUrl)
+		
+		let simModel = simResponse.flatMap { homeModel -> Future<SimApiHomeModel> in
+			
+			let modelInfo = try homeModel.content.decode(SimApiHomeModel.self)
+			
+			return modelInfo
+		}
+		
+		return simModel
 	}
 
 	
