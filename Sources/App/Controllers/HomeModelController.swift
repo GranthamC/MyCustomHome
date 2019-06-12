@@ -4,6 +4,130 @@ import Fluent
 import Authentication
 
 
+struct SimApiHomeModel: Content
+{
+	var id: String?
+	
+	var modelNumber: String
+	
+	var modelDescription: String
+	var lineID: String
+	
+	var plantModelID: String?
+	var lineModelID: String?
+
+	var plantID: String
+	var modelID: String?
+	var drawingID: String?
+	var floorPlanID: String?
+	
+	var modelWidth: UInt16?
+	var modelLength: UInt16?
+	var minSquareFeet: UInt16?
+	var maxSquareFeet: UInt16?
+	var beds: UInt16?
+	var baths: Float?
+	
+	var wholesalePrice: Double?
+	var minGeneratedPrice: Double?
+	var maxGeneratedPrice: Double?
+	
+	var lowHistoricalPrice: Double?
+	var highHistoricalPrice: Double?
+	var twoYearSalesCount: UInt16?
+	
+	var isMultiSection: Bool?
+	var isModular: Bool?
+	var isDealerEntered: Bool?
+	var isBuildable: Bool?
+	
+	var isWebEnabled: Bool?
+	
+	var hasQualityPhotos: Bool?
+	var hasVideo: Bool?
+	var hasPhotoRealRendering: Bool?
+	var isRequiringFP: Bool?
+	
+	var lowPrice: Double?
+	var highPrice: Double?
+	
+	var homeImages: [SimApiImage]
+	
+	init(model: SimApiHomeModel)
+	{
+		self.id = model.id
+		
+		self.plantModelID = model.plantModelID
+		self.lineModelID = model.lineModelID
+		
+		self.modelDescription = model.modelDescription
+		self.lineID = model.lineID
+		
+		self.plantID = model.plantID
+		self.modelNumber = model.modelNumber
+		
+		self.modelID = model.modelID
+		self.drawingID = model.drawingID
+		self.floorPlanID = model.floorPlanID
+		
+		self.modelWidth = model.modelWidth
+		self.modelLength = model.modelLength
+		self.minSquareFeet = model.minSquareFeet
+		self.maxSquareFeet = model.maxSquareFeet
+		self.beds = model.beds
+		self.baths = model.baths
+		
+		self.wholesalePrice = model.wholesalePrice
+		self.minGeneratedPrice = model.minGeneratedPrice
+		self.maxGeneratedPrice = model.maxGeneratedPrice
+		
+		self.lowHistoricalPrice = model.lowHistoricalPrice
+		self.highHistoricalPrice = model.highHistoricalPrice
+		self.twoYearSalesCount = model.twoYearSalesCount
+		
+		self.isMultiSection = model.isMultiSection
+		self.isModular = model.isModular
+		self.isDealerEntered = model.isDealerEntered
+		self.isBuildable = model.isBuildable
+		
+		self.isWebEnabled = model.isWebEnabled
+		
+		self.hasQualityPhotos = model.hasQualityPhotos
+		self.hasVideo = model.hasVideo
+		self.hasPhotoRealRendering = model.hasPhotoRealRendering
+		self.isRequiringFP = model.isRequiringFP
+		
+		self.lowPrice = model.lowPrice
+		self.highPrice = model.highPrice
+		
+		self.homeImages = model.homeImages
+	}
+}
+
+
+struct SimApiImage: Content
+{
+	var id: String?
+	
+	var imageID: String
+	
+	var referencePath: String
+	
+	var imagePath: String
+	
+	
+	init(id: String?, imageID: String, imagePath: String, referencePath: String)
+	{
+		self.imageID = imageID
+		self.referencePath = referencePath
+		
+		self.imagePath = imagePath
+		
+		self.id = id
+	}
+}
+
+
 
 struct HomeModelResponse: Content
 {
