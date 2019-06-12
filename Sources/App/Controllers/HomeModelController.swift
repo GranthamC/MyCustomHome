@@ -51,8 +51,8 @@ struct SimApiHomeModel: Content
 	var lowPrice: Double?
 	var highPrice: Double?
 	
-//	var homeImages: [SimApiImage]
-	
+	var homeImages: [SimApiImage]
+
 	init(model: SimApiHomeModel)
 	{
 		self.id = model.id
@@ -100,7 +100,7 @@ struct SimApiHomeModel: Content
 		self.lowPrice = model.lowPrice
 		self.highPrice = model.highPrice
 		
-//		self.homeImages = model.homeImages
+		self.homeImages = model.homeImages
 	}
 }
 
@@ -115,16 +115,13 @@ struct SimApiImage: Content
 	
 	var imagePath: String
 	
-	var changeToken: UInt32
 	
-	
-	init(id: String, imageID: String, imagePath: String, referencePath: String, changeToken: UInt32)
+	init(id: String, imageID: String, imagePath: String, referencePath: String)
 	{
 		self.imageID = imageID
 		self.referencePath = referencePath
 		self.imagePath = imagePath
 		self.id = id
-		self.changeToken = changeToken
 	}
 }
 
@@ -133,74 +130,132 @@ struct SimApiImage: Content
 struct HomeModelResponse: Content
 {
 	var id: String?
-	var name: String
+	
 	var modelNumber: String
-	var builderID: String
 	
-	var heroImageURL: String?
-	var floorPlanURL: String?
-	var exteriorImageURL: String?
-	var matterportTourURL: String?
-	var panoModelTourURL: String?
+	var modelDescription: String
+	var lineID: String
 	
-	var sqft: Int16?
+	var plantModelID: String?
+	var lineModelID: String?
+	
+	var plantID: String
+	var modelID: String?
+	var drawingID: String?
+	var floorPlanID: String?
+	
+	var modelWidth: UInt16?
+	var modelLength: UInt16?
+	var minSquareFeet: UInt16?
+	var maxSquareFeet: UInt16?
+	var beds: UInt16?
 	var baths: Float?
-	var beds: Int16?
-	var features: String?
-	var priceBase: Double?
-	var priceUpper: Double?
 	
-	var isEnabled: Bool
-	var isSingleSection: Bool
-	var isMultiLevel: Bool?
-	var hasBasement: Bool?
+	var wholesalePrice: Double?
+	var minGeneratedPrice: Double?
+	var maxGeneratedPrice: Double?
 	
-	var sqftBasement: Int16?
-	var sqftMain: Int16?
-	var sqftUpper: Int16?
+	var lowHistoricalPrice: Double?
+	var highHistoricalPrice: Double?
+	var twoYearSalesCount: UInt16?
+	
+	var isMultiSection: Bool?
+	var isModular: Bool?
+	var isDealerEntered: Bool?
+	var isBuildable: Bool?
+	
+	var isWebEnabled: Bool?
+	
+	var hasQualityPhotos: Bool?
+	var hasVideo: Bool?
+	var hasPhotoRealRendering: Bool?
+	var isRequiringFP: Bool?
+	
+	var lowPrice: Double?
+	var highPrice: Double?
+	
+	var homeImages: [SimApiImage]
 
 	var builderOptions: [BuilderOptionResponse]
+	
 	var decorOptions: [DecorOptionResponse]
 	
 	var modelOptions: [ModelOptionResponse]
 	
-	var homeImages: [ImageAsset]
-	
-	init(model: HomeModel, builderOptions: [BuilderOptionResponse], decorOptions: [DecorOptionResponse], modelOptions: [ModelOptionResponse], images: [ImageAsset])
+	init(model: SimApiHomeModel, options: HomeModelOptionsResponse)
 	{
-		self.id = model.id?.uuidString
-		self.name = model.name
+		self.id = model.id
+		
+		self.plantModelID = model.plantModelID
+		self.lineModelID = model.lineModelID
+		
+		self.modelDescription = model.modelDescription
+		self.lineID = model.lineID
+		
+		self.plantID = model.plantID
 		self.modelNumber = model.modelNumber
-		self.builderID = model.builderID.uuidString
-
-		self.heroImageURL = model.heroImageURL
-		self.floorPlanURL = model.floorPlanURL
-		self.exteriorImageURL = model.exteriorImageURL
-		self.matterportTourURL = model.matterportTourURL
-		self.panoModelTourURL = model.panoModelTourURL
 		
-		self.sqft = model.sqft
-		self.baths = model.baths
+		self.modelID = model.modelID
+		self.drawingID = model.drawingID
+		self.floorPlanID = model.floorPlanID
+		
+		self.modelWidth = model.modelWidth
+		self.modelLength = model.modelLength
+		self.minSquareFeet = model.minSquareFeet
+		self.maxSquareFeet = model.maxSquareFeet
 		self.beds = model.beds
-		self.features = model.features
-		self.priceBase = model.priceBase
-		self.priceUpper = model.priceUpper
+		self.baths = model.baths
 		
-		self.isEnabled = model.isEnabled
-		self.isSingleSection = model.isSingleSection
+		self.wholesalePrice = model.wholesalePrice
+		self.minGeneratedPrice = model.minGeneratedPrice
+		self.maxGeneratedPrice = model.maxGeneratedPrice
+		
+		self.lowHistoricalPrice = model.lowHistoricalPrice
+		self.highHistoricalPrice = model.highHistoricalPrice
+		self.twoYearSalesCount = model.twoYearSalesCount
+		
+		self.isMultiSection = model.isMultiSection
+		self.isModular = model.isModular
+		self.isDealerEntered = model.isDealerEntered
+		self.isBuildable = model.isBuildable
+		
+		self.isWebEnabled = model.isWebEnabled
+		
+		self.hasQualityPhotos = model.hasQualityPhotos
+		self.hasVideo = model.hasVideo
+		self.hasPhotoRealRendering = model.hasPhotoRealRendering
+		self.isRequiringFP = model.isRequiringFP
+		
+		self.lowPrice = model.lowPrice
+		self.highPrice = model.highPrice
+		
+		self.homeImages = model.homeImages
+		
+		self.builderOptions = options.builderOptions
+		
+		self.decorOptions = options.decorOptions
+		
+		self.modelOptions = options.modelOptions
+		
+	}
+}
 
-		self.hasBasement = model.hasBasement
-		self.sqftBasement = model.sqftBasement
-		self.sqftMain = model.sqftMain
-		self.sqftUpper = model.sqftUpper
-		
+
+struct HomeModelOptionsResponse: Content
+{
+	var builderOptions: [BuilderOptionResponse]
+	
+	var decorOptions: [DecorOptionResponse]
+	
+	var modelOptions: [ModelOptionResponse]
+	
+	init(builderOptions: [BuilderOptionResponse], decorOptions: [DecorOptionResponse], modelOptions: [ModelOptionResponse])
+	{
 		self.builderOptions = builderOptions
 		
 		self.decorOptions = decorOptions
 		
 		self.modelOptions = modelOptions
-		
-		self.homeImages = images
 	}
 }
 
@@ -272,9 +327,9 @@ struct HomeModelController: RouteCollection
 		
 		homeModelsRoute.get(use: getAllHandler)
 		
-		homeModelsRoute.get("model-number", String.parameter, use: getModelNumberHandler)
+		homeModelsRoute.get("model-options", String.parameter, use: getModelNumberHandler)
 		
-		homeModelsRoute.get("sim-model-number", String.parameter, use: getSimModelHandler)
+		homeModelsRoute.get("model-number", String.parameter, use: getSimModelHandler)
 
 		homeModelsRoute.get(HomeModel.parameter, use: getHandler)
 
@@ -327,28 +382,51 @@ struct HomeModelController: RouteCollection
 	}
 	
 	
-	func getSimModelHandler(_ req: Request) throws -> Future<SimApiHomeModel> {
-		
-		let modelNumber = try req.parameters.next(String.self)
-		
-		let resUrl = "https://sc-mch.vapor.cloud/api/home-model/model-number/" + modelNumber.uppercased()
-		
-		let simResponse = try req.client().get(resUrl).flatMap { response in
-			try response.content.decode(SimApiHomeModel.self)
-		}
-		
-		return simResponse
-	}
-	
-	
-	func getModelNumberHandler(_ req: Request) throws -> Future<HomeModelResponse>
+	func getSimModelHandler(_ req: Request) throws -> Future<HomeModelResponse>
 	{
 		let modelNumber = try req.parameters.next(String.self)
 		
+		let resUrl = "https://sc-simapi.vapor.cloud/api/home-model/model-number/" + modelNumber.uppercased()
+		
+		let simResponse = try req.client().get(resUrl)
+		
+		let simModel = simResponse.flatMap { homeModel -> Future<HomeModelResponse> in
+			
+			let modelInfo = try homeModel.content.decode(SimApiHomeModel.self)
+			
+			let modelOptions = try self.getHomeModelOptions(req, modelNumber: modelNumber)
+			
+			let modelResponse = modelInfo.map({ model -> Future<HomeModelResponse> in
+				
+				let modelOptionsResponse = modelOptions.map { options -> HomeModelResponse in
+					
+					return HomeModelResponse(model: model, options: options)
+				}
+				
+				return modelOptionsResponse.map(to: HomeModelResponse.self) { allResponses -> HomeModelResponse in
+					
+					return allResponses
+				}
+			})
+			
+			return modelResponse.flatMap { returnModel -> Future<HomeModelResponse> in
+				
+				return returnModel
+			}
+
+		}
+		
+		return simModel
+	}
+	
+	
+	
+	func getHomeModelOptions(_ req: Request, modelNumber: String) throws -> Future<HomeModelOptionsResponse>
+	{
 		return HomeModel.query(on: req).group(.or) { or in
 			
 			or.filter(\.modelNumber == modelNumber.uppercased())
-			}.first().flatMap(to: HomeModelResponse.self) { homemodel in
+			}.first().flatMap(to: HomeModelOptionsResponse.self) { homemodel in
 				
 				guard let decorCategories = try homemodel?.decorCategories.query(on: req).all() else {
 					throw Abort(.notFound)
@@ -356,7 +434,7 @@ struct HomeModelController: RouteCollection
 				
 				let decorResponses = try self.getDecorItemsResponses(req, decorCategories: decorCategories)
 				
-				let homeResponse = decorResponses.map { decorOptions -> Future<HomeModelResponse> in
+				let homeResponse = decorResponses.map { decorOptions -> Future<HomeModelOptionsResponse> in
 					
 					guard let builderOptionCategories = try homemodel?.builderOptionCategories.query(on: req).all() else {
 						throw Abort(.notFound)
@@ -364,25 +442,75 @@ struct HomeModelController: RouteCollection
 					
 					let builderOptionResponses = try self.getBuilderOptionItemsResponses(req, builderOptionCategories: builderOptionCategories)
 					
-					let builderOptResponse = builderOptionResponses.map { builderOptions -> Future<HomeModelResponse> in
+					let builderOptResponse = builderOptionResponses.map { builderOptions -> Future<HomeModelOptionsResponse> in
 						
 						let homeImages = try self.getHomeImages(req, home: homemodel!)
 						
 						let modelResponse = homeImages.map { ssImages in
 							
-							return HomeModelResponse(model: homemodel!, builderOptions: builderOptions, decorOptions: decorOptions, modelOptions: [], images: ssImages)
+							return HomeModelOptionsResponse(builderOptions: builderOptions, decorOptions: decorOptions, modelOptions: [])
 						}
 						
 						return modelResponse
 					}
 					
-					return builderOptResponse.flatMap(to: HomeModelResponse.self) { allResponses in
+					return builderOptResponse.flatMap(to: HomeModelOptionsResponse.self) { allResponses in
 						
 						return allResponses
 					}
 				}
 				
-				return homeResponse.flatMap(to: HomeModelResponse.self) { allResponses in
+				return homeResponse.flatMap(to: HomeModelOptionsResponse.self) { allResponses in
+					
+					return allResponses
+				}
+		}
+	}
+
+	
+	
+	func getModelNumberHandler(_ req: Request) throws -> Future<HomeModelOptionsResponse>
+	{
+		let modelNumber = try req.parameters.next(String.self)
+		
+		return HomeModel.query(on: req).group(.or) { or in
+			
+			or.filter(\.modelNumber == modelNumber.uppercased())
+			}.first().flatMap(to: HomeModelOptionsResponse.self) { homemodel in
+				
+				guard let decorCategories = try homemodel?.decorCategories.query(on: req).all() else {
+					throw Abort(.notFound)
+				}
+				
+				let decorResponses = try self.getDecorItemsResponses(req, decorCategories: decorCategories)
+				
+				let homeResponse = decorResponses.map { decorOptions -> Future<HomeModelOptionsResponse> in
+					
+					guard let builderOptionCategories = try homemodel?.builderOptionCategories.query(on: req).all() else {
+						throw Abort(.notFound)
+					}
+					
+					let builderOptionResponses = try self.getBuilderOptionItemsResponses(req, builderOptionCategories: builderOptionCategories)
+					
+					let builderOptResponse = builderOptionResponses.map { builderOptions -> Future<HomeModelOptionsResponse> in
+						
+						let homeImages = try self.getHomeImages(req, home: homemodel!)
+						
+						let modelResponse = homeImages.map { ssImages in
+							
+							return HomeModelOptionsResponse(builderOptions: builderOptions, decorOptions: decorOptions, modelOptions: [])
+						}
+						
+						return modelResponse
+					}
+					
+					return builderOptResponse.flatMap(to: HomeModelOptionsResponse.self) { allResponses in
+						
+						return allResponses
+					}
+				}
+				
+				return homeResponse.flatMap(to: HomeModelOptionsResponse.self) { allResponses in
 					
 					return allResponses
 				}
