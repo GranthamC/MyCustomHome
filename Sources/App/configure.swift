@@ -26,8 +26,20 @@ public func configure(
 	
     services.register(router, as: Router.self)
     
-    var middlewares = MiddlewareConfig()
+	var middlewares = MiddlewareConfig()
+	
+	let corsConfiguration = CORSMiddleware.Configuration(
+		allowedOrigin: .all,
+		allowedMethods: [.GET, .POST, .PUT, .OPTIONS, .DELETE, .PATCH],
+		allowedHeaders: [.accept, .authorization, .contentType, .origin, .xRequestedWith, .userAgent, .accessControlAllowOrigin]
+	)
+	
+	let corsMiddleware = CORSMiddleware(configuration: corsConfiguration)
+	
+	middlewares.use(corsMiddleware)
+	
     middlewares.use(ErrorMiddleware.self)
+	
     services.register(middlewares)
 	
     var databases = DatabasesConfig()
