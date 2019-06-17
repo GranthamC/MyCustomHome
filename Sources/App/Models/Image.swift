@@ -16,10 +16,10 @@ enum AssetImageType: Int32 {
 	case ObjectModelTexture = 5
 }
 
-final class ImageAsset: Codable
+final class Image: Codable
 {
 	var id: UUID?
-	var builderID: HomeBuilder.ID
+	var builderID: Plant.ID
 	var assetImageURL: String
 	
 	var changeToken: Int32?
@@ -28,15 +28,15 @@ final class ImageAsset: Codable
 	var imageScale: Float?
 	var assetImageType: Int32?
 	
-	init(assetImageURL: String, builderID: HomeBuilder.ID) {
+	init(assetImageURL: String, builderID: Plant.ID) {
 		self.assetImageURL = assetImageURL
 		self.builderID = builderID
 	}
 }
 
-extension ImageAsset: PostgreSQLUUIDModel {}
+extension Image: PostgreSQLUUIDModel {}
 
-extension ImageAsset: Migration
+extension Image: Migration
 {
 	static func prepare(
 		on connection: PostgreSQLConnection
@@ -46,38 +46,38 @@ extension ImageAsset: Migration
 			
 			try addProperties(to: builder)
 			
-			builder.reference(from: \.builderID, to: \HomeBuilder.id)
+			builder.reference(from: \.builderID, to: \Plant.id)
 		}
 	}
 	
 }
 
-extension ImageAsset: Content {}
+extension Image: Content {}
 
-extension ImageAsset: Parameter {}
+extension Image: Parameter {}
 
-extension ImageAsset
+extension Image
 {
-	var builder: Parent<ImageAsset, HomeBuilder> {
+	var builder: Parent<Image, Plant> {
 		
 		return parent(\.builderID)
 	}
 	
-	var homeOptionExampleImages: Siblings<ImageAsset,
+	var homeOptionExampleImages: Siblings<Image,
 		BuilderOption,
 		ImageAssetHomeOptionPivot> {
 		
 		return siblings()
 	}
 	
-	var homeModelImages: Siblings<ImageAsset,
+	var homeModelImages: Siblings<Image,
 		HomeModel,
 		ImageAssetHomeModelPivot> {
 		
 		return siblings()
 	}
 	
-	var decorOptionImages: Siblings<ImageAsset,
+	var decorOptionImages: Siblings<Image,
 		DecorItem,
 		ImageAssetDecorItemPivot> {
 		

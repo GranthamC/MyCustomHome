@@ -2,7 +2,7 @@ import Foundation
 import Vapor
 import FluentPostgreSQL
 
-final class HomeBuilder: Codable
+final class Plant: Codable
 {
 	var id: UUID?
 	
@@ -23,9 +23,9 @@ final class HomeBuilder: Codable
 }
 
 
-extension HomeBuilder: PostgreSQLUUIDModel {}
+extension Plant: PostgreSQLUUIDModel {}
 
-extension HomeBuilder: Migration
+extension Plant: Migration
 {
 	static func prepare(on connection: PostgreSQLConnection) -> Future<Void>
 	{
@@ -38,58 +38,58 @@ extension HomeBuilder: Migration
 	}
 }
 
-extension HomeBuilder: Content {}
+extension Plant: Content {}
 
-extension HomeBuilder: Parameter {}
+extension Plant: Parameter {}
 
-extension HomeBuilder
+extension Plant
 {
-	var changeTokens: Parent<HomeBuilder, ChangeToken> {
+	var changeTokens: Parent<Plant, ChangeToken> {
 		
 		return parent(\.changeTokensID!)
 	}
 	
-	var productLines: Children<HomeBuilder, ProductLine> {
+	var productLines: Children<Plant, ProductLine> {
 		
 		return children(\.builderID)
 	}
 	
-	var homeModels: Children<HomeBuilder, HomeModel> {
+	var homeModels: Children<Plant, HomeModel> {
 		
 		return children(\.builderID)
 	}
 	
-	var homeOptionCategories: Children<HomeBuilder, BuilderCategory> {
+	var homeOptionCategories: Children<Plant, BuilderCategory> {
 		
 		return children(\.builderID)
 	}
 	
-	var homeOptions: Children<HomeBuilder, BuilderOption> {
+	var homeOptions: Children<Plant, BuilderOption> {
 		
 		return children(\.builderID)
 	}
 	
-	var decorOptionCategories: Children<HomeBuilder, DecorCategory> {
+	var decorOptionCategories: Children<Plant, DecorCategory> {
 		
 		return children(\.builderID)
 	}
 	
-	var decorOptions: Children<HomeBuilder, DecorItem> {
+	var decorOptions: Children<Plant, DecorItem> {
 		
 		return children(\.builderID)
 	}
 
-	var imageAssets: Children<HomeBuilder, ImageAsset> {
+	var imageAssets: Children<Plant, ImageAsset> {
 		
 		return children(\.builderID)
 	}
 	
-	var decorPackages: Children<HomeBuilder, DecorPackage> {
+	var decorPackages: Children<Plant, DecorPackage> {
 		
 		return children(\.builderID)
 	}
 	
-	var homeSets: Children<HomeBuilder, BuilderHomeSet> {
+	var homeSets: Children<Plant, BuilderHomeSet> {
 		
 		return children(\.builderID)
 	}

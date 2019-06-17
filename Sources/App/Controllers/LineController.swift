@@ -11,7 +11,7 @@ struct ProductLineResponse: Content
 	
 	var homeModels: [HomeModel]
 	
-	init(line: ProductLine, models: [HomeModel])
+	init(line: Line, models: [HomeModel])
 	{
 		
 		self.name = line.name
@@ -23,7 +23,7 @@ struct ProductLineResponse: Content
 }
 
 
-struct ProductLineController: RouteCollection
+struct LineController: RouteCollection
 {
 	
 	func boot(router: Router) throws {
@@ -32,15 +32,15 @@ struct ProductLineController: RouteCollection
 		
 		productLinesRoute.get(use: getAllHandler)
 		
-		productLinesRoute.get(ProductLine.parameter, use: getHandler)
+		productLinesRoute.get(Line.parameter, use: getHandler)
 
-		productLinesRoute.get(ProductLine.parameter, "builder", use: getBuilderHandler)
+		productLinesRoute.get(Line.parameter, "builder", use: getBuilderHandler)
 		
-		productLinesRoute.get(ProductLine.parameter, "home-models", use: getHomeModelsHandler)
+		productLinesRoute.get(Line.parameter, "home-models", use: getHomeModelsHandler)
 		
-		productLinesRoute.get(ProductLine.parameter, "decor-categories", use: getCategoriesHandler)
+		productLinesRoute.get(Line.parameter, "decor-categories", use: getCategoriesHandler)
 
-		productLinesRoute.get(ProductLine.parameter, "decor-packages", use: getDecorPackagesHandler)
+		productLinesRoute.get(Line.parameter, "decor-packages", use: getDecorPackagesHandler)
 
 		productLinesRoute.get("lines-info", use: all)
 
@@ -52,24 +52,24 @@ struct ProductLineController: RouteCollection
 		
 		let tokenAuthGroup = productLinesRoute.grouped(tokenAuthMiddleware, guardAuthMiddleware)
 		
-		tokenAuthGroup.post(ProductLine.self, use: createHandler)
+		tokenAuthGroup.post(Line.self, use: createHandler)
 		
-		tokenAuthGroup.delete(ProductLine.parameter, use: deleteHandler)
+		tokenAuthGroup.delete(Line.parameter, use: deleteHandler)
 		
-		tokenAuthGroup.put(ProductLine.parameter, use: updateHandler)
+		tokenAuthGroup.put(Line.parameter, use: updateHandler)
 		
-		tokenAuthGroup.post(ProductLine.parameter, "home-model", HomeModel.parameter, use: addHomeModelHandler)
+		tokenAuthGroup.post(Line.parameter, "home-model", HomeModel.parameter, use: addHomeModelHandler)
 		
-		tokenAuthGroup.delete(ProductLine.parameter, "home-model", HomeModel.parameter, use: removeHomeModelHandler)
+		tokenAuthGroup.delete(Line.parameter, "home-model", HomeModel.parameter, use: removeHomeModelHandler)
 
-		tokenAuthGroup.post(ProductLine.parameter, "decor-package", DecorPackage.parameter, use: addDecorPackageHandler)
+		tokenAuthGroup.post(Line.parameter, "decor-package", DecorPackage.parameter, use: addDecorPackageHandler)
 		
-		tokenAuthGroup.delete(ProductLine.parameter, "decor-package", DecorPackage.parameter, use: removeDecorPackageHandler)
+		tokenAuthGroup.delete(Line.parameter, "decor-package", DecorPackage.parameter, use: removeDecorPackageHandler)
 	}
 	
 	func all(_ request: Request) throws -> Future<[ProductLineResponse]> {
 		
-		return ProductLine.query(on: request).all().flatMap { lines in
+		return Line.query(on: request).all().flatMap { lines in
 			
 			let lineResponseFutures = try lines.map { line in
 				
@@ -82,36 +82,36 @@ struct ProductLineController: RouteCollection
 		}
 	}
 	
-	func createHandler(_ req: Request, line: ProductLine) throws -> Future<ProductLine> {
+	func createHandler(_ req: Request, line: Line) throws -> Future<Line> {
 		
 		return line.save(on: req)
 	}
 	
 	
-	func getAllHandler(_ req: Request) throws -> Future<[ProductLine]>
+	func getAllHandler(_ req: Request) throws -> Future<[Line]>
 	{
-		return ProductLine.query(on: req).all()
+		return Line.query(on: req).all()
 	}
 	
 	
-	func getHandler(_ req: Request) throws -> Future<ProductLine>
+	func getHandler(_ req: Request) throws -> Future<Line>
 	{
-		return try req.parameters.next(ProductLine.self)
+		return try req.parameters.next(Line.self)
 	}
 	
 	
 	// Update passed product line with parameters
 	//
-	func updateHandler(_ req: Request) throws -> Future<ProductLine> {
+	func updateHandler(_ req: Request) throws -> Future<Line> {
 		
 		return try flatMap(
-			to: ProductLine.self,
-			req.parameters.next(ProductLine.self),
-			req.content.decode(ProductLine.self)
+			to: Line.self,
+			req.parameters.next(Line.self),
+			req.content.decode(Line.self)
 		) { line, updatedLine in
 			
 			line.name = updatedLine.name
-			line.builderID = updatedLine.builderID
+			line.plantID = updatedLine.plantID
 			line.logoURL = updatedLine.logoURL
 			line.websiteURL = updatedLine.websiteURL
 			line.changeToken = updatedLine.changeToken
@@ -123,7 +123,7 @@ struct ProductLineController: RouteCollection
 	
 	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try req.parameters.next(ProductLine.self)
+		return try req.parameters.next(Line.self)
 			.delete(on: req)
 			.transform(to: HTTPStatus.noContent)
 	}
@@ -131,11 +131,11 @@ struct ProductLineController: RouteCollection
 
 	// Get the Builder record for this product line
 	//
-	func getBuilderHandler(_ req: Request) throws -> Future<HomeBuilder> {
+	func getBuilderHandler(_ req: Request) throws -> Future<Plant> {
 		
 		return try req
-			.parameters.next(ProductLine.self)
-			.flatMap(to: HomeBuilder.self) { line in
+			.parameters.next(Line.self)
+			.flatMap(to: Plant.self) { line in
 				
 				line.builder.get(on: req)
 		}
@@ -145,7 +145,7 @@ struct ProductLineController: RouteCollection
 	func addHomeModelHandler(_ req: Request) throws -> Future<HTTPStatus>
 	{
 		
-		return try flatMap(to: HTTPStatus.self,	req.parameters.next(ProductLine.self), req.parameters.next(HomeModel.self))
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(Line.self), req.parameters.next(HomeModel.self))
 		{ line, model in
 			
 			return line.homeModels.attach(model, on: req).transform(to: .created)
@@ -156,7 +156,7 @@ struct ProductLineController: RouteCollection
 	//
 	func getHomeModelsHandler(_ req: Request) throws -> Future<[HomeModel]> {
 		
-		return try req.parameters.next(ProductLine.self).flatMap(to: [HomeModel].self) { line in
+		return try req.parameters.next(Line.self).flatMap(to: [HomeModel].self) { line in
 			
 			try line.homeModels.query(on: req).all()
 		}
@@ -164,7 +164,7 @@ struct ProductLineController: RouteCollection
 	
 	func removeHomeModelHandler(_ req: Request) throws -> Future<HTTPStatus> {
 
-		return try flatMap(to: HTTPStatus.self, req.parameters.next(ProductLine.self), req.parameters.next(HomeModel.self)) { line, model in
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(Line.self), req.parameters.next(HomeModel.self)) { line, model in
 
 			return line.homeModels.detach(model, on: req).transform(to: .noContent)
 		}
@@ -176,7 +176,7 @@ struct ProductLineController: RouteCollection
 	func getCategoriesHandler(_ req: Request) throws -> Future<[LineDecorCategory]> {
 		
 		return try req
-			.parameters.next(ProductLine.self)
+			.parameters.next(Line.self)
 			.flatMap(to: [LineDecorCategory].self) { line in
 				
 				try line.decorCategories.query(on: req).all()
@@ -187,7 +187,7 @@ struct ProductLineController: RouteCollection
 	func addDecorPackageHandler(_ req: Request) throws -> Future<HTTPStatus>
 	{
 		
-		return try flatMap(to: HTTPStatus.self,	req.parameters.next(ProductLine.self), req.parameters.next(DecorPackage.self))
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(Line.self), req.parameters.next(DecorPackage.self))
 		{ line, item in
 			
 			return line.decorPackages.attach(item, on: req).transform(to: .created)
@@ -198,7 +198,7 @@ struct ProductLineController: RouteCollection
 	//
 	func getDecorPackagesHandler(_ req: Request) throws -> Future<[DecorPackage]> {
 		
-		return try req.parameters.next(ProductLine.self).flatMap(to: [DecorPackage].self) { line in
+		return try req.parameters.next(Line.self).flatMap(to: [DecorPackage].self) { line in
 			
 			try line.decorPackages.query(on: req).all()
 		}
@@ -206,7 +206,7 @@ struct ProductLineController: RouteCollection
 	
 	func removeDecorPackageHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try flatMap(to: HTTPStatus.self, req.parameters.next(ProductLine.self), req.parameters.next(DecorPackage.self)) { line, item in
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(Line.self), req.parameters.next(DecorPackage.self)) { line, item in
 			
 			return line.decorPackages.detach(item, on: req).transform(to: .noContent)
 		}
