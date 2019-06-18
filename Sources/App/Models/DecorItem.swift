@@ -6,10 +6,15 @@ final class DecorItem: Codable
 {
 	var id: UUID?
 	
+	var itemID: String
+
 	var name: String
-	var builderID: HomeBuilder.ID
 	
-	var categoryID: DecorCategory.ID
+	var plantID: String?
+	var plantModelID: Plant.ID
+	
+	var categoryID: String?
+	var categoryModelID: DecorCategory.ID
 
 	var optionImageURL: String
 
@@ -29,11 +34,12 @@ final class DecorItem: Codable
 	var physicalHeight: Float?
 	var physicalWidth: Float?
 	
-	init(name: String, builderID: HomeBuilder.ID, categoryID: DecorCategory.ID, imagePath: String) {
+	init(name: String, plantID: Plant.ID, categoryID: DecorCategory.ID, imagePath: String, itemID: String) {
 		self.name = name
-		self.builderID = builderID
-		self.categoryID = categoryID
+		self.plantModelID = plantID
+		self.categoryModelID = categoryID
 		self.optionImageURL = imagePath
+		self.itemID = itemID
 	}
 }
 
@@ -49,9 +55,9 @@ extension DecorItem: Migration
 			
 			try addProperties(to: builder)
 
-			builder.reference(from: \.builderID, to: \HomeBuilder.id)
+			builder.reference(from: \.plantModelID, to: \Plant.id)
 			
-			builder.reference(from: \.categoryID, to: \DecorCategory.id)
+			builder.reference(from: \.categoryModelID, to: \DecorCategory.id)
 		}
 	}
 	
@@ -63,17 +69,18 @@ extension DecorItem: Parameter {}
 
 extension DecorItem
 {
-	var builder: Parent<DecorItem, HomeBuilder> {
+	var builder: Parent<DecorItem, Plant> {
 		
-		return parent(\.builderID)
+		return parent(\.plantModelID)
 	}
+	
 	
 	var category: Parent<DecorItem, DecorCategory> {
 		
-		return parent(\.categoryID)
+		return parent(\.categoryModelID)
 	}
 
-	var images: Siblings<DecorItem, ImageAsset, ImageAssetDecorItemPivot> {
+	var images: Siblings<DecorItem, Image, ImageAssetDecorItemPivot> {
 		
 		return siblings()
 	}

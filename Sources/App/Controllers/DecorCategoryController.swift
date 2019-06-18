@@ -67,7 +67,7 @@ struct DecorOptionCategoryController: RouteCollection
 			req.content.decode(DecorCategory.self)
 		) { category, updatedCategory in
 			category.name = updatedCategory.name
-			category.builderID = updatedCategory.builderID
+			category.plantID = updatedCategory.plantID
 			category.optionType = updatedCategory.optionType
 			category.changeToken = updatedCategory.changeToken
 			return category.save(on: req)
@@ -85,9 +85,9 @@ struct DecorOptionCategoryController: RouteCollection
 	
 	// Get the Builder record for this category
 	//
-	func getBuilderHandler(_ req: Request) throws -> Future<HomeBuilder> {
+	func getBuilderHandler(_ req: Request) throws -> Future<Plant> {
 		
-		return try req.parameters.next(DecorCategory.self).flatMap(to: HomeBuilder.self) { category in
+		return try req.parameters.next(DecorCategory.self).flatMap(to: Plant.self) { category in
 			
 			category.builder.get(on: req)
 		}

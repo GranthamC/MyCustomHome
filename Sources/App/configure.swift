@@ -27,7 +27,19 @@ public func configure(
     services.register(router, as: Router.self)
     
     var middlewares = MiddlewareConfig()
-    middlewares.use(ErrorMiddleware.self)
+	
+	let corsConfiguration = CORSMiddleware.Configuration(
+		allowedOrigin: .all,
+		allowedMethods: [.GET, .POST, .PUT, .OPTIONS, .DELETE, .PATCH],
+		allowedHeaders: [.accept, .authorization, .contentType, .origin, .xRequestedWith, .userAgent, .accessControlAllowOrigin]
+	)
+	
+	let corsMiddleware = CORSMiddleware(configuration: corsConfiguration)
+	
+	middlewares.use(corsMiddleware)
+	
+	middlewares.use(ErrorMiddleware.self)
+	
     services.register(middlewares)
 	
     var databases = DatabasesConfig()
@@ -63,13 +75,13 @@ public func configure(
 
 	migrations.add(model: User.self, database: .psql)
 	
-	migrations.add(model: HomeBuilder.self, database: .psql)
+	migrations.add(model: Plant.self, database: .psql)
 	
 	migrations.add(model: ChangeToken.self, database: .psql)
 
-	migrations.add(model: ProductLine.self, database: .psql)
+	migrations.add(model: Line.self, database: .psql)
 
-	migrations.add(model: BuilderCategory.self, database: .psql)
+	migrations.add(model: PlantCategory.self, database: .psql)
 	
 	migrations.add(model: BuilderOption.self, database: .psql)
 
@@ -87,7 +99,7 @@ public func configure(
 
 	migrations.add(model: ModelOption.self, database: .psql)
 	
-	migrations.add(model: ImageAsset.self, database: .psql)
+	migrations.add(model: Image.self, database: .psql)
 
 	migrations.add(model: DecorPackageOptionPivot.self, database: .psql)
 
@@ -121,7 +133,7 @@ public func configure(
 
 	migrations.add(model: Token.self, database: .psql)
 
-	migrations.add(model: BuilderHomeSet.self, database: .psql)
+	migrations.add(model: HomeModelSet.self, database: .psql)
 
 	migrations.add(model: HomeSetCategory.self, database: .psql)
 

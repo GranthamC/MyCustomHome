@@ -6,18 +6,24 @@ final class Line: Codable
 {
 	var id: UUID?
 	var name: String
-	var builderID: Plant.ID
+	var plantModelID: Plant.ID
 	
 	var changeToken: Int32?
 
 	var logoURL: String?
-	
 	var websiteURL: String?
+
+	var lineID: String?
+	var lineDescription: String?
+	var acronym: String?
 	
-	init(name: String, builderID: Plant.ID) {
+	var plantID: String?
+	var plantNumber: String?
+
+	init(name: String, plantModelID: Plant.ID) {
 		
 		self.name = name
-		self.builderID = builderID
+		self.plantModelID = plantModelID
 	}
 }
 
@@ -33,7 +39,7 @@ extension Line: Migration
 
 			try addProperties(to: line)
 
-			line.reference(from: \.builderID, to: \Plant.id)
+			line.reference(from: \.plantModelID, to: \Plant.id)
 			
 			line.unique(on: \.name)
 		}
@@ -52,6 +58,11 @@ extension Line
 		return siblings()
 	}
 	
+	var homes: Children<Line, HomeModel> {
+		
+		return children(\.lineModelID)
+	}
+
 	var decorCategories: Children<Line, LineDecorCategory> {
 		
 		return children(\.lineID)
@@ -64,6 +75,6 @@ extension Line
 
 	var builder: Parent<Line, Plant> {
 
-		return parent(\.builderID)
+		return parent(\.plantModelID)
 	}
 }

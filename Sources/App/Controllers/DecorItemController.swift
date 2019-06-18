@@ -37,9 +37,9 @@ struct DecorItemController: RouteCollection
 		
 		tokenAuthGroup.put(DecorItem.parameter, use: updateHandler)
 
-		tokenAuthGroup.post(DecorItem.parameter, "image", ImageAsset.parameter, use: addImageHandler)
+		tokenAuthGroup.post(DecorItem.parameter, "image", Image.parameter, use: addImageHandler)
 		
-		tokenAuthGroup.delete(DecorItem.parameter, "image", ImageAsset.parameter, use: removeImageHandler)
+		tokenAuthGroup.delete(DecorItem.parameter, "image", Image.parameter, use: removeImageHandler)
 
 	}
 	
@@ -73,13 +73,20 @@ struct DecorItemController: RouteCollection
 		) { optionItem, updatedItem in
 			
 			optionItem.name = updatedItem.name
-			optionItem.builderID = updatedItem.builderID
+			optionItem.itemID = updatedItem.itemID
+			
+			optionItem.plantID = updatedItem.plantID
+			optionItem.plantModelID = updatedItem.plantModelID
+			
+			optionItem.categoryID = updatedItem.categoryID
+			optionItem.categoryModelID = updatedItem.categoryModelID
+
 			optionItem.optionImageType = updatedItem.optionImageType
 			optionItem.changeToken = updatedItem.changeToken
-			optionItem.categoryID = updatedItem.categoryID
 
 			optionItem.optionImageURL = updatedItem.optionImageURL
 			optionItem.optionModelURL = updatedItem.optionModelURL
+			
 			optionItem.detailInfo = updatedItem.detailInfo
 			optionItem.optionColor = updatedItem.optionColor
 			optionItem.isUpgrade = updatedItem.isUpgrade
@@ -111,9 +118,9 @@ struct DecorItemController: RouteCollection
 	
 	// Get the Builder record for this home option Item
 	//
-	func getBuilderHandler(_ req: Request) throws -> Future<HomeBuilder> {
+	func getBuilderHandler(_ req: Request) throws -> Future<Plant> {
 		
-		return try req.parameters.next(DecorItem.self).flatMap(to: HomeBuilder.self) { homeOptionItem in
+		return try req.parameters.next(DecorItem.self).flatMap(to: Plant.self) { homeOptionItem in
 			
 			homeOptionItem.builder.get(on: req)
 		}
@@ -123,7 +130,7 @@ struct DecorItemController: RouteCollection
 	func addImageHandler(_ req: Request) throws -> Future<HTTPStatus>
 	{
 		
-		return try flatMap(to: HTTPStatus.self,	req.parameters.next(DecorItem.self), req.parameters.next(ImageAsset.self))
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(DecorItem.self), req.parameters.next(Image.self))
 		{ item, image in
 			
 			return item.images.attach(image, on: req).transform(to: .created)
@@ -133,9 +140,9 @@ struct DecorItemController: RouteCollection
 	
 	// Get the item's example images
 	//
-	func getImagesHandler(_ req: Request) throws -> Future<[ImageAsset]> {
+	func getImagesHandler(_ req: Request) throws -> Future<[Image]> {
 		
-		return try req.parameters.next(DecorItem.self).flatMap(to: [ImageAsset].self) { item in
+		return try req.parameters.next(DecorItem.self).flatMap(to: [Image].self) { item in
 			
 			try item.images.query(on: req).all()
 		}
@@ -144,7 +151,7 @@ struct DecorItemController: RouteCollection
 	
 	func removeImageHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try flatMap(to: HTTPStatus.self, req.parameters.next(DecorItem.self), req.parameters.next(ImageAsset.self)) { item, image in
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(DecorItem.self), req.parameters.next(Image.self)) { item, image in
 			
 			return item.images.detach(image, on: req).transform(to: .noContent)
 		}

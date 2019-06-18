@@ -6,13 +6,15 @@ final class DecorPackage: Codable
 {
 	var id: UUID?
 	var name: String
-	var builderID: HomeBuilder.ID
+	var plantID: Plant.ID
+	
+	var packageID: String?
 	
 	var changeToken: Int32?
 
-	init(name: String, builderID: HomeBuilder.ID) {
+	init(name: String, plantID: Plant.ID) {
 		self.name = name
-		self.builderID = builderID
+		self.plantID = plantID
 	}
 }
 
@@ -28,7 +30,7 @@ extension DecorPackage: Migration
 			
 			try addProperties(to: builder)
 			
-			builder.reference(from: \.builderID, to: \HomeBuilder.id)
+			builder.reference(from: \.plantID, to: \Plant.id)
 		}
 	}
 	
@@ -40,9 +42,9 @@ extension DecorPackage: Parameter {}
 
 extension DecorPackage
 {
-	var builder: Parent<DecorPackage, HomeBuilder> {
+	var builder: Parent<DecorPackage, Plant> {
 		
-		return parent(\.builderID)
+		return parent(\.plantID)
 	}
 	
 	var optionItems: Siblings<DecorPackage, DecorItem, DecorPackageOptionPivot> {

@@ -6,7 +6,7 @@ final class HomeModelSet: Codable
 {
 	var id: UUID?
 	
-	var builderID: Plant.ID?
+	var plantID: Plant.ID?
 
 	var setTitle: String
 	
@@ -29,10 +29,10 @@ final class HomeModelSet: Codable
 	var useCategories: Bool?
 	var useBrochure: Bool?
 
-	init(title: String, builderID: Plant.ID?) {
+	init(title: String, plantID: Plant.ID?) {
 		
 		self.setTitle = title
-		self.builderID = builderID
+		self.plantID = plantID
 	}
 }
 
@@ -73,9 +73,9 @@ extension HomeModelSet: Migration
 			
 			builder.field(for: \.useBrochure)
 
-			builder.field(for: \.builderID)
+			builder.field(for: \.plantID)
 
-			builder.reference(from: \.builderID, to: \Plant.id)
+			builder.reference(from: \.plantID, to: \Plant.id)
 
 		}
 	}
@@ -90,7 +90,7 @@ extension HomeModelSet: Parameter {}
 extension HomeModelSet
 {
 	var builder: Parent<HomeModelSet, Plant> {
-		return parent(\.builderID)!
+		return parent(\.plantID)!
 	}
 	
 	var homeModels: Siblings<HomeModelSet, HomeModel, HomeSetToHomeModelPivot> {

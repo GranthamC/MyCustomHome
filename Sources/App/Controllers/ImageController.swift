@@ -9,7 +9,7 @@ struct ImageController: RouteCollection
 	
 	func boot(router: Router) throws {
 		
-		let imageAssetsRoute = router.grouped("api", "image-asset")
+		let imageAssetsRoute = router.grouped("api", "image")
 		
 //		imageAssetsRoute.post(ImageAsset.self, use: createHandler)
 		
@@ -21,7 +21,7 @@ struct ImageController: RouteCollection
 
 //		imageAssetsRoute.delete(ImageAsset.parameter, use: deleteHandler)
 
-		imageAssetsRoute.get(Image.parameter, "builder", use: getBuilderHandler)
+		imageAssetsRoute.get(Image.parameter, "plant", use: getBuilderHandler)
 		
 		imageAssetsRoute.get(Image.parameter, "home-models", use: getHomesHandler)
 		

@@ -7,18 +7,22 @@ final class Plant: Codable
 	var id: UUID?
 	
 	var name: String
-	var logoURL: String
+	var logoURL: String?
 	
+	var plantID: String?
+	var plantName: String?
+	var plantNumber: String
+
 	var websiteURL: String?
 	
 	var changeToken: Int32?
 	
 	var changeTokensID: ChangeToken.ID?
 
-	init(name: String, logoURL: String)
+	init(name: String, plantNumber: String)
 	{
 		self.name = name
-		self.logoURL = logoURL
+		self.plantNumber = plantNumber
 	}
 }
 
@@ -49,49 +53,49 @@ extension Plant
 		return parent(\.changeTokensID!)
 	}
 	
-	var productLines: Children<Plant, ProductLine> {
+	var productLines: Children<Plant, Line> {
 		
-		return children(\.builderID)
+		return children(\.plantModelID)
 	}
 	
 	var homeModels: Children<Plant, HomeModel> {
 		
-		return children(\.builderID)
+		return children(\.plantModelID)
 	}
 	
-	var homeOptionCategories: Children<Plant, BuilderCategory> {
+	var homeOptionCategories: Children<Plant, PlantCategory> {
 		
-		return children(\.builderID)
+		return children(\.plantID)
 	}
 	
 	var homeOptions: Children<Plant, BuilderOption> {
 		
-		return children(\.builderID)
+		return children(\.plantID)
 	}
 	
 	var decorOptionCategories: Children<Plant, DecorCategory> {
 		
-		return children(\.builderID)
+		return children(\.plantModelID)
 	}
 	
 	var decorOptions: Children<Plant, DecorItem> {
 		
-		return children(\.builderID)
+		return children(\.plantModelID)
 	}
 
-	var imageAssets: Children<Plant, ImageAsset> {
+	var images: Children<Plant, Image> {
 		
-		return children(\.builderID)
+		return children(\.plantID)
 	}
 	
 	var decorPackages: Children<Plant, DecorPackage> {
 		
-		return children(\.builderID)
+		return children(\.plantID)
 	}
 	
-	var homeSets: Children<Plant, BuilderHomeSet> {
+	var homeSets: Children<Plant, HomeModelSet> {
 		
-		return children(\.builderID)
+		return children(\.plantID)
 	}
 
 }

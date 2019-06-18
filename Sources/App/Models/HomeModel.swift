@@ -7,7 +7,8 @@ final class HomeModel: Codable
 	var id: UUID?
 	var name: String
 	var modelNumber: String
-	var builderID: HomeBuilder.ID
+	var plantModelID: Plant.ID
+	var lineModelID: Line.ID
 	
 	var changeToken: Int32?
 
@@ -31,12 +32,18 @@ final class HomeModel: Codable
 	var sqftBasement: Int16?
 	var sqftMain: Int16?
 	var sqftUpper: Int16?
+
+	var modelID: String?
+	var modelDescription: String?
 	
-	
-	init(name: String, modelNumber: String, builderID: HomeBuilder.ID) {
+	var lineID: String?
+	var plantID: String?
+
+	init(name: String, modelNumber: String, plantModelID: Plant.ID, lineModelID: Line.ID) {
 		self.name = name
 		self.modelNumber = modelNumber
-		self.builderID = builderID
+		self.plantModelID = plantModelID
+		self.lineModelID = lineModelID
 		
 		self.isEnabled = true
 		self.isSingleSection = false
@@ -55,7 +62,9 @@ extension HomeModel: Migration
 			
 			try addProperties(to: homeModel)
 
-			homeModel.reference(from: \.builderID, to: \HomeBuilder.id)
+			homeModel.reference(from: \.plantModelID, to: \Plant.id)
+			
+			homeModel.reference(from: \.lineModelID, to: \Line.id)
 			
 			homeModel.unique(on: \.modelNumber)
 		}
@@ -85,19 +94,24 @@ extension HomeModel
 		return children(\.modelID)
 	}
 
-	var productLines: Siblings<HomeModel, ProductLine, ProductLineHomeModelPivot> {
-		
-		return siblings()
-	}
-	
-	var images: Siblings<HomeModel, ImageAsset, ImageAssetHomeModelPivot> {
+	var productLines: Siblings<HomeModel, Line, ProductLineHomeModelPivot> {
 		
 		return siblings()
 	}
 
-	var builder: Parent<HomeModel, HomeBuilder> {
+	var productLine: Parent<HomeModel, Line> {
 		
-		return parent(\.builderID)
+		return parent(\.lineModelID)
+	}
+
+	var images: Siblings<HomeModel, Image, ImageAssetHomeModelPivot> {
+		
+		return siblings()
+	}
+
+	var builder: Parent<HomeModel, Plant> {
+		
+		return parent(\.plantModelID)
 	}
 
 }

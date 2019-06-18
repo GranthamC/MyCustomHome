@@ -21,7 +21,7 @@ struct HomeSetInfoResponse: Content
 
 	var homeModels: [HomeModel]
 	
-	init(set: BuilderHomeSet, models: [HomeModel])
+	init(set: HomeModelSet, models: [HomeModel])
 	{
 		
 		self.setTitle = set.setTitle
@@ -49,13 +49,13 @@ struct HomeSetController: RouteCollection
 		
 		homeSetRoute.get(use: getAllHandler)
 		
-		homeSetRoute.get(BuilderHomeSet.parameter, use: getHandler)
+		homeSetRoute.get(HomeModelSet.parameter, use: getHandler)
 		
-		homeSetRoute.get(BuilderHomeSet.parameter, "home-models", use: getHomeModelsHandler)
+		homeSetRoute.get(HomeModelSet.parameter, "home-models", use: getHomeModelsHandler)
 		
 		homeSetRoute.get("home-sets", use: all)
 		
-		homeSetRoute.get(BuilderHomeSet.parameter, "categories", use: getSetCategoriesHandler)
+		homeSetRoute.get(HomeModelSet.parameter, "categories", use: getSetCategoriesHandler)
 
 		// Add-in authentication for creating and updating
 		//
@@ -64,20 +64,20 @@ struct HomeSetController: RouteCollection
 		
 		let tokenAuthGroup = homeSetRoute.grouped(tokenAuthMiddleware, guardAuthMiddleware)
 		
-		tokenAuthGroup.post(BuilderHomeSet.self, use: createHandler)
+		tokenAuthGroup.post(HomeModelSet.self, use: createHandler)
 		
-		tokenAuthGroup.delete(BuilderHomeSet.parameter, use: deleteHandler)
+		tokenAuthGroup.delete(HomeModelSet.parameter, use: deleteHandler)
 		
-		tokenAuthGroup.put(BuilderHomeSet.parameter, use: updateHandler)
+		tokenAuthGroup.put(HomeModelSet.parameter, use: updateHandler)
 		
-		tokenAuthGroup.post(BuilderHomeSet.parameter, "home-model", HomeModel.parameter, use: addHomeModelHandler)
+		tokenAuthGroup.post(HomeModelSet.parameter, "home-model", HomeModel.parameter, use: addHomeModelHandler)
 		
-		tokenAuthGroup.delete(BuilderHomeSet.parameter, "home-model", HomeModel.parameter, use: removeHomeModelHandler)
+		tokenAuthGroup.delete(HomeModelSet.parameter, "home-model", HomeModel.parameter, use: removeHomeModelHandler)
 	}
 	
 	func all(_ request: Request) throws -> Future<[HomeSetInfoResponse]> {
 		
-		return BuilderHomeSet.query(on: request).all().flatMap { homeSets in
+		return HomeModelSet.query(on: request).all().flatMap { homeSets in
 			
 			let responseFutures = try homeSets.map { set in
 				
@@ -90,35 +90,35 @@ struct HomeSetController: RouteCollection
 		}
 	}
 	
-	func createHandler(_ req: Request, line: BuilderHomeSet) throws -> Future<BuilderHomeSet> {
+	func createHandler(_ req: Request, line: HomeModelSet) throws -> Future<HomeModelSet> {
 		
 		return line.save(on: req)
 	}
 	
 	
-	func getAllHandler(_ req: Request) throws -> Future<[BuilderHomeSet]>
+	func getAllHandler(_ req: Request) throws -> Future<[HomeModelSet]>
 	{
-		return BuilderHomeSet.query(on: req).all()
+		return HomeModelSet.query(on: req).all()
 	}
 	
 	
-	func getHandler(_ req: Request) throws -> Future<BuilderHomeSet>
+	func getHandler(_ req: Request) throws -> Future<HomeModelSet>
 	{
-		return try req.parameters.next(BuilderHomeSet.self)
+		return try req.parameters.next(HomeModelSet.self)
 	}
 	
 	
 	// Update passed product line with parameters
 	//
-	func updateHandler(_ req: Request) throws -> Future<BuilderHomeSet> {
+	func updateHandler(_ req: Request) throws -> Future<HomeModelSet> {
 		
 		return try flatMap(
-			to: BuilderHomeSet.self,
-			req.parameters.next(BuilderHomeSet.self),
-			req.content.decode(BuilderHomeSet.self)
+			to: HomeModelSet.self,
+			req.parameters.next(HomeModelSet.self),
+			req.content.decode(HomeModelSet.self)
 		) { homeSet, updatedSet in
 			
-			homeSet.builderID = updatedSet.builderID
+			homeSet.plantID = updatedSet.plantID
 			homeSet.setTitle = updatedSet.setTitle
 			homeSet.setDescription = updatedSet.setDescription
 			homeSet.useFactoryTour = updatedSet.useFactoryTour
@@ -138,7 +138,7 @@ struct HomeSetController: RouteCollection
 	
 	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try req.parameters.next(BuilderHomeSet.self)
+		return try req.parameters.next(HomeModelSet.self)
 			.delete(on: req)
 			.transform(to: HTTPStatus.noContent)
 	}
@@ -148,7 +148,7 @@ struct HomeSetController: RouteCollection
 	func addHomeModelHandler(_ req: Request) throws -> Future<HTTPStatus>
 	{
 		
-		return try flatMap(to: HTTPStatus.self,	req.parameters.next(BuilderHomeSet.self), req.parameters.next(HomeModel.self))
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(HomeModelSet.self), req.parameters.next(HomeModel.self))
 		{ line, model in
 			
 			return line.homeModels.attach(model, on: req).transform(to: .created)
@@ -159,7 +159,7 @@ struct HomeSetController: RouteCollection
 	//
 	func getHomeModelsHandler(_ req: Request) throws -> Future<[HomeModel]> {
 		
-		return try req.parameters.next(BuilderHomeSet.self).flatMap(to: [HomeModel].self) { line in
+		return try req.parameters.next(HomeModelSet.self).flatMap(to: [HomeModel].self) { line in
 			
 			try line.homeModels.query(on: req).all()
 		}
@@ -167,7 +167,7 @@ struct HomeSetController: RouteCollection
 	
 	func removeHomeModelHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try flatMap(to: HTTPStatus.self, req.parameters.next(BuilderHomeSet.self), req.parameters.next(HomeModel.self)) { line, model in
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeModelSet.self), req.parameters.next(HomeModel.self)) { line, model in
 			
 			return line.homeModels.detach(model, on: req).transform(to: .noContent)
 		}
@@ -179,7 +179,7 @@ struct HomeSetController: RouteCollection
 	func getSetCategoriesHandler(_ req: Request) throws -> Future<[HomeSetCategory]> {
 		
 		return try req
-			.parameters.next(BuilderHomeSet.self)
+			.parameters.next(HomeModelSet.self)
 			.flatMap(to: [HomeSetCategory].self) { builder in
 				
 				try builder.homeCategories.query(on: req).all()

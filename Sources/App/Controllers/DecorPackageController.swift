@@ -70,7 +70,7 @@ struct DecorPackageController: RouteCollection
 			req.content.decode(DecorPackage.self)
 		) { decorPkg, updatedCategory in
 			decorPkg.name = updatedCategory.name
-			decorPkg.builderID = updatedCategory.builderID
+			decorPkg.plantID = updatedCategory.plantID
 			decorPkg.changeToken = updatedCategory.changeToken
 			return decorPkg.save(on: req)
 		}
@@ -87,9 +87,9 @@ struct DecorPackageController: RouteCollection
 	
 	// Get the Builder record for this decorPkg
 	//
-	func getBuilderHandler(_ req: Request) throws -> Future<HomeBuilder> {
+	func getBuilderHandler(_ req: Request) throws -> Future<Plant> {
 		
-		return try req.parameters.next(DecorPackage.self).flatMap(to: HomeBuilder.self) { decorPkg in
+		return try req.parameters.next(DecorPackage.self).flatMap(to: Plant.self) { decorPkg in
 			
 			decorPkg.builder.get(on: req)
 		}

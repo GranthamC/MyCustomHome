@@ -83,11 +83,11 @@ struct SetCategoryController: RouteCollection
 	
 	// Get the home set record for this category
 	//
-	func getHomeSetHandler(_ req: Request) throws -> Future<BuilderHomeSet> {
+	func getHomeSetHandler(_ req: Request) throws -> Future<HomeModelSet> {
 		
 		return try req
 			.parameters.next(HomeSetCategory.self)
-			.flatMap(to: BuilderHomeSet.self) { line in
+			.flatMap(to: HomeModelSet.self) { line in
 				
 				line.homeSet.get(on: req)
 		}

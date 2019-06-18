@@ -33,11 +33,15 @@ struct LineController: RouteCollection
 		productLinesRoute.get(use: getAllHandler)
 		
 		productLinesRoute.get(Line.parameter, use: getHandler)
+		
+		productLinesRoute.get("search", use: searchHandler)
 
 		productLinesRoute.get(Line.parameter, "builder", use: getBuilderHandler)
 		
 		productLinesRoute.get(Line.parameter, "home-models", use: getHomeModelsHandler)
 		
+		productLinesRoute.get(Line.parameter, "homes", use: getHomesHandler)
+
 		productLinesRoute.get(Line.parameter, "decor-categories", use: getCategoriesHandler)
 
 		productLinesRoute.get(Line.parameter, "decor-packages", use: getDecorPackagesHandler)
@@ -98,7 +102,21 @@ struct LineController: RouteCollection
 	{
 		return try req.parameters.next(Line.self)
 	}
+
 	
+	func searchHandler(_ req: Request) throws -> Future<[Line]>
+	{
+		guard let searchTerm = req.query[String.self, at: "param"] else {
+			throw Abort(.badRequest)
+		}
+		
+		return Line.query(on: req).group(.or) { or in
+			or.filter(\.lineID == searchTerm)
+			or.filter(\.lineDescription == searchTerm)
+			or.filter(\.plantNumber == searchTerm)
+			}.all()
+	}
+
 	
 	// Update passed product line with parameters
 	//
@@ -111,10 +129,16 @@ struct LineController: RouteCollection
 		) { line, updatedLine in
 			
 			line.name = updatedLine.name
-			line.plantID = updatedLine.plantID
+			line.plantModelID = updatedLine.plantModelID
 			line.logoURL = updatedLine.logoURL
 			line.websiteURL = updatedLine.websiteURL
 			line.changeToken = updatedLine.changeToken
+			
+			line.lineID = updatedLine.lineID
+			line.lineDescription = updatedLine.lineDescription
+			line.acronym = updatedLine.acronym
+			line.plantID = updatedLine.plantID
+			line.plantNumber = updatedLine.plantNumber
 
 			return line.save(on: req)
 		}
@@ -167,6 +191,19 @@ struct LineController: RouteCollection
 		return try flatMap(to: HTTPStatus.self, req.parameters.next(Line.self), req.parameters.next(HomeModel.self)) { line, model in
 
 			return line.homeModels.detach(model, on: req).transform(to: .noContent)
+		}
+	}
+	
+	
+	//  Get the homes belonging to this line
+	//
+	func getHomesHandler(_ req: Request) throws -> Future<[HomeModel]> {
+		
+		return try req
+			.parameters.next(Line.self)
+			.flatMap(to: [HomeModel].self) { line in
+				
+				try line.homes.query(on: req).all()
 		}
 	}
 

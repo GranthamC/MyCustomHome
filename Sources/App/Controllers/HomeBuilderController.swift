@@ -9,11 +9,11 @@ struct HomeBuilderController: RouteCollection
 
 	func boot(router: Router) throws {
 
-		let buildersRoute = router.grouped("api", "builder")
+		let buildersRoute = router.grouped("api", "plant")
 		
 		buildersRoute.get(use: getAllHandler)
 
-		buildersRoute.get(HomeBuilder.parameter, use: getHandler)
+		buildersRoute.get(Plant.parameter, use: getHandler)
 		
 		buildersRoute.get("search", use: searchHandler)
 
@@ -21,25 +21,25 @@ struct HomeBuilderController: RouteCollection
 
 		buildersRoute.get("sorted", use: sortedHandler)
 		
-		buildersRoute.get(HomeBuilder.parameter, "lines", use: getProductLinesHandler)
+		buildersRoute.get(Plant.parameter, "lines", use: getProductLinesHandler)
 		
-		buildersRoute.get(HomeBuilder.parameter, "builder-option-categories", use: getHomeOptionCategoriesHandler)
+		buildersRoute.get(Plant.parameter, "plant-option-categories", use: getHomeOptionCategoriesHandler)
 		
-		buildersRoute.get(HomeBuilder.parameter, "builder-option-items", use: getHomeOptionItemsHandler)
+		buildersRoute.get(Plant.parameter, "plant-option-items", use: getHomeOptionItemsHandler)
 		
-		buildersRoute.get(HomeBuilder.parameter, "decor-categories", use: getDecorOptionCategoriesHandler)
+		buildersRoute.get(Plant.parameter, "decor-categories", use: getDecorOptionCategoriesHandler)
 		
-		buildersRoute.get(HomeBuilder.parameter, "decor-items", use: getDecorOptionItemsHandler)
+		buildersRoute.get(Plant.parameter, "decor-items", use: getDecorOptionItemsHandler)
 
-		buildersRoute.get(HomeBuilder.parameter, "image-assets", use: getImageAssetsHandler)
+		buildersRoute.get(Plant.parameter, "images", use: getImagesHandler)
 		
-		buildersRoute.get(HomeBuilder.parameter, "decor-packages", use: getDecorPackagesHandler)
+		buildersRoute.get(Plant.parameter, "decor-packages", use: getDecorPackagesHandler)
 		
-		buildersRoute.get(HomeBuilder.parameter, "home-models", use: getHomeModelsHandler)
+		buildersRoute.get(Plant.parameter, "home-models", use: getHomeModelsHandler)
 
-		buildersRoute.get(HomeBuilder.parameter, "change-tokens", use: getTokensHandler)
+		buildersRoute.get(Plant.parameter, "change-tokens", use: getTokensHandler)
 
-		buildersRoute.get(HomeBuilder.parameter, "home-sets", use: getHomeSetsHandler)
+		buildersRoute.get(Plant.parameter, "home-sets", use: getHomeSetsHandler)
 
 
 		// Add-in authentication for creating and updating
@@ -51,42 +51,45 @@ struct HomeBuilderController: RouteCollection
 			tokenAuthMiddleware,
 			guardAuthMiddleware)
 
-		tokenAuthGroup.post(HomeBuilder.self, use: createHandler)
+		tokenAuthGroup.post(Plant.self, use: createHandler)
 		
-		tokenAuthGroup.delete(HomeBuilder.parameter, use: deleteHandler)
+		tokenAuthGroup.delete(Plant.parameter, use: deleteHandler)
 		
-		tokenAuthGroup.put(HomeBuilder.parameter, use: updateHandler)
+		tokenAuthGroup.put(Plant.parameter, use: updateHandler)
 
 	}
 
 	
-	func createHandler(_ req: Request, builder: HomeBuilder) throws -> Future<HomeBuilder> {
+	func createHandler(_ req: Request, builder: Plant) throws -> Future<Plant> {
 		
 		return builder.save(on: req)
 	}
 
 	
-	func getAllHandler(_ req: Request) throws -> Future<[HomeBuilder]>
+	func getAllHandler(_ req: Request) throws -> Future<[Plant]>
 	{
-		return HomeBuilder.query(on: req).all()
+		return Plant.query(on: req).all()
 	}
 	
 
-	func getHandler(_ req: Request) throws -> Future<HomeBuilder>
+	func getHandler(_ req: Request) throws -> Future<Plant>
 	{
-		return try req.parameters.next(HomeBuilder.self)
+		return try req.parameters.next(Plant.self)
 	}
 	
 	// Update passed builder with parameters
 	//
-	func updateHandler(_ req: Request) throws -> Future<HomeBuilder> {
+	func updateHandler(_ req: Request) throws -> Future<Plant> {
 		
 		return try flatMap(
-			to: HomeBuilder.self,
-			req.parameters.next(HomeBuilder.self),
-			req.content.decode(HomeBuilder.self)
+			to: Plant.self,
+			req.parameters.next(Plant.self),
+			req.content.decode(Plant.self)
 		) { builder, updatedBuilder in
 			builder.name = updatedBuilder.name
+			builder.plantName = updatedBuilder.plantName
+			builder.plantID = updatedBuilder.plantID
+			builder.plantNumber = updatedBuilder.plantNumber
 			builder.logoURL = updatedBuilder.logoURL
 			builder.websiteURL = updatedBuilder.websiteURL
 			builder.changeToken = updatedBuilder.changeToken
@@ -104,30 +107,31 @@ struct HomeBuilderController: RouteCollection
 	
 	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try req.parameters.next(HomeBuilder.self)
+		return try req.parameters.next(Plant.self)
 			.delete(on: req)
 			.transform(to: HTTPStatus.noContent)
 	}
 
 	
-	func searchHandler(_ req: Request) throws -> Future<[HomeBuilder]>
+	func searchHandler(_ req: Request) throws -> Future<[Plant]>
 	{
 		guard let searchTerm = req.query[String.self, at: "param"] else {
 			throw Abort(.badRequest)
 		}
 		
-		return HomeBuilder.query(on: req).group(.or) { or in
+		return Plant.query(on: req).group(.or) { or in
 			or.filter(\.name == searchTerm)
+			or.filter(\.plantNumber == searchTerm)
 			}.all()
 	}
 
 	
-	func getFirstHandler(_ req: Request) throws -> Future<HomeBuilder>
+	func getFirstHandler(_ req: Request) throws -> Future<Plant>
 	{
-		return HomeBuilder.query(on: req)
+		return Plant.query(on: req)
 			.first()
 			
-			.map(to: HomeBuilder.self) { homebuilder in
+			.map(to: Plant.self) { homebuilder in
 				guard let homebuilder = homebuilder else {
 					throw Abort(.notFound)
 				}
@@ -137,19 +141,19 @@ struct HomeBuilderController: RouteCollection
 	}
 	
 	
-	func sortedHandler(_ req: Request) throws -> Future<[HomeBuilder]>
+	func sortedHandler(_ req: Request) throws -> Future<[Plant]>
 	{
-		return HomeBuilder.query(on: req).sort(\.name, .ascending).all()
+		return Plant.query(on: req).sort(\.name, .ascending).all()
 	}
 	
 	
 	// Get the builder's product lines
 	//
-	func getProductLinesHandler(_ req: Request) throws -> Future<[ProductLine]> {
+	func getProductLinesHandler(_ req: Request) throws -> Future<[Line]> {
 		
 		return try req
-			.parameters.next(HomeBuilder.self)
-			.flatMap(to: [ProductLine].self) { builder in
+			.parameters.next(Plant.self)
+			.flatMap(to: [Line].self) { builder in
 				
 				try builder.productLines.query(on: req).all()
 		}
@@ -158,11 +162,11 @@ struct HomeBuilderController: RouteCollection
 	
 	// Get the builder's home option categories
 	//
-	func getHomeOptionCategoriesHandler(_ req: Request) throws -> Future<[BuilderCategory]> {
+	func getHomeOptionCategoriesHandler(_ req: Request) throws -> Future<[PlantCategory]> {
 		
 		return try req
-			.parameters.next(HomeBuilder.self)
-			.flatMap(to: [BuilderCategory].self) { builder in
+			.parameters.next(Plant.self)
+			.flatMap(to: [PlantCategory].self) { builder in
 				
 				try builder.homeOptionCategories.query(on: req).all()
 		}
@@ -174,7 +178,7 @@ struct HomeBuilderController: RouteCollection
 	func getHomeOptionItemsHandler(_ req: Request) throws -> Future<[BuilderOption]> {
 		
 		return try req
-			.parameters.next(HomeBuilder.self)
+			.parameters.next(Plant.self)
 			.flatMap(to: [BuilderOption].self) { builder in
 				
 				try builder.homeOptions.query(on: req).all()
@@ -187,7 +191,7 @@ struct HomeBuilderController: RouteCollection
 	func getDecorOptionCategoriesHandler(_ req: Request) throws -> Future<[DecorCategory]> {
 		
 		return try req
-			.parameters.next(HomeBuilder.self)
+			.parameters.next(Plant.self)
 			.flatMap(to: [DecorCategory].self) { builder in
 				
 				try builder.decorOptionCategories.query(on: req).all()
@@ -200,7 +204,7 @@ struct HomeBuilderController: RouteCollection
 	func getDecorOptionItemsHandler(_ req: Request) throws -> Future<[DecorItem]> {
 		
 		return try req
-			.parameters.next(HomeBuilder.self)
+			.parameters.next(Plant.self)
 			.flatMap(to: [DecorItem].self) { builder in
 				
 				try builder.decorOptions.query(on: req).all()
@@ -210,13 +214,13 @@ struct HomeBuilderController: RouteCollection
 	
 	// Get the builder's image assets
 	//
-	func getImageAssetsHandler(_ req: Request) throws -> Future<[ImageAsset]> {
+	func getImagesHandler(_ req: Request) throws -> Future<[Image]> {
 		
 		return try req
-			.parameters.next(HomeBuilder.self)
-			.flatMap(to: [ImageAsset].self) { builder in
+			.parameters.next(Plant.self)
+			.flatMap(to: [Image].self) { builder in
 				
-				try builder.imageAssets.query(on: req).all()
+				try builder.images.query(on: req).all()
 		}
 	}
 
@@ -226,7 +230,7 @@ struct HomeBuilderController: RouteCollection
 	func getDecorPackagesHandler(_ req: Request) throws -> Future<[DecorPackage]> {
 		
 		return try req
-			.parameters.next(HomeBuilder.self)
+			.parameters.next(Plant.self)
 			.flatMap(to: [DecorPackage].self) { builder in
 				
 				try builder.decorPackages.query(on: req).all()
@@ -239,7 +243,7 @@ struct HomeBuilderController: RouteCollection
 	func getHomeModelsHandler(_ req: Request) throws -> Future<[HomeModel]> {
 		
 		return try req
-			.parameters.next(HomeBuilder.self)
+			.parameters.next(Plant.self)
 			.flatMap(to: [HomeModel].self) { builder in
 				
 				try builder.homeModels.query(on: req).all()
@@ -249,11 +253,11 @@ struct HomeBuilderController: RouteCollection
 	
 	// Get the builder's home sets
 	//
-	func getHomeSetsHandler(_ req: Request) throws -> Future<[BuilderHomeSet]> {
+	func getHomeSetsHandler(_ req: Request) throws -> Future<[HomeModelSet]> {
 		
 		return try req
-			.parameters.next(HomeBuilder.self)
-			.flatMap(to: [BuilderHomeSet].self) { builder in
+			.parameters.next(Plant.self)
+			.flatMap(to: [HomeModelSet].self) { builder in
 				
 				try builder.homeSets.query(on: req).all()
 		}
@@ -264,7 +268,7 @@ struct HomeBuilderController: RouteCollection
 	//
 	func getTokensHandler(_ req: Request) throws -> Future<ChangeToken> {
 		
-		return try req.parameters.next(HomeBuilder.self).flatMap(to: ChangeToken.self) { builder in
+		return try req.parameters.next(Plant.self).flatMap(to: ChangeToken.self) { builder in
 			
 			builder.changeTokens.get(on: req)
 		}

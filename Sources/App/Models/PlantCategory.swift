@@ -6,15 +6,15 @@ final class PlantCategory: Codable
 {
 	var id: UUID?
 	var name: String
-	var builderID: Plant.ID
+	var plantID: Plant.ID
 
 	var changeToken: Int32?
 
 	var optionType: Int32?
 
-	init(name: String, builderID: Plant.ID) {
+	init(name: String, plantID: Plant.ID) {
 		self.name = name
-		self.builderID = builderID
+		self.plantID = plantID
 	}
 }
 
@@ -32,7 +32,7 @@ extension PlantCategory: Migration
 			
 			builder.unique(on: \.name)
 
-			builder.reference(from: \.builderID, to: \Plant.id)
+			builder.reference(from: \.plantID, to: \Plant.id)
 		}
 	}
 	
@@ -46,7 +46,7 @@ extension PlantCategory
 {
 	var builder: Parent<PlantCategory, Plant> {
 		
-		return parent(\.builderID)
+		return parent(\.plantID)
 	}
 	
 	var categoryOptions: Children<PlantCategory, BuilderOption> {

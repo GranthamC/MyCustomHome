@@ -7,6 +7,8 @@ final class ModelOption: Codable
 	var id: UUID?
 	
 	var name: String
+	var optionID: String?
+	
 	var modelID: HomeModel.ID
 	
 	var categoryID: ModelOptionCategory.ID
@@ -73,7 +75,7 @@ extension ModelOption
 		return parent(\.categoryID)
 	}
 	
-	var images: Siblings<ModelOption, ImageAsset, ImageModelOptionPivot> {
+	var images: Siblings<ModelOption, Image, ImageModelOptionPivot> {
 		
 		return siblings()
 	}

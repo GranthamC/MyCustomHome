@@ -61,7 +61,7 @@ struct ChangeTokenController: RouteCollection
 			req.content.decode(ChangeToken.self)
 		) { tokens, updatedTokens in
 			tokens.builderName = updatedTokens.builderName
-			tokens.builderID = updatedTokens.builderID
+			tokens.plantID = updatedTokens.plantID
 			tokens.builderToken = updatedTokens.builderToken
 			tokens.decorItemToken = updatedTokens.decorItemToken
 			tokens.decorPackageToken = updatedTokens.decorPackageToken
@@ -85,9 +85,9 @@ struct ChangeTokenController: RouteCollection
 	
 	// Get the tokens builder
 	//
-	func getGetBuilderHandler(_ req: Request) throws -> Future<[HomeBuilder]> {
+	func getGetBuilderHandler(_ req: Request) throws -> Future<[Plant]> {
 		
-		return try req.parameters.next(ChangeToken.self).flatMap(to: [HomeBuilder].self) { tokens in
+		return try req.parameters.next(ChangeToken.self).flatMap(to: [Plant].self) { tokens in
 			
 			try tokens.builder.query(on: req).all()
 		}

@@ -7,15 +7,15 @@ final class LineOptionCategory: Codable
 	var id: UUID?
 	var name: String
 	
-	var lineID: ProductLine.ID
+	var lineID: Line.ID
 	
-	var categoryID: BuilderCategory.ID
+	var categoryID: PlantCategory.ID
 	
 	var optionType: Int32?
 	
 	var changeToken: Int32?
 	
-	init(name: String, lineID: ProductLine.ID, categoryID: BuilderCategory.ID) {
+	init(name: String, lineID: Line.ID, categoryID: PlantCategory.ID) {
 		self.name = name
 		self.lineID = lineID
 		self.categoryID = categoryID
@@ -36,9 +36,9 @@ extension LineOptionCategory: Migration
 			
 			//			builder.unique(on: \.name)
 			
-			builder.reference(from: \.lineID, to: \ProductLine.id)
+			builder.reference(from: \.lineID, to: \Line.id)
 			
-			builder.reference(from: \.categoryID, to: \BuilderCategory.id)
+			builder.reference(from: \.categoryID, to: \PlantCategory.id)
 		}
 	}
 	
@@ -50,12 +50,12 @@ extension LineOptionCategory: Parameter {}
 
 extension LineOptionCategory
 {
-	var productLine: Parent<LineOptionCategory, ProductLine> {
+	var productLine: Parent<LineOptionCategory, Line> {
 		
 		return parent(\.lineID)
 	}
 	
-	var builderCategory: Parent<LineOptionCategory, BuilderCategory> {
+	var builderCategory: Parent<LineOptionCategory, PlantCategory> {
 		
 		return parent(\.categoryID)
 	}

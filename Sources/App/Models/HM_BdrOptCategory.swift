@@ -9,13 +9,15 @@ final class HM_BdrOptCategory: Codable
 	
 	var modelID: HomeModel.ID
 	
-	var categoryID: BuilderCategory.ID
+	var categoryID: PlantCategory.ID
 
 	var optionType: Int32?
 	
+	var optionCategoryID: String?
+	
 	var changeToken: Int32?
 	
-	init(name: String, modelID: HomeModel.ID, categoryID: BuilderCategory.ID) {
+	init(name: String, modelID: HomeModel.ID, categoryID: PlantCategory.ID) {
 		self.name = name
 		self.modelID = modelID
 		self.categoryID = categoryID
@@ -38,7 +40,7 @@ extension HM_BdrOptCategory: Migration
 			
 			builder.reference(from: \.modelID, to: \HomeModel.id)
 			
-			builder.reference(from: \.categoryID, to: \BuilderCategory.id)
+			builder.reference(from: \.categoryID, to: \PlantCategory.id)
 		}
 	}
 	
