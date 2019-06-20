@@ -174,6 +174,12 @@ struct HomeModelResponse: Content
 	var lowPrice: Double?
 	var highPrice: Double?
 	
+	var heroImageURL: String?
+	var floorPlanURL: String?
+	var exteriorImageURL: String?
+	var matterportTourURL: String?
+	var panoModelTourURL: String?
+
 	var homeImages: [SimApiImage]
 
 	var builderOptions: [BuilderOptionResponse]
@@ -231,6 +237,12 @@ struct HomeModelResponse: Content
 		
 		self.homeImages = model.homeImages
 		
+		self.heroImageURL = options.heroImageURL
+		self.floorPlanURL = options.floorPlanURL
+		self.exteriorImageURL = options.exteriorImageURL
+		self.matterportTourURL = options.matterportTourURL
+		self.panoModelTourURL = options.panoModelTourURL
+
 		self.builderOptions = options.builderOptions
 		
 		self.decorOptions = options.decorOptions
@@ -243,19 +255,31 @@ struct HomeModelResponse: Content
 
 struct HomeModelOptionsResponse: Content
 {
+	var heroImageURL: String?
+	var floorPlanURL: String?
+	var exteriorImageURL: String?
+	var matterportTourURL: String?
+	var panoModelTourURL: String?
+
 	var builderOptions: [BuilderOptionResponse]
 	
 	var decorOptions: [DecorOptionResponse]
 	
 	var modelOptions: [ModelOptionResponse]
 	
-	init(builderOptions: [BuilderOptionResponse], decorOptions: [DecorOptionResponse], modelOptions: [ModelOptionResponse])
+	init(homeModel: HomeModel, builderOptions: [BuilderOptionResponse], decorOptions: [DecorOptionResponse], modelOptions: [ModelOptionResponse])
 	{
 		self.builderOptions = builderOptions
 		
 		self.decorOptions = decorOptions
 		
 		self.modelOptions = modelOptions
+		
+		self.heroImageURL = homeModel.heroImageURL
+		self.floorPlanURL = homeModel.floorPlanURL
+		self.exteriorImageURL = homeModel.exteriorImageURL
+		self.matterportTourURL = homeModel.matterportTourURL
+		self.panoModelTourURL = homeModel.panoModelTourURL
 	}
 }
 
@@ -451,7 +475,7 @@ struct HomeModelController: RouteCollection
 						
 						let modelResponse = homeImages.map { ssImages in
 							
-							return HomeModelOptionsResponse(builderOptions: builderOptions, decorOptions: decorOptions, modelOptions: [])
+							return HomeModelOptionsResponse(homeModel: homemodel!, builderOptions: builderOptions, decorOptions: decorOptions, modelOptions: [])
 						}
 						
 						return modelResponse
@@ -520,7 +544,7 @@ struct HomeModelController: RouteCollection
 						
 						let modelResponse = homeImages.map { ssImages in
 							
-							return HomeModelOptionsResponse(builderOptions: builderOptions, decorOptions: decorOptions, modelOptions: [])
+							return HomeModelOptionsResponse(homeModel: homemodel!, builderOptions: builderOptions, decorOptions: decorOptions, modelOptions: [])
 						}
 						
 						return modelResponse
