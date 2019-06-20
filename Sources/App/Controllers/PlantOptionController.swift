@@ -5,7 +5,7 @@ import Authentication
 
 
 
-struct BuilderOptionController: RouteCollection
+struct PlantOptionController: RouteCollection
 {
 	
 	func boot(router: Router) throws {
@@ -37,9 +37,9 @@ struct BuilderOptionController: RouteCollection
 		
 		tokenAuthGroup.put(BuilderOption.parameter, use: updateHandler)
 
-		tokenAuthGroup.post(BuilderOption.parameter, "image", ImageAsset.parameter, use: addImageHandler)
+		tokenAuthGroup.post(BuilderOption.parameter, "image", Image.parameter, use: addImageHandler)
 		
-		tokenAuthGroup.delete(BuilderOption.parameter, "image", ImageAsset.parameter, use: removeImageHandler)
+		tokenAuthGroup.delete(BuilderOption.parameter, "image", Image.parameter, use: removeImageHandler)
 	}
 	
 	
@@ -72,7 +72,7 @@ struct BuilderOptionController: RouteCollection
 		) { optionItem, updatedItem in
 			
 			optionItem.name = updatedItem.name
-			optionItem.builderID = updatedItem.builderID
+			optionItem.plantID = updatedItem.plantID
 			optionItem.optionImageType = updatedItem.optionImageType
 			optionItem.changeToken = updatedItem.changeToken
 			optionItem.categoryID = updatedItem.categoryID
@@ -99,9 +99,9 @@ struct BuilderOptionController: RouteCollection
 	
 	// Get the category record for this option Item
 	//
-	func getCategoryHandler(_ req: Request) throws -> Future<BuilderCategory> {
+	func getCategoryHandler(_ req: Request) throws -> Future<PlantCategory> {
 		
-		return try req.parameters.next(BuilderOption.self).flatMap(to: BuilderCategory.self) { optionItem in
+		return try req.parameters.next(BuilderOption.self).flatMap(to: PlantCategory.self) { optionItem in
 			
 			optionItem.category.get(on: req)
 		}
@@ -110,9 +110,9 @@ struct BuilderOptionController: RouteCollection
 	
 	// Get the Builder record for this home option Item
 	//
-	func getBuilderHandler(_ req: Request) throws -> Future<HomeBuilder> {
+	func getBuilderHandler(_ req: Request) throws -> Future<Plant> {
 		
-		return try req.parameters.next(BuilderOption.self).flatMap(to: HomeBuilder.self) { homeOptionItem in
+		return try req.parameters.next(BuilderOption.self).flatMap(to: Plant.self) { homeOptionItem in
 			
 			homeOptionItem.builder.get(on: req)
 		}
@@ -122,7 +122,7 @@ struct BuilderOptionController: RouteCollection
 	func addImageHandler(_ req: Request) throws -> Future<HTTPStatus>
 	{
 		
-		return try flatMap(to: HTTPStatus.self,	req.parameters.next(BuilderOption.self), req.parameters.next(ImageAsset.self))
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(BuilderOption.self), req.parameters.next(Image.self))
 		{ item, image in
 			
 			return item.images.attach(image, on: req).transform(to: .created)
@@ -132,9 +132,9 @@ struct BuilderOptionController: RouteCollection
 	
 	// Get the item's example images
 	//
-	func getImagesHandler(_ req: Request) throws -> Future<[ImageAsset]> {
+	func getImagesHandler(_ req: Request) throws -> Future<[Image]> {
 		
-		return try req.parameters.next(BuilderOption.self).flatMap(to: [ImageAsset].self) { item in
+		return try req.parameters.next(BuilderOption.self).flatMap(to: [Image].self) { item in
 			
 			try item.images.query(on: req).all()
 		}
@@ -143,7 +143,7 @@ struct BuilderOptionController: RouteCollection
 	
 	func removeImageHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try flatMap(to: HTTPStatus.self, req.parameters.next(BuilderOption.self), req.parameters.next(ImageAsset.self)) { item, image in
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(BuilderOption.self), req.parameters.next(Image.self)) { item, image in
 			
 			return item.images.detach(image, on: req).transform(to: .noContent)
 		}

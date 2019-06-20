@@ -90,9 +90,9 @@ struct LineDecorCategoryController: RouteCollection
 	
 	// Get the product line record for this category
 	//
-	func getProductLineHandler(_ req: Request) throws -> Future<ProductLine> {
+	func getProductLineHandler(_ req: Request) throws -> Future<Line> {
 		
-		return try req.parameters.next(LineDecorCategory.self).flatMap(to: ProductLine.self) { category in
+		return try req.parameters.next(LineDecorCategory.self).flatMap(to: Line.self) { category in
 			
 			category.productLine.get(on: req)
 		}

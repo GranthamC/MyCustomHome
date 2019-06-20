@@ -6,9 +6,9 @@ final class HomeSetCategory: Codable
 {
 	var id: UUID?
 	var name: String
-	var homeSetID: BuilderHomeSet.ID
+	var homeSetID: HomeModelSet.ID
 	
-	init(name: String, homeSetID: BuilderHomeSet.ID) {
+	init(name: String, homeSetID: HomeModelSet.ID) {
 		
 		self.name = name
 		self.homeSetID = homeSetID
@@ -27,7 +27,7 @@ extension HomeSetCategory: Migration
 			
 			try addProperties(to: builder)
 			
-			builder.reference(from: \.homeSetID, to: \BuilderHomeSet.id)
+			builder.reference(from: \.homeSetID, to: \HomeModelSet.id)
 		}
 	}
 }
@@ -44,7 +44,7 @@ extension HomeSetCategory
 		return siblings()
 	}
 	
-	var homeSet: Parent<HomeSetCategory, BuilderHomeSet> {
+	var homeSet: Parent<HomeSetCategory, HomeModelSet> {
 		
 		return parent(\.homeSetID)
 	}

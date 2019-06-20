@@ -7,18 +7,20 @@ final class DecorCategory: Codable
 	var id: UUID?
 	
 	var name: String
-	var builderID: HomeBuilder.ID
 	
-	var lineID: ProductLine.ID?
-	var homeModelID: HomeModel.ID?
+	var plantID: String?
+	var plantModelID: Plant.ID
+	var plantNumber: String?
 
 	var optionType: Int32?
 	
+	var categoryID: String?
+
 	var changeToken: Int32?
 	
-	init(name: String, builderID: HomeBuilder.ID) {
+	init(name: String, plantID: Plant.ID) {
 		self.name = name
-		self.builderID = builderID
+		self.plantModelID = plantID
 	}
 }
 
@@ -36,7 +38,7 @@ extension DecorCategory: Migration
 			
 			builder.unique(on: \.name)
 
-			builder.reference(from: \.builderID, to: \HomeBuilder.id)
+			builder.reference(from: \.plantModelID, to: \Plant.id)
 		}
 	}
 	
@@ -48,15 +50,15 @@ extension DecorCategory: Parameter {}
 
 extension DecorCategory
 {
-	var builder: Parent<DecorCategory, HomeBuilder> {
+	var builder: Parent<DecorCategory, Plant> {
 		
-		return parent(\.builderID)
+		return parent(\.plantModelID)
 	}
 	
 	
 	var categoryOptions: Children<DecorCategory, DecorItem> {
 		
-		return children(\.categoryID)
+		return children(\.categoryModelID)
 	}
 
 /*

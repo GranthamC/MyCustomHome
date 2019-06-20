@@ -2,11 +2,11 @@ import Foundation
 import Vapor
 import FluentPostgreSQL
 
-final class BuilderHomeSet: Codable
+final class HomeModelSet: Codable
 {
 	var id: UUID?
 	
-	var builderID: HomeBuilder.ID?
+	var plantID: Plant.ID?
 
 	var setTitle: String
 	
@@ -29,16 +29,16 @@ final class BuilderHomeSet: Codable
 	var useCategories: Bool?
 	var useBrochure: Bool?
 
-	init(title: String, builderID: HomeBuilder.ID?) {
+	init(title: String, plantID: Plant.ID?) {
 		
 		self.setTitle = title
-		self.builderID = builderID
+		self.plantID = plantID
 	}
 }
 
-extension BuilderHomeSet: PostgreSQLUUIDModel {}
+extension HomeModelSet: PostgreSQLUUIDModel {}
 
-extension BuilderHomeSet: Migration
+extension HomeModelSet: Migration
 {
 	static func prepare(
 		on connection: PostgreSQLConnection
@@ -73,32 +73,32 @@ extension BuilderHomeSet: Migration
 			
 			builder.field(for: \.useBrochure)
 
-			builder.field(for: \.builderID)
+			builder.field(for: \.plantID)
 
-			builder.reference(from: \.builderID, to: \HomeBuilder.id)
+			builder.reference(from: \.plantID, to: \Plant.id)
 
 		}
 	}
 }
 
 
-extension BuilderHomeSet: Content {}
+extension HomeModelSet: Content {}
 
-extension BuilderHomeSet: Parameter {}
+extension HomeModelSet: Parameter {}
 
 
-extension BuilderHomeSet
+extension HomeModelSet
 {
-	var builder: Parent<BuilderHomeSet, HomeBuilder> {
-		return parent(\.builderID)!
+	var builder: Parent<HomeModelSet, Plant> {
+		return parent(\.plantID)!
 	}
 	
-	var homeModels: Siblings<BuilderHomeSet, HomeModel, HomeSetToHomeModelPivot> {
+	var homeModels: Siblings<HomeModelSet, HomeModel, HomeSetToHomeModelPivot> {
 		
 		return siblings()
 	}
 	
-	var homeCategories: Children<BuilderHomeSet, HomeSetCategory> {
+	var homeCategories: Children<HomeModelSet, HomeSetCategory> {
 		
 		return children(\.homeSetID)
 	}

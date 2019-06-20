@@ -7,9 +7,9 @@ final class BuilderOption: Codable
 	var id: UUID?
 	
 	var name: String
-	var builderID: HomeBuilder.ID
+	var plantID: Plant.ID
 	
-	var categoryID: BuilderCategory.ID
+	var categoryID: PlantCategory.ID
 
 	var changeToken: Int32?
 
@@ -29,9 +29,9 @@ final class BuilderOption: Codable
 	var physicalHeight: Float?
 	var physicalWidth: Float?
 
-	init(name: String, builderID: HomeBuilder.ID, categoryID: BuilderCategory.ID, imagePath: String) {
+	init(name: String, plantID: Plant.ID, categoryID: PlantCategory.ID, imagePath: String) {
 		self.name = name
-		self.builderID = builderID
+		self.plantID = plantID
 		self.categoryID = categoryID
 		self.optionImageURL = imagePath
 	}
@@ -51,9 +51,9 @@ extension BuilderOption: Migration
 			
 			homeOption.unique(on: \.name)
 
-			homeOption.reference(from: \.builderID, to: \HomeBuilder.id)
+			homeOption.reference(from: \.plantID, to: \Plant.id)
 			
-			homeOption.reference(from: \.categoryID, to: \BuilderCategory.id)
+			homeOption.reference(from: \.categoryID, to: \PlantCategory.id)
 		}
 	}
 	
@@ -65,17 +65,17 @@ extension BuilderOption: Parameter {}
 
 extension BuilderOption
 {
-	var builder: Parent<BuilderOption, HomeBuilder> {
+	var builder: Parent<BuilderOption, Plant> {
 		
-		return parent(\.builderID)
+		return parent(\.plantID)
 	}
 	
-	var category: Parent<BuilderOption, BuilderCategory> {
+	var category: Parent<BuilderOption, PlantCategory> {
 		
 		return parent(\.categoryID)
 	}
 	
-	var images: Siblings<BuilderOption, ImageAsset, ImageAssetHomeOptionPivot> {
+	var images: Siblings<BuilderOption, Image, ImageAssetHomeOptionPivot> {
 		
 		return siblings()
 	}

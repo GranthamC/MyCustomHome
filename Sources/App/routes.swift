@@ -18,22 +18,22 @@ public func routes(_ router: Router) throws {
 	try router.register(collection: homebuilderController)
 
 	
-	let productLineController = ProductLineController()
+	let productLineController = LineController()
 	
 	try router.register(collection: productLineController)
 
 	
-	let imageAssetController = ImageAssetController()
+	let imageAssetController = ImageController()
 	
 	try router.register(collection: imageAssetController)
 
 	
-	let builderOptionCategoryController = BuilderCategoryController()
+	let builderOptionCategoryController = PlantCategoryController()
 	
 	try router.register(collection: builderOptionCategoryController)
 	
 	
-	let builderOptionItemController = BuilderOptionController()
+	let builderOptionItemController = PlantOptionController()
 	
 	try router.register(collection: builderOptionItemController)
 	
@@ -98,7 +98,7 @@ public func routes(_ router: Router) throws {
 	try router.register(collection: modelBuilderCategoryPackageController)
 	
 	
-	let lineBuilderCategoryPackageController = PL_BdrOptionCategoryController()
+	let lineBuilderCategoryPackageController = LinePlantOptionCategoryController()
 	
 	try router.register(collection: lineBuilderCategoryPackageController)
 

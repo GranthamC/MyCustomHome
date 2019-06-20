@@ -3,7 +3,7 @@ import Fluent
 import Authentication
 
 
-struct BuilderCategoryController: RouteCollection
+struct PlantCategoryController: RouteCollection
 {
 	
 	func boot(router: Router) throws {
@@ -12,11 +12,11 @@ struct BuilderCategoryController: RouteCollection
 		
 		homeOptionsCategoriesRoute.get(use: getAllHandler)
 		
-		homeOptionsCategoriesRoute.get(BuilderCategory.parameter, use: getHandler)
+		homeOptionsCategoriesRoute.get(PlantCategory.parameter, use: getHandler)
 
-		homeOptionsCategoriesRoute.get(BuilderCategory.parameter, "builder", use: getBuilderHandler)
+		homeOptionsCategoriesRoute.get(PlantCategory.parameter, "builder", use: getBuilderHandler)
 		
-		homeOptionsCategoriesRoute.get(BuilderCategory.parameter, "option-items", use: getCategoryOptionsHandler)
+		homeOptionsCategoriesRoute.get(PlantCategory.parameter, "option-items", use: getCategoryOptionsHandler)
 
 		
 		// Add-in authentication for creating and updating
@@ -28,46 +28,46 @@ struct BuilderCategoryController: RouteCollection
 			tokenAuthMiddleware,
 			guardAuthMiddleware)
 		
-		tokenAuthGroup.post(BuilderCategory.self, use: createHandler)
+		tokenAuthGroup.post(PlantCategory.self, use: createHandler)
 		
-		tokenAuthGroup.delete(BuilderCategory.parameter, use: deleteHandler)
+		tokenAuthGroup.delete(PlantCategory.parameter, use: deleteHandler)
 		
-		tokenAuthGroup.put(BuilderCategory.parameter, use: updateHandler)
+		tokenAuthGroup.put(PlantCategory.parameter, use: updateHandler)
 
 	}
 	
 	
 	func createHandler(
 		_ req: Request,
-		category: BuilderCategory
-		) throws -> Future<BuilderCategory> {
+		category: PlantCategory
+		) throws -> Future<PlantCategory> {
 		
 		return category.save(on: req)
 	}
 	
-	func getAllHandler(_ req: Request) throws -> Future<[BuilderCategory]>
+	func getAllHandler(_ req: Request) throws -> Future<[PlantCategory]>
 	{
-		return BuilderCategory.query(on: req).all()
+		return PlantCategory.query(on: req).all()
 	}
 	
 	
-	func getHandler(_ req: Request) throws -> Future<BuilderCategory>
+	func getHandler(_ req: Request) throws -> Future<PlantCategory>
 	{
-		return try req.parameters.next(BuilderCategory.self)
+		return try req.parameters.next(PlantCategory.self)
 	}
 	
 	
 	// Update passed category with parameters
 	//
-	func updateHandler(_ req: Request) throws -> Future<BuilderCategory> {
+	func updateHandler(_ req: Request) throws -> Future<PlantCategory> {
 		
 		return try flatMap(
-			to: BuilderCategory.self,
-			req.parameters.next(BuilderCategory.self),
-			req.content.decode(BuilderCategory.self)
+			to: PlantCategory.self,
+			req.parameters.next(PlantCategory.self),
+			req.content.decode(PlantCategory.self)
 		) { category, updatedCategory in
 			category.name = updatedCategory.name
-			category.builderID = updatedCategory.builderID
+			category.plantID = updatedCategory.plantID
 			category.optionType = updatedCategory.optionType
 			category.changeToken = updatedCategory.changeToken
 
@@ -78,7 +78,7 @@ struct BuilderCategoryController: RouteCollection
 	
 	func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try req.parameters.next(BuilderCategory.self)
+		return try req.parameters.next(PlantCategory.self)
 			.delete(on: req)
 			.transform(to: HTTPStatus.noContent)
 	}
@@ -89,7 +89,7 @@ struct BuilderCategoryController: RouteCollection
 	func getCategoryOptionsHandler(_ req: Request) throws -> Future<[BuilderOption]> {
 		
 		return try req
-			.parameters.next(BuilderCategory.self)
+			.parameters.next(PlantCategory.self)
 			.flatMap(to: [BuilderOption].self) { category in
 				
 				try category.categoryOptions.query(on: req).all()
@@ -99,9 +99,9 @@ struct BuilderCategoryController: RouteCollection
 	
 	// Get the Builder record for this category
 	//
-	func getBuilderHandler(_ req: Request) throws -> Future<HomeBuilder> {
+	func getBuilderHandler(_ req: Request) throws -> Future<Plant> {
 		
-		return try req.parameters.next(BuilderCategory.self).flatMap(to: HomeBuilder.self) { category in
+		return try req.parameters.next(PlantCategory.self).flatMap(to: Plant.self) { category in
 			
 			category.builder.get(on: req)
 		}
@@ -112,7 +112,7 @@ struct BuilderCategoryController: RouteCollection
 	func addOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus>
 	{
 		
-		return try flatMap(to: HTTPStatus.self,	req.parameters.next(BuilderCategory.self), req.parameters.next(BuilderOption.self))
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(PlantCategory.self), req.parameters.next(BuilderOption.self))
 		{ category, optionItem in
 			
 			return category.optionItems.attach(optionItem, on: req).transform(to: .created)
@@ -123,7 +123,7 @@ struct BuilderCategoryController: RouteCollection
 	//
 	func getOptionItemHandler(_ req: Request) throws -> Future<[BuilderOption]> {
 		
-		return try req.parameters.next(BuilderCategory.self).flatMap(to: [BuilderOption].self) { category in
+		return try req.parameters.next(PlantCategory.self).flatMap(to: [BuilderOption].self) { category in
 			
 			try category.optionItems.query(on: req).all()
 		}
@@ -131,7 +131,7 @@ struct BuilderCategoryController: RouteCollection
 	
 	func removeOptionItemHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try flatMap(to: HTTPStatus.self, req.parameters.next(BuilderCategory.self), req.parameters.next(BuilderOption.self)) { category, optionItem in
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(PlantCategory.self), req.parameters.next(BuilderOption.self)) { category, optionItem in
 			
 			return category.optionItems.detach(optionItem, on: req).transform(to: .noContent)
 		}

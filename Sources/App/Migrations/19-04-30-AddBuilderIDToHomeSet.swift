@@ -10,10 +10,10 @@ struct AddBuilderIDToHomeSet: Migration {
 		) -> Future<Void> {
 
 		return Database.update(
-			BuilderHomeSet.self, on: connection
+			HomeModelSet.self, on: connection
 		) { builder in
 
-			builder.field(for: \.builderID)
+			builder.field(for: \.plantID)
 		}
 	}
 	
@@ -23,10 +23,10 @@ struct AddBuilderIDToHomeSet: Migration {
 		) -> Future<Void> {
 
 		return Database.update(
-			BuilderHomeSet.self, on: connection
+			HomeModelSet.self, on: connection
 		) { builder in
 
-			builder.deleteField(for: \.builderID)
+			builder.deleteField(for: \.plantID)
 		}
 	}
 }

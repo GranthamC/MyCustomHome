@@ -7,7 +7,7 @@ import FluentPostgreSQL
 
 // MARK: Image Asset Type Enum and labels
 //
-enum AssetImageType: Int32 {
+enum imageType: Int32 {
 	case HomeImage = 0
 	case DecorSwatch = 1
 	case DecorOptionTexture = 2
@@ -16,27 +16,29 @@ enum AssetImageType: Int32 {
 	case ObjectModelTexture = 5
 }
 
-final class ImageAsset: Codable
+final class Image: Codable
 {
 	var id: UUID?
-	var builderID: HomeBuilder.ID
-	var assetImageURL: String
+	var plantID: Plant.ID
+	var imageURL: String
+	
+	var imageID: String?
 	
 	var changeToken: Int32?
 
 	var caption: String?
 	var imageScale: Float?
-	var assetImageType: Int32?
+	var imageType: Int32?
 	
-	init(assetImageURL: String, builderID: HomeBuilder.ID) {
-		self.assetImageURL = assetImageURL
-		self.builderID = builderID
+	init(imageURL: String, plantID: Plant.ID) {
+		self.imageURL = imageURL
+		self.plantID = plantID
 	}
 }
 
-extension ImageAsset: PostgreSQLUUIDModel {}
+extension Image: PostgreSQLUUIDModel {}
 
-extension ImageAsset: Migration
+extension Image: Migration
 {
 	static func prepare(
 		on connection: PostgreSQLConnection
@@ -46,38 +48,38 @@ extension ImageAsset: Migration
 			
 			try addProperties(to: builder)
 			
-			builder.reference(from: \.builderID, to: \HomeBuilder.id)
+			builder.reference(from: \.plantID, to: \Plant.id)
 		}
 	}
 	
 }
 
-extension ImageAsset: Content {}
+extension Image: Content {}
 
-extension ImageAsset: Parameter {}
+extension Image: Parameter {}
 
-extension ImageAsset
+extension Image
 {
-	var builder: Parent<ImageAsset, HomeBuilder> {
+	var builder: Parent<Image, Plant> {
 		
-		return parent(\.builderID)
+		return parent(\.plantID)
 	}
 	
-	var homeOptionExampleImages: Siblings<ImageAsset,
+	var homeOptionExampleImages: Siblings<Image,
 		BuilderOption,
 		ImageAssetHomeOptionPivot> {
 		
 		return siblings()
 	}
 	
-	var homeModelImages: Siblings<ImageAsset,
+	var homeModelImages: Siblings<Image,
 		HomeModel,
 		ImageAssetHomeModelPivot> {
 		
 		return siblings()
 	}
 	
-	var decorOptionImages: Siblings<ImageAsset,
+	var decorOptionImages: Siblings<Image,
 		DecorItem,
 		ImageAssetDecorItemPivot> {
 		

@@ -3,7 +3,7 @@ import Fluent
 import Authentication
 
 
-struct PL_BdrOptionCategoryController: RouteCollection
+struct LinePlantOptionCategoryController: RouteCollection
 {
 	
 	func boot(router: Router) throws {
@@ -91,9 +91,9 @@ struct PL_BdrOptionCategoryController: RouteCollection
 	
 	// Get the product line record for this category
 	//
-	func getProductLineHandler(_ req: Request) throws -> Future<ProductLine> {
+	func getProductLineHandler(_ req: Request) throws -> Future<Line> {
 		
-		return try req.parameters.next(LineOptionCategory.self).flatMap(to: ProductLine.self) { category in
+		return try req.parameters.next(LineOptionCategory.self).flatMap(to: Line.self) { category in
 			
 			category.productLine.get(on: req)
 		}
@@ -102,9 +102,9 @@ struct PL_BdrOptionCategoryController: RouteCollection
 	
 	// Get the product line record for this category
 	//
-	func getBuilderCategoryHandler(_ req: Request) throws -> Future<BuilderCategory> {
+	func getBuilderCategoryHandler(_ req: Request) throws -> Future<PlantCategory> {
 		
-		return try req.parameters.next(LineOptionCategory.self).flatMap(to: BuilderCategory.self) { category in
+		return try req.parameters.next(LineOptionCategory.self).flatMap(to: PlantCategory.self) { category in
 			
 			category.builderCategory.get(on: req)
 		}

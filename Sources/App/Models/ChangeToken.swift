@@ -6,7 +6,7 @@ final class ChangeToken: Codable
 {
 	var id: UUID?
 	var builderName: String
-	var builderID: HomeBuilder.ID
+	var plantID: Plant.ID
 	
 	var builderToken: Int32?
 	var decorItemToken: Int32?
@@ -25,9 +25,9 @@ final class ChangeToken: Codable
 	var tokenOption5: Int32?
 	
 
-	init(name: String, builderID: HomeBuilder.ID) {
+	init(name: String, plantID: Plant.ID) {
 		self.builderName = name
-		self.builderID = builderID
+		self.plantID = plantID
 	}
 }
 
@@ -43,7 +43,7 @@ extension ChangeToken: Migration
 			
 			try addProperties(to: builder)
 			
-			builder.reference(from: \.builderID, to: \HomeBuilder.id)
+			builder.reference(from: \.plantID, to: \Plant.id)
 		}
 	}
 	
@@ -55,7 +55,7 @@ extension ChangeToken: Parameter {}
 
 extension ChangeToken
 {
-	var builder: Children<ChangeToken, HomeBuilder> {
+	var builder: Children<ChangeToken, Plant> {
 		
 		return children(\.changeTokensID)
 	}

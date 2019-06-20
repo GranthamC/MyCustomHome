@@ -7,7 +7,7 @@ final class LineDecorCategory: Codable
 	var id: UUID?
 	var name: String
 	
-	var lineID: ProductLine.ID
+	var lineID: Line.ID
 	
 	var categoryID: DecorCategory.ID
 
@@ -15,7 +15,7 @@ final class LineDecorCategory: Codable
 	
 	var changeToken: Int32?
 	
-	init(name: String, lineID: ProductLine.ID, categoryID: DecorCategory.ID) {
+	init(name: String, lineID: Line.ID, categoryID: DecorCategory.ID) {
 		self.name = name
 		self.lineID = lineID
 		self.categoryID = categoryID
@@ -36,7 +36,7 @@ extension LineDecorCategory: Migration
 			
 //			builder.unique(on: \.name)
 			
-			builder.reference(from: \.lineID, to: \ProductLine.id)
+			builder.reference(from: \.lineID, to: \Line.id)
 			
 			builder.reference(from: \.categoryID, to: \DecorCategory.id)
 		}
@@ -50,7 +50,7 @@ extension LineDecorCategory: Parameter {}
 
 extension LineDecorCategory
 {
-	var productLine: Parent<LineDecorCategory, ProductLine> {
+	var productLine: Parent<LineDecorCategory, Line> {
 		
 		return parent(\.lineID)
 	}

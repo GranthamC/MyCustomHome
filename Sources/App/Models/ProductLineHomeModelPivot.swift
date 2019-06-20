@@ -6,18 +6,18 @@ final class ProductLineHomeModelPivot: PostgreSQLUUIDPivot, ModifiablePivot
 {
 	var id: UUID?
 
-	var productLineID: ProductLine.ID
+	var productLineID: Line.ID
 	var homeModelID: HomeModel.ID
 	
 
-	typealias Left = ProductLine
+	typealias Left = Line
 	typealias Right = HomeModel
 
 	static let leftIDKey: LeftIDKey = \.productLineID
 	static let rightIDKey: RightIDKey = \.homeModelID
 	
 
-	init(_ line: ProductLine, _ model: HomeModel) throws {
+	init(_ line: Line, _ model: HomeModel) throws {
 		
 		self.productLineID = try line.requireID()
 		self.homeModelID = try model.requireID()
@@ -33,7 +33,7 @@ extension ProductLineHomeModelPivot: Migration
 			
 			try addProperties(to: builder)
 			
-			builder.reference(from: \.productLineID, to: \ProductLine.id, onDelete: .cascade)
+			builder.reference(from: \.productLineID, to: \Line.id, onDelete: .cascade)
 			
 			builder.reference(from: \.homeModelID, to: \HomeModel.id, onDelete: .cascade)
 		}

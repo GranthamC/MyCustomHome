@@ -69,7 +69,7 @@ struct ProductSeriesController: RouteCollection
 		) { series, updatedLine in
 			
 			series.name = updatedLine.name
-			series.builderID = updatedLine.builderID
+			series.plantID = updatedLine.plantID
 			series.lineID = updatedLine.lineID
 			series.logoURL = updatedLine.logoURL
 			series.websiteURL = updatedLine.websiteURL
@@ -95,11 +95,11 @@ struct ProductSeriesController: RouteCollection
 	
 	// Get the Builder record for this product series
 	//
-	func getBuilderHandler(_ req: Request) throws -> Future<HomeBuilder> {
+	func getBuilderHandler(_ req: Request) throws -> Future<Plant> {
 		
 		return try req
 			.parameters.next(ProductSeries.self)
-			.flatMap(to: HomeBuilder.self) { series in
+			.flatMap(to: Plant.self) { series in
 				
 				series.builder.get(on: req)
 		}
@@ -108,11 +108,11 @@ struct ProductSeriesController: RouteCollection
 	
 	// Get the product series record for this product series
 	//
-	func getProductLineHandler(_ req: Request) throws -> Future<ProductLine> {
+	func getProductLineHandler(_ req: Request) throws -> Future<Line> {
 		
 		return try req
 			.parameters.next(ProductSeries.self)
-			.flatMap(to: ProductLine.self) { series in
+			.flatMap(to: Line.self) { series in
 				
 				series.line.get(on: req)
 		}

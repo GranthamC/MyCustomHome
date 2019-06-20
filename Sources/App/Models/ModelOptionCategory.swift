@@ -10,6 +10,7 @@ final class ModelOptionCategory: Codable
 	var modelID: HomeModel.ID
 	
 	var optionType: Int32?
+	var categoryID: String?
 	
 	var changeToken: Int32?
 	

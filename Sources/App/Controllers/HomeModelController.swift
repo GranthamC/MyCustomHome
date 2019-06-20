@@ -335,7 +335,7 @@ struct HomeModelController: RouteCollection
 
 		homeModelsRoute.get(HomeModel.parameter, use: getHandler)
 
-//		homeModelsRoute.get("search", use: searchHandler)
+		homeModelsRoute.get("search", use: searchHandler)
 		
 		homeModelsRoute.get("first", use: getFirstHandler)
 		
@@ -365,10 +365,9 @@ struct HomeModelController: RouteCollection
 		
 		tokenAuthGroup.put(HomeModel.parameter, use: updateHandler)
 
-		tokenAuthGroup.post(HomeModel.parameter, "image", ImageAsset.parameter, use: addImageHandler)
+		tokenAuthGroup.post(HomeModel.parameter, "image", Image.parameter, use: addImageHandler)
 		
-		tokenAuthGroup.delete(HomeModel.parameter, "image", ImageAsset.parameter, use: removeImageHandler)
-
+		tokenAuthGroup.delete(HomeModel.parameter, "image", Image.parameter, use: removeImageHandler)
 	}
 	
 	
@@ -579,6 +578,21 @@ struct HomeModelController: RouteCollection
 	}
 	
 	
+	func searchHandler(_ req: Request) throws -> Future<[HomeModel]>
+	{
+		guard let searchTerm = req.query[String.self, at: "param"] else {
+			throw Abort(.badRequest)
+		}
+		
+		return HomeModel.query(on: req).group(.or) { or in
+			or.filter(\.lineID == searchTerm)
+			or.filter(\.plantID == searchTerm)
+			or.filter(\.modelID == searchTerm)
+			or.filter(\.modelNumber == searchTerm)
+			}.all()
+	}
+
+	
 	// Update passed home model with parameters
 	//
 	func updateHandler(_ req: Request) throws -> Future<HomeModel> {
@@ -591,7 +605,7 @@ struct HomeModelController: RouteCollection
 			
 			model.name = updatedModel.name
 			model.modelNumber = updatedModel.modelNumber
-			model.builderID = updatedModel.builderID
+			model.plantModelID = updatedModel.plantModelID
 			model.changeToken = updatedModel.changeToken
 
 			model.heroImageURL = updatedModel.heroImageURL
@@ -614,6 +628,11 @@ struct HomeModelController: RouteCollection
 			model.sqftBasement = updatedModel.sqftBasement
 			model.sqftMain = updatedModel.sqftMain
 			model.sqftUpper = updatedModel.sqftUpper
+
+			model.modelID = updatedModel.modelID
+			model.modelDescription = updatedModel.modelDescription
+			model.lineID = updatedModel.lineID
+			model.plantID = updatedModel.plantID
 
 			return model.save(on: req)
 		}
@@ -664,7 +683,7 @@ struct HomeModelController: RouteCollection
 	
 	// Get the line's home models
 	//
-	func getHomeImages(_ req: Request, home: HomeModel) throws -> Future<[ImageAsset]> {
+	func getHomeImages(_ req: Request, home: HomeModel) throws -> Future<[Image]> {
 		
 		return try home.images.query(on: req).all()
 	}
@@ -697,13 +716,13 @@ struct HomeModelController: RouteCollection
 
 	// Get the Product line record for this home model
 	//
-	func getProductLineHandler(_ req: Request) throws -> Future<[ProductLine]> {
+	func getProductLineHandler(_ req: Request) throws -> Future<Line> {
 		
 		return try req
 			.parameters.next(HomeModel.self)
-			.flatMap(to: [ProductLine].self) { home in
+			.flatMap(to: Line.self) { model in
 				
-				try home.productLines.query(on: req).all()
+				model.productLine.get(on: req)
 		}
 	}
 
@@ -734,7 +753,7 @@ struct HomeModelController: RouteCollection
 	func addImageHandler(_ req: Request) throws -> Future<HTTPStatus>
 	{
 		
-		return try flatMap(to: HTTPStatus.self,	req.parameters.next(HomeModel.self), req.parameters.next(ImageAsset.self))
+		return try flatMap(to: HTTPStatus.self,	req.parameters.next(HomeModel.self), req.parameters.next(Image.self))
 		{ model, image in
 			
 			return model.images.attach(image, on: req).transform(to: .created)
@@ -743,9 +762,9 @@ struct HomeModelController: RouteCollection
 	
 	// Get the line's home models
 	//
-	func getImagesHandler(_ req: Request) throws -> Future<[ImageAsset]> {
+	func getImagesHandler(_ req: Request) throws -> Future<[Image]> {
 		
-		return try req.parameters.next(HomeModel.self).flatMap(to: [ImageAsset].self) { model in
+		return try req.parameters.next(HomeModel.self).flatMap(to: [Image].self) { model in
 			
 			try model.images.query(on: req).all()
 		}
@@ -753,7 +772,7 @@ struct HomeModelController: RouteCollection
 	
 	func removeImageHandler(_ req: Request) throws -> Future<HTTPStatus> {
 		
-		return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeModel.self), req.parameters.next(ImageAsset.self)) { model, image in
+		return try flatMap(to: HTTPStatus.self, req.parameters.next(HomeModel.self), req.parameters.next(Image.self)) { model, image in
 			
 			return model.images.detach(image, on: req).transform(to: .noContent)
 		}

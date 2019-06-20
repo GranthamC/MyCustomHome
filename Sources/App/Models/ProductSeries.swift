@@ -6,9 +6,9 @@ final class ProductSeries: Codable
 {
 	var id: UUID?
 	var name: String
-	var lineID: ProductLine.ID
+	var lineID: Line.ID
 	
-	var builderID: HomeBuilder.ID
+	var plantID: Plant.ID
 	
 	var changeToken: Int32?
 	
@@ -23,11 +23,11 @@ final class ProductSeries: Codable
 	
 	var isEnabled: Bool
 
-	init(name: String, productLine: ProductLine.ID, builderID: HomeBuilder.ID) {
+	init(name: String, productLine: Line.ID, plantID: Plant.ID) {
 		
 		self.name = name
 		self.lineID = productLine
-		self.builderID = builderID
+		self.plantID = plantID
 		self.isEnabled = true
 	}
 }
@@ -44,9 +44,9 @@ extension ProductSeries: Migration
 			
 			try addProperties(to: line)
 			
-			line.reference(from: \.builderID, to: \HomeBuilder.id)
+			line.reference(from: \.plantID, to: \Plant.id)
 			
-			line.reference(from: \.lineID, to: \ProductLine.id)
+			line.reference(from: \.lineID, to: \Line.id)
 
 			line.unique(on: \.name)
 		}
@@ -65,12 +65,12 @@ extension ProductSeries
 		return siblings()
 	}
 	
-	var builder: Parent<ProductSeries, HomeBuilder> {
+	var builder: Parent<ProductSeries, Plant> {
 		
-		return parent(\.builderID)
+		return parent(\.plantID)
 	}
 	
-	var line: Parent<ProductSeries, ProductLine> {
+	var line: Parent<ProductSeries, Line> {
 		
 		return parent(\.lineID)
 	}
