@@ -129,15 +129,15 @@ struct SimApiImage: Content
 
 struct HomeModelResponse: Content
 {
-	var id: String?
+	var id: UUID?
 	
 	var modelNumber: String
 	
 	var modelDescription: String
 	var lineID: String
 	
-	var plantModelID: String?
-	var lineModelID: String?
+	var plantModelID: UUID?
+	var lineModelID: UUID?
 	
 	var plantID: String
 	var modelID: String?
@@ -190,10 +190,10 @@ struct HomeModelResponse: Content
 	
 	init(model: SimApiHomeModel, options: HomeModelOptionsResponse)
 	{
-		self.id = model.id
+		self.id = options.id
 		
-		self.plantModelID = model.plantModelID
-		self.lineModelID = model.lineModelID
+		self.plantModelID = options.plantModelID
+		self.lineModelID = options.lineModelID
 		
 		self.modelDescription = model.modelDescription
 		self.lineID = model.lineID
@@ -255,6 +255,11 @@ struct HomeModelResponse: Content
 
 struct HomeModelOptionsResponse: Content
 {
+	var id: UUID?
+	
+	var plantModelID: UUID?
+	var lineModelID: UUID?
+
 	var heroImageURL: String?
 	var floorPlanURL: String?
 	var exteriorImageURL: String?
@@ -274,6 +279,10 @@ struct HomeModelOptionsResponse: Content
 		self.decorOptions = decorOptions
 		
 		self.modelOptions = modelOptions
+		
+		self.plantModelID = homeModel.plantModelID
+		self.lineModelID = homeModel.lineModelID
+		self.id = homeModel.id
 		
 		self.heroImageURL = homeModel.heroImageURL
 		self.floorPlanURL = homeModel.floorPlanURL
