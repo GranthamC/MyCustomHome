@@ -716,13 +716,13 @@ struct HomeModelController: RouteCollection
 
 	// Get the Product line record for this home model
 	//
-	func getProductLineHandler(_ req: Request) throws -> Future<[Line]> {
+	func getProductLineHandler(_ req: Request) throws -> Future<Line> {
 		
 		return try req
 			.parameters.next(HomeModel.self)
-			.flatMap(to: [Line].self) { home in
+			.flatMap(to: Line.self) { model in
 				
-				try home.productLines.query(on: req).all()
+				model.productLine.get(on: req)
 		}
 	}
 

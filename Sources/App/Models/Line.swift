@@ -13,16 +13,17 @@ final class Line: Codable
 	var logoURL: String?
 	var websiteURL: String?
 
-	var lineID: String?
+	var lineID: String
 	var lineDescription: String?
 	var acronym: String?
 	
 	var plantID: String?
 	var plantNumber: String?
 
-	init(name: String, plantModelID: Plant.ID) {
+	init(name: String, lineID: String, plantModelID: Plant.ID) {
 		
 		self.name = name
+		self.lineID = lineID
 		self.plantModelID = plantModelID
 	}
 }
@@ -41,7 +42,7 @@ extension Line: Migration
 
 			line.reference(from: \.plantModelID, to: \Plant.id)
 			
-			line.unique(on: \.name)
+			line.unique(on: \.lineID)
 		}
 	}
 }
