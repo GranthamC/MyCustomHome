@@ -328,12 +328,12 @@ struct ModelOptionResponse: Content
 	var categoryID: String
 	var optionType: Int32?
 	
-	var categoryOptions: [DecorItem]
+	var categoryOptions: [ModelOption]
 	
-	init(category: HM_DecorCategory, homeOptions: [DecorItem])
+	init(category: ModelOptionCategory, homeOptions: [ModelOption])
 	{
 		self.category = category.name
-		self.categoryID = category.categoryID.uuidString
+		self.categoryID = category.id!.uuidString
 		self.optionType = category.optionType
 		
 		self.categoryOptions = homeOptions
@@ -370,7 +370,9 @@ struct HomeModelController: RouteCollection
 		homeModelsRoute.get(HomeModel.parameter, "decor-categories", use: getDecorCategoryHandler)
 
 		homeModelsRoute.get(HomeModel.parameter, "builder-option-categories", use: getBuilderOptionCategoryHandler)
-		
+
+		homeModelsRoute.get(HomeModel.parameter, "model-option-categories", use: getModelOptionCategoryHandler)
+
 		homeModelsRoute.get(HomeModel.parameter, "images", use: getImagesHandler)
 
 		
@@ -540,14 +542,34 @@ struct HomeModelController: RouteCollection
 					
 					let builderOptResponse = builderOptionResponses.map { builderOptions -> Future<HomeModelOptionsResponse> in
 						
-						let homeImages = try self.getHomeImages(req, home: homemodel!)
-						
-						let modelResponse = homeImages.map { ssImages in
-							
-							return HomeModelOptionsResponse(homeModel: homemodel!, builderOptions: builderOptions, decorOptions: decorOptions, modelOptions: [])
+						guard let mopdelOptionCategories = try homemodel?.modelOptionCategories.query(on: req).all() else {
+							throw Abort(.notFound)
 						}
 						
-						return modelResponse
+						let modelOptionResponses = try self.getModelOptionItemsResponses(req, modelOptionCategories: mopdelOptionCategories)
+						
+						let modelOptResponse = modelOptionResponses.map { modelOptions -> Future<HomeModelOptionsResponse> in
+							
+							let homeImages = try self.getHomeImages(req, home: homemodel!)
+							
+							let modelResponse = homeImages.map { ssImages in
+								
+								return HomeModelOptionsResponse(homeModel: homemodel!, builderOptions: builderOptions, decorOptions: decorOptions, modelOptions: modelOptions)
+							}
+							
+							return modelResponse
+							
+							//							let homeImages = try self.getHomeImages(req, home: homemodel!)
+							//
+							//							let modelResponse = homeImages.map { ssImages in
+							//
+							//								return HomeModelOptionsResponse(homeModel: homemodel!, builderOptions: builderOptions, decorOptions: decorOptions, modelOptions: [])
+						}
+						
+						return modelOptResponse.flatMap(to: HomeModelOptionsResponse.self) { allResponses in
+							
+							return allResponses
+						}
 					}
 					
 					return builderOptResponse.flatMap(to: HomeModelOptionsResponse.self) { allResponses in
@@ -588,6 +610,22 @@ struct HomeModelController: RouteCollection
 				
 				try category.optionItems.query(on: request).all().map { items in
 					return BuilderOptionResponse(category: category, homeOptions: items)
+				}
+			}
+			
+			return catResponseFutures.flatten(on: request)
+		}
+	}
+
+	
+	func getModelOptionItemsResponses(_ request: Request, modelOptionCategories: Future<[ModelOptionCategory]>) throws -> Future<[ModelOptionResponse]> {
+		
+		return modelOptionCategories.flatMap { categories in
+			
+			let catResponseFutures = try categories.map { category in
+				
+				try category.optionItems.query(on: request).all().map { items in
+					return ModelOptionResponse(category: category, homeOptions: items)
 				}
 			}
 			
@@ -770,6 +808,17 @@ struct HomeModelController: RouteCollection
 		return try req.parameters.next(HomeModel.self).flatMap(to: [HM_BdrOptCategory].self) { model in
 			
 			try model.builderOptionCategories.query(on: req).all()
+		}
+	}
+	
+	
+	// Get the home's model option categories
+	//
+	func getModelOptionCategoryHandler(_ req: Request) throws -> Future<[ModelOptionCategory]> {
+		
+		return try req.parameters.next(HomeModel.self).flatMap(to: [ModelOptionCategory].self) { model in
+			
+			try model.modelOptionCategories.query(on: req).all()
 		}
 	}
 

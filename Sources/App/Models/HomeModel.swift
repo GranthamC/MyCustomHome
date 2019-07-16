@@ -79,11 +79,16 @@ extension HomeModel: Parameter {}
 extension HomeModel
 {
 	
-	var modelOptions: Children<HomeModel, ModelOption> {
+	var modelOptionCategories: Children<HomeModel, ModelOptionCategory> {
 		
 		return children(\.modelID)
 	}
 	
+	var modelOptions: Children<HomeModel, ModelOption> {
+		
+		return children(\.modelID)
+	}
+
 	var decorCategories: Children<HomeModel, HM_DecorCategory> {
 		
 		return children(\.modelID)
